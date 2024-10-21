@@ -9,6 +9,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv('SECRET_KEY')
     
+    # Configurações de sessão
+    SESSION_TYPE = 'filesystem'  # Use 'filesystem' para manter as sessões persistentes
+    SESSION_PERMANENT = False
+
     # Variáveis de ambiente do OAuth Google
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')

@@ -5,8 +5,8 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    # Verifica se o usuário está autenticado
-    if 'user' not in session:
+    # Verifica se o usuário está autenticado (verifica se o email está na sessão)
+    if 'email' not in session:
         return redirect(url_for('auth.login'))  # Redireciona para a página de login se não estiver autenticado
     print("Sessão atual:", session)
     # Se estiver autenticado, exibe a tabela de lançamentos
