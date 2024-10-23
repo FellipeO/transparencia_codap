@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Minha Aplicação{% endblock %}</title>
+    <!-- Link para CSS, se houver -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('main.homepage') }}">Início</a></li>
+                <li><a href="{{ url_for('main.lancamentos') }}">Lançamentos</a></li>
+                <li><a href="{{ url_for('main.usuarios') }}">Usuários</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Bloco para o conteúdo das páginas -->
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
