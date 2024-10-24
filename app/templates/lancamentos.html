@@ -20,7 +20,16 @@
       <tr>
         <td>{{ lancamento.nCodCC }}</td>
         <td>{{ lancamento.cObs }}</td>
-        <td>{{ lancamento.nValorLanc }}</td>
+
+        <!-- Verifica o valor de cNatureza e inverte o valor se for 'P' -->
+        <td>
+          {% if lancamento.cNatureza == 'P' %}
+            -{{ lancamento.nValorLanc }}
+          {% else %}
+            {{ lancamento.nValorLanc }}
+          {% endif %}
+        </td>
+
         <td>{{ lancamento.dDtLanc.strftime('%d/%m/%Y') }}</td> <!-- Formato da data -->
       </tr>
       {% endfor %}
