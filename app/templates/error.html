@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erro de Autenticação</title>
-</head>
-<body>
-    <h1>Você não está autorizado a acessar este sistema.</h1>
-    <p>Tente novamente com outro e-mail ou entre em contato com o administrador.</p>
+{% extends 'base.html' %}
 
-    <!-- Botão para fazer logout -->
-    <form action="{{ url_for('auth.logout') }}" method="get">
-        <button type="submit">Fazer Logout</button>
-    </form>
-</body>
-</html>
+{% block title %}
+  Erro de Autenticação
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1>Você não está autorizado a acessar este sistema.</h1>
+  <p>Tente novamente com outro e-mail ou entre em contato com o administrador.</p>
+
+  <!-- Botão para fazer logout -->
+  <a href="{{ url_for('auth.logout') }}" class="btn btn-warning">Fazer Logout</a>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
-from app.models import Lancamento, GrupoUsuario  # Adicionar o modelo GrupoUsuario
+from app.models import Lancamento, GrupoUsuario  # Modelo GrupoUsuario
 from app.decorators import login_required  # Certifique-se de usar o decorator de login
-from app import db  # Importar a instância do banco de dados
+from app import db  # Instância do banco de dados
 
 main_bp = Blueprint('main', __name__)
 
@@ -47,10 +47,22 @@ def adicionar_usuario():
     
     return redirect(url_for('main.usuarios'))
 
+# Rota para exibir o formulário de edição de um usuário
+@main_bp.route('/usuarios/editar/<string:email>', methods=['GET'])
+@login_required
+def editar_usuario_form(email):
+    # Verifica se o usuário é super_admin
+    if session.get('grupo') != 'super_admin':
+        return redirect(url_for('main.homepage'))
+
+    usuario = GrupoUsuario.query.filter_by(email=email).first()
+    return render_template('editar_usuario.html', usuario=usuario)
+
 # Função para editar um usuário existente
 @main_bp.route('/usuarios/editar/<string:email>', methods=['POST'])
 @login_required
 def editar_usuario(email):
+    # Verifica se o usuário é super_admin
     if session.get('grupo') != 'super_admin':
         return redirect(url_for('main.homepage'))
 
@@ -64,6 +76,7 @@ def editar_usuario(email):
 @main_bp.route('/usuarios/excluir/<string:email>', methods=['POST'])
 @login_required
 def excluir_usuario(email):
+    # Verifica se o usuário é super_admin
     if session.get('grupo') != 'super_admin':
         return redirect(url_for('main.homepage'))
 

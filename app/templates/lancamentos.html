@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lançamentos</title>
-</head>
-<body>
-    <h1>Lançamentos</h1>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Código de Lançamento</th>
-                <th>Código da Conta Corrente</th>
-                <th>Descrição</th>
-                <th>Valor</th>
-                <th>Data</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for lancamento in lancamentos %}
-            <tr>
-                <td>{{ lancamento.nCodLanc }}</td>
-                <td>{{ lancamento.nCodCC }}</td>
-                <td>{{ lancamento.cObs }}</td>
-                <td>{{ lancamento.nValorLanc }}</td>
-                <td>{{ lancamento.dDtLanc }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Lançamentos{% endblock %}
+{% block page_title %}Lançamentos{% endblock %}
+{% block breadcrumb %}Lançamentos{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Código da Conta Corrente</th>
+        <th scope="col">Descrição</th>
+        <th scope="col">Valor</th>
+        <th scope="col">Data do Lançamento</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for lancamento in lancamentos %}
+      <tr>
+        <td>{{ lancamento.nCodCC }}</td>
+        <td>{{ lancamento.cObs }}</td>
+        <td>{{ lancamento.nValorLanc }}</td>
+        <td>{{ lancamento.dDtLanc.strftime('%d/%m/%Y') }}</td> <!-- Formato da data -->
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

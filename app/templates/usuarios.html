@@ -1,51 +1,47 @@
 {% extends 'base.html' %}
 
 {% block title %}Gerenciamento de Usuários{% endblock %}
+{% block page_title %}Gerenciar Usuários{% endblock %}
+{% block breadcrumb %}Usuários{% endblock %}
 
 {% block content %}
-<h1>Usuários</h1>
-
-<table>
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Grupo</th>
-            <th>Ações</th>
-        </tr>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th>Email</th>
+        <th>Grupo</th>
+        <th>Ações</th>
+      </tr>
     </thead>
     <tbody>
-        {% for usuario in usuarios %}
-        <tr>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.grupo }}</td>
-            <td>
-                <form action="{{ url_for('main.editar_usuario', email=usuario.email) }}" method="post">
-                    <select name="grupo">
-                        <option value="super_admin" {% if usuario.grupo == 'super_admin' %}selected{% endif %}>Super Admin</option>
-                        <option value="admin" {% if usuario.grupo == 'admin' %}selected{% endif %}>Admin</option>
-                        <option value="usuario" {% if usuario.grupo == 'usuario' %}selected{% endif %}>Usuário</option>
-                    </select>
-                    <button type="submit">Editar</button>
-                </form>
-                <form action="{{ url_for('main.excluir_usuario', email=usuario.email) }}" method="post">
-                    <button type="submit">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
+      {% for usuario in usuarios %}
+      <tr>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.grupo }}</td>
+        <td>
+          <!-- Botão de editar redireciona para a rota de edição -->
+          <a href="{{ url_for('main.editar_usuario_form', email=usuario.email) }}" class="btn btn-primary">Editar</a>
+          
+          <!-- Botão de excluir envia um formulário para deletar o usuário -->
+          <form action="{{ url_for('main.excluir_usuario', email=usuario.email) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+            <button type="submit" class="btn btn-danger">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
     </tbody>
-</table>
+  </table>
+</div>
 
 <h2>Adicionar Novo Usuário</h2>
 <form action="{{ url_for('main.adicionar_usuario') }}" method="post">
-    <label for="email">Email:</label>
-    <input type="email" name="email" required>
-    <label for="grupo">Grupo:</label>
-    <select name="grupo">
-        <option value="super_admin">Super Admin</option>
-        <option value="admin">Admin</option>
-        <option value="usuario">Usuário</option>
-    </select>
-    <button type="submit">Adicionar</button>
+  <input type="email" name="email" placeholder="Email" required class="form-control">
+  <select name="grupo" class="form-control my-2">
+    <option value="super_admin">Super Admin</option>
+    <option value="admin">Admin</option>
+    <option value="usuario">Usuário</option>
+  </select>
+  <button type="submit" class="btn btn-success">Adicionar</button>
 </form>
 {% endblock %}
