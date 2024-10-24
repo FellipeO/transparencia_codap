@@ -34,14 +34,7 @@
   </table>
 </div>
 
-<h2>Adicionar Novo Usuário</h2>
-<form action="{{ url_for('main.adicionar_usuario') }}" method="post">
-  <input type="email" name="email" placeholder="Email" required class="form-control">
-  <select name="grupo" class="form-control my-2">
-    <option value="super_admin">Super Admin</option>
-    <option value="admin">Admin</option>
-    <option value="usuario">Usuário</option>
-  </select>
-  <button type="submit" class="btn btn-success">Adicionar</button>
-</form>
+<!-- Botão para redirecionar para a página de adicionar novo usuário -->
+<a href="{{ url_for('main.adicionar_usuario_form') }}" class="btn btn-success mt-3">Adicionar Novo Usuário</a>
+
 {% endblock %}

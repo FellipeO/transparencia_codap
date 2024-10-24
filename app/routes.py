@@ -72,6 +72,15 @@ def editar_usuario(email):
     
     return redirect(url_for('main.usuarios'))
 
+# Rota para exibir o formulário de adicionar novo usuário
+@main_bp.route('/usuarios/adicionar', methods=['GET'])
+@login_required
+def adicionar_usuario_form():
+    if session.get('grupo') != 'super_admin':
+        return redirect(url_for('main.homepage'))
+
+    return render_template('adicionar_usuario.html')
+
 # Função para excluir um usuário
 @main_bp.route('/usuarios/excluir/<string:email>', methods=['POST'])
 @login_required
