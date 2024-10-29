@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciamento de Usuários{% endblock %}
+{% block page_title %}Gerenciar Usuários{% endblock %}
+{% block breadcrumb %}Usuários{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th>Email</th>
+        <th>Grupo</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios %}
+      <tr>
+        <td>{{ usuario.email }}</td>
+        <td>{{ usuario.grupo }}</td>
+        <td>
+          <!-- Botão de editar redireciona para a rota de edição -->
+          <a href="{{ url_for('main.editar_usuario_form', email=usuario.email) }}" class="btn btn-primary">Editar</a>
+          
+          <!-- Botão de excluir envia um formulário para deletar o usuário -->
+          <form action="{{ url_for('main.excluir_usuario', email=usuario.email) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+            <button type="submit" class="btn btn-danger">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Botão para redirecionar para a página de adicionar novo usuário -->
+<a href="{{ url_for('main.adicionar_usuario_form') }}" class="btn btn-success mt-3">Adicionar Novo Usuário</a>
+
+{% endblock %}

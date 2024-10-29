@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, session, flash, request
+from flask import Blueprint, redirect, url_for, session, flash, request, render_template, make_response
 from app import oauth
 from app.models import GrupoUsuario
 import os
@@ -43,9 +43,25 @@ def auth_callback():
     session['email'] = email
     session['grupo'] = usuario.grupo  # Armazena o grupo do usuário
 
-    return redirect(url_for('main.index'))  # Redireciona para a página principal
+    return redirect(url_for('main.homepage'))  # Redireciona para a página principal
 
 @auth_bp.route('/error')
 def error():
-    # Página de erro de autenticação
-    return "Você não está autorizado a acessar este sistema. Tente novamente com outro e-mail ou entre em contato com o administrador."
+    # Renderiza a página de erro de autenticação com o botão de logout
+    return render_template('error.html')
+
+@auth_bp.route('/logout')
+def logout():
+    # Limpa todos os dados da sessão
+    session.clear()
+
+    # Criar uma resposta para redirecionar
+    response = make_response(redirect(url_for('main.homepage')))
+    
+    # Definir o cookie de sessão como expirado
+    response.set_cookie('session', '', expires=0)
+    
+    # Opcional: Se você estiver usando cookies de autenticação, limpe-os também
+    response.set_cookie('oauth_token', '', expires=0)
+
+    return response
