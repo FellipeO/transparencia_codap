@@ -11,8 +11,6 @@ oauth = OAuth()
 
 def create_app():
     app = Flask(__name__)
-    
-    # Carrega as configurações do arquivo config.py
     app.config.from_object(Config)
 
     # Inicializa as extensões
@@ -29,10 +27,13 @@ def create_app():
     )
 
     # Registrar blueprints
-    from app.auth import auth_bp  # Blueprint para autenticação (login/logout)
-    from app.routes import main_bp  # Blueprint para rotas principais (exibição dos lançamentos)
-    
-    app.register_blueprint(auth_bp)  # Rotas de autenticação
-    app.register_blueprint(main_bp)  # Rotas principais
+    from app.auth import auth_bp
+    from app.routes import admin_bp
+    from app.public import public_bp
+
+    # Registra os blueprints com os caminhos específicos
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(admin_bp, url_prefix='/admin')  # Rotas de admin protegidas
+    app.register_blueprint(public_bp)  # Rotas públicas para a homepage
 
     return app

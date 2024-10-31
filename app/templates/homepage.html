@@ -1,90 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transparência CODAP - Homepage</title>
-
-  <!-- Vendor CSS Files -->
-  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/quill/quill.snow.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Transparência CODAP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
-
-  <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top d-flex align-items-center">
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="{{ url_for('main.homepage') }}" class="logo d-flex align-items-center">
-        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Logo">
-        <span class="d-none d-lg-block">Transparência CODAP</span>
-      </a>
-      <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div>
-  </header><!-- End Header -->
-
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
-    <ul class="sidebar-nav" id="sidebar-nav">
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('main.lancamentos') }}">
-          <i class="bi bi-file-earmark-text"></i>
-          <span>Lançamentos</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('main.usuarios') }}">
-          <i class="bi bi-people"></i>
-          <span>Gerenciar Usuários</span>
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('auth.logout') }}">
-          <i class="bi bi-box-arrow-right"></i>
-          <span>Logout</span>
-        </a>
-      </li>
-    </ul>
-  </aside><!-- End Sidebar -->
-
-  <!-- ======= Main Content ======= -->
-  <main id="main" class="main">
-    <div class="pagetitle">
-      <h1>Bem-vindo à Transparência CODAP</h1>
-      <nav>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item active">Página Inicial</li>
-        </ol>
-      </nav>
-    </div><!-- End Page Title -->
-
-    <section class="section dashboard">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Bem-vindo!</h5>
-              <p>Use a barra lateral para navegar entre as páginas de lançamentos e gerenciamento de usuários.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main><!-- End Main Content -->
-
-  <!-- Vendor JS Files -->
-  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/quill/quill.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
+    <h1>Transparência CODAP</h1>
+    <p>Bem-vindo ao portal de transparência.</p>
+    <!-- Link para acessar a área administrativa -->
+    <a href="{{ url_for('admin.admin_homepage') }}">Admin</a>
 </body>
-
 </html>

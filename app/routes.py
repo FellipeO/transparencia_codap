@@ -3,20 +3,19 @@ from app.models import Lancamento, GrupoUsuario
 from app.decorators import login_required
 from app import db
 
-main_bp = Blueprint('main', __name__)
+# Blueprint para rotas administrativas
+admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-# Rota para a homepage
-@main_bp.route('/')
-def homepage():
-    return render_template('homepage.html')
+@admin_bp.route('/')
+@login_required
+def admin_homepage():
+    return render_template('admin.html')
 
-# Rota para exibir os lançamentos, protegida por login
-@main_bp.route('/lancamentos')
+@admin_bp.route('/lancamentos')
 @login_required
 def lancamentos():
     email = session.get('email')
     usuario = GrupoUsuario.query.filter_by(email=email).first()
-    
     if usuario is None:
         session.clear()
         flash('Seu acesso foi revogado. Por favor, faça login novamente.', 'danger')
@@ -25,7 +24,6 @@ def lancamentos():
     lancamentos = Lancamento.query.order_by(Lancamento.dDtLanc.desc()).all()
     return render_template('lancamentos.html', lancamentos=lancamentos)
 
-# Rota para verificar se o usuário é super_admin
 def verificar_super_admin():
     email = session.get('email')
     usuario = GrupoUsuario.query.filter_by(email=email).first()
@@ -35,18 +33,15 @@ def verificar_super_admin():
         return False
     return True
 
-# Rota para exibir a tabela de usuários e gerenciar o CRUD
-@main_bp.route('/usuarios', methods=['GET', 'POST'])
+@admin_bp.route('/usuarios', methods=['GET', 'POST'])
 @login_required
 def usuarios():
     if not verificar_super_admin():
         return redirect(url_for('auth.error'))
-
     usuarios = GrupoUsuario.query.all()
     return render_template('usuarios.html', usuarios=usuarios)
 
-# Rota para adicionar um novo usuário
-@main_bp.route('/usuarios/adicionar', methods=['POST'])
+@admin_bp.route('/usuarios/adicionar', methods=['POST'])
 @login_required
 def adicionar_usuario():
     if not verificar_super_admin():
@@ -59,10 +54,9 @@ def adicionar_usuario():
     db.session.add(novo_usuario)
     db.session.commit()
     
-    return redirect(url_for('main.usuarios'))
+    return redirect(url_for('admin.usuarios'))
 
-# Rota para exibir o formulário de edição de um usuário
-@main_bp.route('/usuarios/editar/<string:email>', methods=['GET'])
+@admin_bp.route('/usuarios/editar/<string:email>', methods=['GET'])
 @login_required
 def editar_usuario_form(email):
     if not verificar_super_admin():
@@ -71,8 +65,7 @@ def editar_usuario_form(email):
     usuario = GrupoUsuario.query.filter_by(email=email).first()
     return render_template('editar_usuario.html', usuario=usuario)
 
-# Função para editar um usuário existente
-@main_bp.route('/usuarios/editar/<string:email>', methods=['POST'])
+@admin_bp.route('/usuarios/editar/<string:email>', methods=['POST'])
 @login_required
 def editar_usuario(email):
     if not verificar_super_admin():
@@ -82,10 +75,9 @@ def editar_usuario(email):
     usuario.grupo = request.form.get('grupo')
     db.session.commit()
     
-    return redirect(url_for('main.usuarios'))
+    return redirect(url_for('admin.usuarios'))
 
-# Rota para exibir o formulário de adicionar novo usuário
-@main_bp.route('/usuarios/adicionar', methods=['GET'])
+@admin_bp.route('/usuarios/adicionar', methods=['GET'])
 @login_required
 def adicionar_usuario_form():
     if not verificar_super_admin():
@@ -93,8 +85,7 @@ def adicionar_usuario_form():
 
     return render_template('adicionar_usuario.html')
 
-# Função para excluir um usuário
-@main_bp.route('/usuarios/excluir/<string:email>', methods=['POST'])
+@admin_bp.route('/usuarios/excluir/<string:email>', methods=['POST'])
 @login_required
 def excluir_usuario(email):
     if not verificar_super_admin():
@@ -104,4 +95,17 @@ def excluir_usuario(email):
     db.session.delete(usuario)
     db.session.commit()
 
-    return redirect(url_for('main.usuarios'))
+    return redirect(url_for('admin.usuarios'))
+
+# Middleware para atualizar a sessão com as permissões mais recentes
+@admin_bp.before_request
+def atualizar_permissoes():
+    email = session.get('email')
+    if email:
+        usuario = GrupoUsuario.query.filter_by(email=email).first()
+        if usuario:
+            session['grupo'] = usuario.grupo  # Atualiza a sessão com o grupo atual
+        else:
+            # Redireciona para o logout se o usuário não existir mais
+            flash("Seu acesso foi revogado. Por favor, faça login novamente.", "danger")
+            return redirect(url_for('auth.logout'))

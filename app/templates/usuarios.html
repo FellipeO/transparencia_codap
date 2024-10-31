@@ -21,10 +21,10 @@
         <td>{{ usuario.grupo }}</td>
         <td>
           <!-- Botão de editar redireciona para a rota de edição -->
-          <a href="{{ url_for('main.editar_usuario_form', email=usuario.email) }}" class="btn btn-primary">Editar</a>
+          <a href="{{ url_for('admin.editar_usuario_form', email=usuario.email) }}" class="btn btn-primary">Editar</a>
           
           <!-- Botão de excluir envia um formulário para deletar o usuário -->
-          <form action="{{ url_for('main.excluir_usuario', email=usuario.email) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+          <form action="{{ url_for('admin.excluir_usuario', email=usuario.email) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
             <button type="submit" class="btn btn-danger">Excluir</button>
           </form>
         </td>
@@ -35,6 +35,6 @@
 </div>
 
 <!-- Botão para redirecionar para a página de adicionar novo usuário -->
-<a href="{{ url_for('main.adicionar_usuario_form') }}" class="btn btn-success mt-3">Adicionar Novo Usuário</a>
+<a href="{{ url_for('admin.adicionar_usuario_form') }}" class="btn btn-success mt-3">Adicionar Novo Usuário</a>
 
 {% endblock %}

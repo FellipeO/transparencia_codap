@@ -20,7 +20,7 @@
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between">
-      <a href="{{ url_for('main.homepage') }}" class="logo d-flex align-items-center">
+      <a href="{{ url_for('admin.admin_homepage') }}" class="logo d-flex align-items-center">
         <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="Logo">
         <span class="d-none d-lg-block">Transparência CODAP</span>
       </a>
@@ -30,25 +30,37 @@
 
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
+    {% set permissoes_sidebar = {
+      'lancamentos': ['super_admin', 'admin', 'usuario'],
+      'usuarios': ['super_admin']
+    } %}
+    
     <ul class="sidebar-nav" id="sidebar-nav">
+      <!-- Link para Lançamentos -->
+      {% if session.get('grupo') in permissoes_sidebar['lancamentos'] %}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('main.lancamentos') }}">
+        <a class="nav-link collapsed" href="{{ url_for('admin.lancamentos') }}">
           <i class="bi bi-file-earmark-text"></i>
           <span>Lançamentos</span>
         </a>
       </li>
+      {% endif %}
 
+      <!-- Link para Gerenciar Usuários -->
+      {% if session.get('grupo') in permissoes_sidebar['usuarios'] %}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('main.usuarios') }}">
+        <a class="nav-link collapsed" href="{{ url_for('admin.usuarios') }}">
           <i class="bi bi-people"></i>
           <span>Gerenciar Usuários</span>
         </a>
       </li>
+      {% endif %}
 
+      <!-- Link para Logout -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url_for('auth.logout') }}">
           <i class="bi bi-box-arrow-right"></i>
-          <span>Logout</span>
+          <span>Sair</span>
         </a>
       </li>
     </ul>
@@ -60,7 +72,7 @@
       <h1>{% block page_title %}{% endblock %}</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ url_for('main.homepage') }}">Home</a></li>
+          <li class="breadcrumb-item"><a href="{{ url_for('public.homepage') }}">Home</a></li>
           <li class="breadcrumb-item active">{% block breadcrumb %}{% endblock %}</li>
         </ol>
       </nav>
