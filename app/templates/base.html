@@ -32,7 +32,8 @@
   <aside id="sidebar" class="sidebar">
     {% set permissoes_sidebar = {
       'lancamentos': ['super_admin', 'admin', 'usuario'],
-      'usuarios': ['super_admin']
+      'usuarios': ['super_admin'],
+      'estatuto_social' : ['super_admin', 'admin', 'usuario']
     } %}
     
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -52,6 +53,16 @@
         <a class="nav-link collapsed" href="{{ url_for('admin.usuarios') }}">
           <i class="bi bi-people"></i>
           <span>Gerenciar Usuários</span>
+        </a>
+      </li>
+      {% endif %}
+
+      <!-- Link para Estatuto Social -->
+      {% if session.get('grupo') in permissoes_sidebar['estatuto_social'] %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('admin.estatuto_social') }}">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Estatuto Social</span>
         </a>
       </li>
       {% endif %}

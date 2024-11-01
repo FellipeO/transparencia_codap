@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Estatuto Social{% endblock %}
+{% block page_title %}Editar Versão {{ estatuto.versao }}{% endblock %}
+{% block breadcrumb %}Estatuto Social / Editar{% endblock %}
+
+{% block content %}
+<!-- Bloco de mensagens flash para exibir mensagens de erro ou sucesso -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<div class="alert alert-warning">
+  <strong>Atenção:</strong> Verifique as datas de vigência para garantir a sequência correta.
+</div>
+
+<form action="{{ url_for('admin.estatuto_editar', versao=estatuto.versao) }}" method="post">
+  <div class="row mb-3">
+    <label for="versao" class="col-sm-2 col-form-label">Versão</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="versao" name="versao" value="{{ estatuto.versao }}" required>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <label for="vigencia_inicio" class="col-sm-2 col-form-label">Vigência Início</label>
+    <div class="col-sm-10">
+      <input type="date" class="form-control" id="vigencia_inicio" name="vigencia_inicio" value="{{ estatuto.vigencia_inicio }}" required>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <label for="vigencia_fim" class="col-sm-2 col-form-label">Vigência Fim</label>
+    <div class="col-sm-10">
+      <input type="date" class="form-control" id="vigencia_fim" name="vigencia_fim" value="{{ estatuto.vigencia_fim }}" required>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <label for="status" class="col-sm-2 col-form-label">Status</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="status" name="status" required>
+        <option value="aprovado" {% if estatuto.status == 'aprovado' %}selected{% endif %}>Aprovado</option>
+        <option value="registrado" {% if estatuto.status == 'registrado' %}selected{% endif %}>Registrado</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <label for="texto" class="col-sm-2 col-form-label">Texto</label>
+    <div class="col-sm-10">
+      <textarea class="form-control" id="texto" name="texto" rows="5">{{ estatuto.texto }}</textarea>
+    </div>
+  </div>
+
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    <a href="{{ url_for('admin.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-secondary">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

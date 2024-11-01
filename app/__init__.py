@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
 from config import Config
+import os
 
 # Inicializa o banco de dados
 db = SQLAlchemy()
@@ -12,6 +13,9 @@ oauth = OAuth()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    # Carregar o diretório de uploads diretamente do .env
+    app.config['UPLOAD_FOLDER_ESTATUTO'] = os.getenv('UPLOAD_FOLDER_ESTATUTO')
 
     # Inicializa as extensões
     db.init_app(app)

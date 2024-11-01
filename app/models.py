@@ -22,3 +22,14 @@ class GrupoUsuario(db.Model):
 
     def __repr__(self):
         return f'<GrupoUsuario {self.email}, {self.grupo}>'
+    
+class EstatutoSocial(db.Model):
+    __tablename__ = 'estatuto_social'
+    versao = db.Column(db.Integer, primary_key=True)
+    vigencia_inicio = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date)
+    status = db.Column(db.Enum('aprovado', 'registrado'))
+    texto = db.Column(db.Text)
+
+    def __repr__(self):
+        return f'<EstatutoSocial Versão {self.versao}>'

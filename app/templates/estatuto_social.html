@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Estatuto Social{% endblock %}
+{% block page_title %}Estatuto Social{% endblock %}
+{% block breadcrumb %}Estatuto Social{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>Estatuto Social</h3>
+  {% if session.get('grupo') == 'super_admin' %}
+  <a href="{{ url_for('admin.estatuto_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
+  {% endif %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Versão</th>
+        <th scope="col">Vigência Início</th>
+        <th scope="col">Vigência Fim</th>
+        <th scope="col">Status</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for estatuto in estatutos %}
+      <tr>
+        <td>{{ estatuto.versao }}</td>
+        <td>{{ estatuto.vigencia_inicio }}</td>
+        <td>{{ estatuto.vigencia_fim }}</td>
+        <td>{{ estatuto.status }}</td>
+        <td>
+          <a href="{{ url_for('admin.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>
+          
+          {% if session.get('grupo') == 'super_admin' %}
+          <form action="{{ url_for('admin.estatuto_deletar', versao=estatuto.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
+            <button type="submit" class="btn btn-danger">Deletar</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

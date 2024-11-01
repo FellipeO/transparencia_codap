@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Estatuto Social{% endblock %}
+{% block page_title %}Detalhes da Versão {{ estatuto.versao }}{% endblock %}
+{% block breadcrumb %}Estatuto Social / Detalhes{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Versão: {{ estatuto.versao }}</h5>
+    <p><strong>Vigência Início:</strong> {{ estatuto.vigencia_inicio }}</p>
+    <p><strong>Vigência Fim:</strong> {{ estatuto.vigencia_fim }}</p>
+    <p><strong>Status:</strong> {{ estatuto.status }}</p>
+    <p><strong>Texto:</strong> {{ estatuto.texto }}</p>
+    
+    <a href="{{ url_for('admin.estatuto_social') }}" class="btn btn-secondary">Voltar</a>
+    
+    {% if session.get('grupo') == 'super_admin' %}
+    <a href="{{ url_for('admin.estatuto_editar', versao=estatuto.versao) }}" class="btn btn-primary">Editar</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

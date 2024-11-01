@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
+    # Pasta para upload dos arquivos
+    UPLOAD_FOLDER_ESTATUTO = os.getenv("UPLOAD_FOLDER_ESTATUTO")
+
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.getenv('SECRET_KEY')
