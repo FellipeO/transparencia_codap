@@ -66,12 +66,36 @@ def estatuto_adicionar():
             flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('admin.estatuto_adicionar'))
 
-        # Busca a última versão do Estatuto Social para checar vigência
-        ultima_versao = EstatutoSocial.query.order_by(EstatutoSocial.versao.desc()).first()
+        # Busca a maior versão inferior à nova versão
+        versao_anterior = (
+            EstatutoSocial.query
+            .filter(EstatutoSocial.versao < int(versao))
+            .order_by(EstatutoSocial.versao.desc())
+            .first()
+        )
 
-        # Se houver uma última versão, valida a nova data de vigência contra a versão anterior
-        if ultima_versao and vigencia_inicio_date < ultima_versao.vigencia_fim:
-            flash('Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da última vigência.', 'danger')
+        # Se houver uma versão anterior, valida a nova data de vigência contra a vigência final da versão anterior
+        if versao_anterior and vigencia_inicio_date < versao_anterior.vigencia_fim:
+            flash(
+                f'Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).', 
+                'danger'
+            )
+            return redirect(url_for('admin.estatuto_adicionar'))
+
+        # Busca a menor versão superior à nova versão
+        versao_subsequente = (
+            EstatutoSocial.query
+            .filter(EstatutoSocial.versao > int(versao))
+            .order_by(EstatutoSocial.versao.asc())
+            .first()
+        )
+
+        # Se houver uma versão subsequente, valida a data de vigência final contra a data de vigência inicial da versão subsequente
+        if versao_subsequente and vigencia_fim_date > versao_subsequente.vigencia_inicio:
+            flash(
+                f'Erro: A data de fim da nova vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
+                'danger'
+            )
             return redirect(url_for('admin.estatuto_adicionar'))
         
         # Gera o hash para o arquivo da nova versão
@@ -90,8 +114,8 @@ def estatuto_adicionar():
         # Cria o novo estatuto após todas as validações
         novo_estatuto = EstatutoSocial(
             versao=int(versao),
-            vigencia_inicio=vigencia_inicio,
-            vigencia_fim=vigencia_fim,
+            vigencia_inicio=vigencia_inicio_date,
+            vigencia_fim=vigencia_fim_date,
             status=status,
             texto=texto,
             hash=hash_arquivo if status == 'registrado' else None
@@ -141,12 +165,43 @@ def estatuto_editar(versao):
             flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('admin.estatuto_editar', versao=versao))
 
+        # Busca a maior versão inferior à versão atual
+        versao_anterior = (
+            EstatutoSocial.query
+            .filter(EstatutoSocial.versao < int(nova_versao))
+            .order_by(EstatutoSocial.versao.desc())
+            .first()
+        )
+
+        # Valida a nova data de vigência contra a vigência final da versão anterior
+        if versao_anterior and vigencia_inicio_date < versao_anterior.vigencia_fim:
+            flash(
+                f'Erro: A data de início da vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).', 
+                'danger'
+            )
+            return redirect(url_for('admin.estatuto_editar', versao=versao))
+
+        # Busca a menor versão superior à versão atual
+        versao_subsequente = (
+            EstatutoSocial.query
+            .filter(EstatutoSocial.versao > int(nova_versao))
+            .order_by(EstatutoSocial.versao.asc())
+            .first()
+        )
+
+        # Valida a nova data de vigência contra a vigência inicial da versão subsequente
+        if versao_subsequente and vigencia_fim_date > versao_subsequente.vigencia_inicio:
+            flash(
+                f'Erro: A data de fim da vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
+                'danger'
+            )
+            return redirect(url_for('admin.estatuto_editar', versao=versao))
+
         # Deleta o arquivo antigo se o status mudar de 'registrado' para 'aprovado'
         if estatuto.status == 'registrado' and status == 'aprovado' and estatuto.hash:
             old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], f"{estatuto.hash}.pdf")
             if os.path.exists(old_filepath):
                 os.remove(old_filepath)  # Remove o arquivo associado
-
             estatuto.hash = None  # Remove o hash já que não deve haver documento para a versão aprovada
 
         # Atualiza o arquivo se o status for registrado e um novo arquivo for enviado
