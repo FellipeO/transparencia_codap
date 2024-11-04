@@ -5,23 +5,22 @@
 {% block breadcrumb %}Estatuto Social / Editar{% endblock %}
 
 {% block content %}
-<!-- Bloco de mensagens flash para exibir mensagens de erro ou sucesso -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+<form action="{{ url_for('admin.estatuto_editar', versao=estatuto.versao) }}" method="post" enctype="multipart/form-data">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-<div class="alert alert-warning">
-  <strong>Atenção:</strong> Verifique as datas de vigência para garantir a sequência correta.
-</div>
+  <div class="alert alert-warning">
+    <strong>Atenção:</strong> Verifique as datas de vigência para garantir a sequência correta.
+  </div>
 
-<form action="{{ url_for('admin.estatuto_editar', versao=estatuto.versao) }}" method="post">
   <div class="row mb-3">
     <label for="versao" class="col-sm-2 col-form-label">Versão</label>
     <div class="col-sm-10">
@@ -46,10 +45,18 @@
   <div class="row mb-3">
     <label for="status" class="col-sm-2 col-form-label">Status</label>
     <div class="col-sm-10">
-      <select class="form-control" id="status" name="status" required>
+      <select class="form-control" id="status" name="status" onchange="toggleDocumentoField()" required>
         <option value="aprovado" {% if estatuto.status == 'aprovado' %}selected{% endif %}>Aprovado</option>
         <option value="registrado" {% if estatuto.status == 'registrado' %}selected{% endif %}>Registrado</option>
       </select>
+    </div>
+  </div>
+
+  <!-- Campo de upload de documento, gerenciado pelo JavaScript -->
+  <div class="row mb-3" id="documento-field">
+    <label for="documento" class="col-sm-2 col-form-label">Upload de Documento</label>
+    <div class="col-sm-10">
+      <input type="file" name="documento" id="documento" class="form-control" accept=".pdf">
     </div>
   </div>
 
@@ -65,4 +72,23 @@
     <a href="{{ url_for('admin.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-secondary">Cancelar</a>
   </div>
 </form>
+
+<script>
+function toggleDocumentoField() {
+    const statusField = document.getElementById('status');
+    const documentoField = document.getElementById('documento-field');
+    if (statusField.value === 'registrado') {
+        documentoField.style.display = 'block';
+        document.getElementById('documento').setAttribute('required', 'required');
+    } else {
+        documentoField.style.display = 'none';
+        document.getElementById('documento').removeAttribute('required');
+    }
+}
+
+// Inicializa a exibição correta do campo de upload ao carregar a página
+document.addEventListener('DOMContentLoaded', () => {
+    toggleDocumentoField();
+});
+</script>
 {% endblock %}

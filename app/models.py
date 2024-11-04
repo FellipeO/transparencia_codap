@@ -30,6 +30,7 @@ class EstatutoSocial(db.Model):
     vigencia_fim = db.Column(db.Date)
     status = db.Column(db.Enum('aprovado', 'registrado'))
     texto = db.Column(db.Text)
+    hash = db.Column(db.String(64))
 
     def __repr__(self):
         return f'<EstatutoSocial Versão {self.versao}>'

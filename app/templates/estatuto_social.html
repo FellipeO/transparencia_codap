@@ -27,8 +27,8 @@
       {% for estatuto in estatutos %}
       <tr>
         <td>{{ estatuto.versao }}</td>
-        <td>{{ estatuto.vigencia_inicio }}</td>
-        <td>{{ estatuto.vigencia_fim }}</td>
+        <td>{{ estatuto.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
+        <td>{{ estatuto.vigencia_fim.strftime('%d/%m/%Y') }}</td>
         <td>{{ estatuto.status }}</td>
         <td>
           <a href="{{ url_for('admin.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>

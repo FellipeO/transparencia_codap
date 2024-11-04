@@ -5,19 +5,18 @@
 {% block breadcrumb %}Estatuto Social / Adicionar{% endblock %}
 
 {% block content %}
-<!-- Bloco de mensagens flash para exibir mensagens de erro ou sucesso -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+<form action="{{ url_for('admin.estatuto_adicionar') }}" method="post" enctype="multipart/form-data">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-<form action="{{ url_for('admin.estatuto_adicionar') }}" method="post">
   <div class="row mb-3">
     <label for="versao" class="col-sm-2 col-form-label">Versão</label>
     <div class="col-sm-10">
@@ -42,10 +41,18 @@
   <div class="row mb-3">
     <label for="status" class="col-sm-2 col-form-label">Status</label>
     <div class="col-sm-10">
-      <select class="form-control" id="status" name="status" required>
+      <select class="form-control" id="status" name="status" onchange="toggleDocumentoField()" required>
         <option value="aprovado">Aprovado</option>
         <option value="registrado">Registrado</option>
       </select>
+    </div>
+  </div>
+
+  <!-- Campo de upload de documento, visível apenas se o status for "registrado" -->
+  <div class="row mb-3" id="documento-field" style="display: none;">
+    <label for="documento" class="col-sm-2 col-form-label">Upload do Documento</label>
+    <div class="col-sm-10">
+      <input type="file" name="documento" id="documento" class="form-control" accept=".pdf">
     </div>
   </div>
 
@@ -61,4 +68,19 @@
     <a href="{{ url_for('admin.estatuto_social') }}" class="btn btn-secondary">Cancelar</a>
   </div>
 </form>
+
+<script>
+function toggleDocumentoField() {
+    const statusField = document.getElementById('status');
+    const documentoField = document.getElementById('documento-field');
+    if (statusField.value === 'registrado') {
+        documentoField.style.display = 'block';
+        document.getElementById('documento').setAttribute('required', 'required');
+    } else {
+        documentoField.style.display = 'none';
+        document.getElementById('documento').removeAttribute('required');
+    }
+}
+document.addEventListener('DOMContentLoaded', toggleDocumentoField);
+</script>
 {% endblock %}

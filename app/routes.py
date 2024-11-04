@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, session, redirect, url_for, request, flash
+from flask import Blueprint, render_template, session, redirect, url_for, request, flash, current_app, send_from_directory
 from app.models import Lancamento, GrupoUsuario, EstatutoSocial
 from app.decorators import login_required
 from app import db
 from datetime import datetime
+import hashlib, os
 
 # Blueprint para rotas administrativas
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
@@ -72,14 +73,28 @@ def estatuto_adicionar():
         if ultima_versao and vigencia_inicio_date < ultima_versao.vigencia_fim:
             flash('Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da última vigência.', 'danger')
             return redirect(url_for('admin.estatuto_adicionar'))
-
+        
+        # Gera o hash para o arquivo da nova versão
+        hash_arquivo = gerar_hash_arquivo(versao)
+        documento_filename = None
+        
+        # Upload do documento, se o status for "registrado"
+        if status == 'registrado' and 'documento' in request.files:
+            documento = request.files['documento']
+            if documento:
+                # Salva o documento com o hash como nome do arquivo
+                filename = f"{hash_arquivo}.pdf"
+                documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], filename))
+                documento_filename = filename
+        
         # Cria o novo estatuto após todas as validações
         novo_estatuto = EstatutoSocial(
             versao=int(versao),
             vigencia_inicio=vigencia_inicio,
             vigencia_fim=vigencia_fim,
             status=status,
-            texto=texto
+            texto=texto,
+            hash=hash_arquivo if status == 'registrado' else None
         )
 
         db.session.add(novo_estatuto)
@@ -101,24 +116,90 @@ def estatuto_editar(versao):
         return redirect(url_for('admin.estatuto_social'))
 
     if request.method == 'POST':
-        # Checagem para evitar duplicação de versão
         nova_versao = request.form.get('versao')
+        vigencia_inicio = request.form.get('vigencia_inicio')
+        vigencia_fim = request.form.get('vigencia_fim')
+        status = request.form.get('status')
+        texto = request.form.get('texto')
+
+        # Verifica se a nova versão já existe no banco
         if nova_versao != str(estatuto.versao):
-            if EstatutoSocial.query.get(nova_versao):
+            versao_existente = EstatutoSocial.query.get(int(nova_versao))
+            if versao_existente:
                 flash("Erro: A versão já existe!", "danger")
                 return redirect(url_for('admin.estatuto_editar', versao=versao))
 
-        # Atualização dos valores
-        estatuto.versao = nova_versao
-        estatuto.vigencia_inicio = request.form.get('vigencia_inicio')
-        estatuto.vigencia_fim = request.form.get('vigencia_fim')
-        estatuto.status = request.form.get('status')
-        estatuto.texto = request.form.get('texto')
+        # Converte as datas e realiza a validação
+        try:
+            vigencia_inicio_date = datetime.strptime(vigencia_inicio, '%Y-%m-%d').date()
+            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Datas inválidas. Por favor, insira uma data válida.', 'danger')
+            return redirect(url_for('admin.estatuto_editar', versao=versao))
+
+        if vigencia_inicio_date > vigencia_fim_date:
+            flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
+            return redirect(url_for('admin.estatuto_editar', versao=versao))
+
+        # Deleta o arquivo antigo se o status mudar de 'registrado' para 'aprovado'
+        if estatuto.status == 'registrado' and status == 'aprovado' and estatuto.hash:
+            old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], f"{estatuto.hash}.pdf")
+            if os.path.exists(old_filepath):
+                os.remove(old_filepath)  # Remove o arquivo associado
+
+            estatuto.hash = None  # Remove o hash já que não deve haver documento para a versão aprovada
+
+        # Atualiza o arquivo se o status for registrado e um novo arquivo for enviado
+        if status == 'registrado' and 'documento' in request.files:
+            documento = request.files['documento']
+            if documento:
+                # Gera novo hash para o arquivo com base na nova versão
+                hash_arquivo = gerar_hash_arquivo(nova_versao)
+                filename = f"{hash_arquivo}.pdf"
+                
+                # Salva o novo documento
+                documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], filename))
+                
+                # Deleta o arquivo antigo (se houver) e atualiza o hash no banco
+                if estatuto.hash and estatuto.hash != hash_arquivo:  # Verifica se a hash é diferente
+                    old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], f"{estatuto.hash}.pdf")
+                    if os.path.exists(old_filepath):
+                        os.remove(old_filepath)
+                
+                estatuto.hash = hash_arquivo
+            else:
+                flash("Erro ao fazer upload do documento. Por favor, tente novamente.", "danger")
+                return redirect(url_for('admin.estatuto_editar', versao=versao))
+
+        # Atualiza os valores no banco de dados
+        estatuto.versao = int(nova_versao)
+        estatuto.vigencia_inicio = vigencia_inicio_date
+        estatuto.vigencia_fim = vigencia_fim_date
+        estatuto.status = status
+        estatuto.texto = texto
         
         db.session.commit()
         return redirect(url_for('admin.estatuto_detalhe', versao=estatuto.versao))
 
     return render_template('estatuto_editar.html', estatuto=estatuto)
+
+@admin_bp.route('/estatuto_social/<int:versao>/download')
+@login_required
+def estatuto_download(versao):
+    estatuto = EstatutoSocial.query.get(versao)
+    if estatuto and estatuto.hash:
+        # Gera o nome do arquivo a partir da versão
+        nome_arquivo = f"Estatuto Social Versão {estatuto.versao}.pdf"
+        
+        # Busca o arquivo pelo hash
+        return send_from_directory(
+            current_app.config['UPLOAD_FOLDER_ESTATUTO'],
+            f"{estatuto.hash}.pdf",
+            as_attachment=True,
+            download_name=nome_arquivo  # Define o nome do arquivo para o download
+        )
+    flash("Documento não encontrado ou não disponível para esta versão.", "warning")
+    return redirect(url_for('admin.estatuto_social'))
 
 @admin_bp.route('/estatuto_social/deletar/<int:versao>', methods=['POST'])
 @login_required
@@ -129,9 +210,14 @@ def estatuto_deletar(versao):
     # Tenta buscar a versão do estatuto
     estatuto = EstatutoSocial.query.get(versao)
     if estatuto:
+        # Verifica se há um arquivo associado e tenta removê-lo
+        if estatuto.hash:
+            arquivo_path = os.path.join(current_app.config['UPLOAD_FOLDER_ESTATUTO'], f"{estatuto.hash}.pdf")
+            if os.path.exists(arquivo_path):
+                os.remove(arquivo_path)  # Remove o arquivo associado à versão
+
         db.session.delete(estatuto)
         db.session.commit()
-        flash(f'Versão {versao} do Estatuto Social deletada com sucesso.', 'success')
     else:
         flash('Erro: Versão do Estatuto Social não encontrada.', 'danger')
     
@@ -228,3 +314,8 @@ def atualizar_permissoes():
             # Redireciona para o logout se o usuário não existir mais
             flash("Seu acesso foi revogado. Por favor, faça login novamente.", "danger")
             return redirect(url_for('auth.logout'))
+        
+def gerar_hash_arquivo(versao):
+    import hashlib
+    hash_obj = hashlib.sha256(f"Estatuto Social Versão {versao}".encode())
+    return hash_obj.hexdigest()
