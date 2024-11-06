@@ -11,7 +11,7 @@
     <p><strong>Vigência Início:</strong> {{ estatuto.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
     <p><strong>Vigência Fim:</strong> {{ estatuto.vigencia_fim.strftime('%d/%m/%Y') }}</p>
     <p><strong>Status:</strong> {{ estatuto.status }}</p>
-    <p><strong>Texto:</strong> {{ estatuto.texto }}</p>
+    <p><strong>Texto:</strong> {{ estatuto.texto | safe }}</p>  <!-- Aqui está a alteração -->
     
     <a href="{{ url_for('admin.estatuto_social') }}" class="btn btn-secondary">Voltar</a>
     
@@ -25,4 +25,3 @@
   </div>
 </div>
 {% endblock %}
-

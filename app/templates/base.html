@@ -33,10 +33,11 @@
     {% set permissoes_sidebar = {
       'lancamentos': ['super_admin', 'admin', 'usuario'],
       'usuarios': ['super_admin'],
-      'estatuto_social' : ['super_admin', 'admin', 'usuario']
+      'estatuto_social': ['super_admin', 'admin', 'usuario']
     } %}
-    
+
     <ul class="sidebar-nav" id="sidebar-nav">
+      
       <!-- Link para Lançamentos -->
       {% if session.get('grupo') in permissoes_sidebar['lancamentos'] %}
       <li class="nav-item">
@@ -57,15 +58,26 @@
       </li>
       {% endif %}
 
-      <!-- Link para Estatuto Social -->
-      {% if session.get('grupo') in permissoes_sidebar['estatuto_social'] %}
+      <!-- Dropdown para Documentos -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('admin.estatuto_social') }}">
-          <i class="bi bi-file-earmark-text"></i>
-          <span>Estatuto Social</span>
+        <a class="nav-link collapsed" data-bs-target="#documentos-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-folder"></i>
+          <span>Documentos</span>
+          <i class="bi bi-chevron-down ms-auto"></i>
         </a>
+        <ul id="documentos-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <!-- Link para Estatuto Social dentro do Dropdown Documentos -->
+          {% if session.get('grupo') in permissoes_sidebar['estatuto_social'] %}
+          <li>
+            <a href="{{ url_for('admin.estatuto_social') }}">
+              <i class="bi bi-file-earmark-text"></i>
+              <span>Estatuto Social</span>
+            </a>
+          </li>
+          {% endif %}
+          <!-- Aqui você pode adicionar mais links de documentos se necessário -->
+        </ul>
       </li>
-      {% endif %}
 
       <!-- Link para Logout -->
       <li class="nav-item">
@@ -75,7 +87,7 @@
         </a>
       </li>
     </ul>
-  </aside><!-- End Sidebar -->
+</aside><!-- End Sidebar -->
 
   <!-- ======= Main Content ======= -->
   <main id="main" class="main">

@@ -73,7 +73,20 @@
   </div>
 </form>
 
+<script src="https://cdn.tiny.cloud/1/plivwssgt851c62cf184w2wq9rgqa4qre7w3o460thu24obw/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
+    tinymce.init({
+        selector: '#texto',
+        plugins: 'autolink lists link image charmap preview',
+        toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+        menubar: false,
+        setup: function (editor) {
+            editor.on('change', function () {
+                editor.save();  // Salva o conteúdo no <textarea>
+            });
+        }
+    });
+
 function toggleDocumentoField() {
     const statusField = document.getElementById('status');
     const documentoField = document.getElementById('documento-field');
