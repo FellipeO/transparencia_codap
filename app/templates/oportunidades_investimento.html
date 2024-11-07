@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>Política de Seleção e Avaliação de Oportunidades de Investimento</h3>
   {% if session.get('grupo') == 'super_admin' %}
-  <a href="{{ url_for('admin.oportunidades_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
+  <a href="{{ url_for('oportunidades.oportunidades_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
   {% endif %}
 </div>
 
@@ -31,10 +31,10 @@
         <td>{{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') }}</td>
         <td>{{ oportunidade.status }}</td>
         <td>
-          <a href="{{ url_for('admin.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-info">Visualizar</a>
+          <a href="{{ url_for('oportunidades.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-info">Visualizar</a>
           
           {% if session.get('grupo') == 'super_admin' %}
-          <form action="{{ url_for('admin.oportunidades_deletar', versao=oportunidade.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
+          <form action="{{ url_for('oportunidades.oportunidades_deletar', versao=oportunidade.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
             <button type="submit" class="btn btn-danger">Deletar</button>
           </form>
           {% endif %}

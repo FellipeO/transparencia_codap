@@ -13,14 +13,14 @@
     <p><strong>Status:</strong> {{ oportunidade.status }}</p>
     <p><strong>Texto:</strong> {{ oportunidade.texto | safe }}</p>  <!-- Aqui está a alteração -->
     
-    <a href="{{ url_for('admin.oportunidades_investimento') }}" class="btn btn-secondary">Voltar</a>
+    <a href="{{ url_for('oportunidades.oportunidades_investimento') }}" class="btn btn-secondary">Voltar</a>
     
     {% if oportunidade.hash %}
-    <a href="{{ url_for('admin.oportunidade_download', versao=oportunidade.versao) }}" class="btn btn-primary">Baixar Documento</a>
+    <a href="{{ url_for('oportunidades.oportunidade_download', versao=oportunidade.versao) }}" class="btn btn-primary">Baixar Documento</a>
     {% endif %}
 
     {% if session.get('grupo') == 'super_admin' %}
-    <a href="{{ url_for('admin.oportunidades_editar', versao=oportunidade.versao) }}" class="btn btn-primary">Editar</a>
+    <a href="{{ url_for('oportunidades.oportunidades_editar', versao=oportunidade.versao) }}" class="btn btn-primary">Editar</a>
     {% endif %}
   </div>
 </div>

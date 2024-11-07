@@ -5,7 +5,7 @@
 {% block breadcrumb %}Política de Seleção e Avaliação de Oportunidades de Investimento / Editar{% endblock %}
 
 {% block content %}
-<form action="{{ url_for('admin.oportunidades_editar', versao=oportunidade.versao) }}" method="post" enctype="multipart/form-data">
+<form action="{{ url_for('oportunidades.oportunidades_editar', versao=oportunidade.versao) }}" method="post" enctype="multipart/form-data">
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -69,7 +69,7 @@
 
   <div class="text-center">
     <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-    <a href="{{ url_for('admin.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-secondary">Cancelar</a>
+    <a href="{{ url_for('oportunidades.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-secondary">Cancelar</a>
   </div>
 </form>
 

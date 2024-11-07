@@ -8,7 +8,7 @@
 <div class="d-flex justify-content-between mb-3">
   <h3>Estatuto Social</h3>
   {% if session.get('grupo') == 'super_admin' %}
-  <a href="{{ url_for('admin.estatuto_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
+  <a href="{{ url_for('estatuto.estatuto_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
   {% endif %}
 </div>
 
@@ -31,10 +31,10 @@
         <td>{{ estatuto.vigencia_fim.strftime('%d/%m/%Y') }}</td>
         <td>{{ estatuto.status }}</td>
         <td>
-          <a href="{{ url_for('admin.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>
+          <a href="{{ url_for('estatuto.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>
           
           {% if session.get('grupo') == 'super_admin' %}
-          <form action="{{ url_for('admin.estatuto_deletar', versao=estatuto.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
+          <form action="{{ url_for('estatuto.estatuto_deletar', versao=estatuto.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
             <button type="submit" class="btn btn-danger">Deletar</button>
           </form>
           {% endif %}

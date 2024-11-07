@@ -71,7 +71,7 @@
           <!-- Link para Estatuto Social dentro do Dropdown Documentos -->
           {% if session.get('grupo') in permissoes_sidebar['estatuto_social'] %}
           <li>
-            <a href="{{ url_for('admin.estatuto_social') }}">
+            <a href="{{ url_for('estatuto.estatuto_social') }}">
               <i class="bi bi-circle"></i>
               <span>Estatuto Social</span>
             </a>
@@ -80,7 +80,7 @@
           <!-- Link para Aquisições e Alienações dentro do Dropdown Documentos -->
           {% if session.get('grupo') in permissoes_sidebar['aquisicoes_alienacoes'] %}
           <li>
-            <a href="{{ url_for('admin.aquisicoes_alienacoes') }}">
+            <a href="{{ url_for('aquisicoes.aquisicoes_alienacoes') }}">
               <i class="bi bi-circle"></i>
               <span>Regulamento de Aquisições e Alienações</span>
             </a>
@@ -89,7 +89,7 @@
           <!-- Link para Oportunidades de Investimento dentro do Dropdown Documentos -->
           {% if session.get('grupo') in permissoes_sidebar['oportunidades_investimento'] %}
           <li>
-            <a href="{{ url_for('admin.oportunidades_investimento') }}">
+            <a href="{{ url_for('oportunidades.oportunidades_investimento') }}">
               <i class="bi bi-circle"></i>
               <span>Política de Seleção e Avaliação de Oportunidades de Investimento</span>
             </a>
