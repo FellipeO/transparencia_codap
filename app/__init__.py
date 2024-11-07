@@ -14,9 +14,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     
-    # Carregar o diretório de uploads diretamente do .env
-    app.config['UPLOAD_FOLDER_ESTATUTO'] = os.getenv('UPLOAD_FOLDER_ESTATUTO')
-
     # Inicializa as extensões
     db.init_app(app)
     oauth.init_app(app)

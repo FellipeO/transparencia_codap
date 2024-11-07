@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhes do Regulamento de Aquisições e Alienações{% endblock %}
+{% block page_title %}Detalhes da Versão {{ aquisicao.versao }}{% endblock %}
+{% block breadcrumb %}Regulamento de Aquisições e Alienações / Detalhes{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Versão: {{ aquisicao.versao }}</h5>
+    <p><strong>Vigência Início:</strong> {{ aquisicao.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
+    <p><strong>Vigência Fim:</strong> {{ aquisicao.vigencia_fim.strftime('%d/%m/%Y') }}</p>
+    <p><strong>Status:</strong> {{ aquisicao.status }}</p>
+    <p><strong>Texto:</strong> {{ aquisicao.texto | safe }}</p>  <!-- Aqui está a alteração -->
+    
+    <a href="{{ url_for('admin.aquisicoes_alienacoes') }}" class="btn btn-secondary">Voltar</a>
+    
+    {% if aquisicao.hash %}
+    <a href="{{ url_for('admin.aquisicao_download', versao=aquisicao.versao) }}" class="btn btn-primary">Baixar Documento</a>
+    {% endif %}
+
+    {% if session.get('grupo') == 'super_admin' %}
+    <a href="{{ url_for('admin.aquisicoes_editar', versao=aquisicao.versao) }}" class="btn btn-primary">Editar</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

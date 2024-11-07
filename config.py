@@ -5,15 +5,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # Pasta para upload dos arquivos
-    UPLOAD_FOLDER_ESTATUTO = os.getenv("UPLOAD_FOLDER_ESTATUTO")
+    # Pastas para upload dos arquivos
+    UPLOAD_FOLDER_ESTATUTO = os.getenv("UPLOAD_FOLDER_ESTATUTO") 
+    UPLOAD_FOLDER_AQUISICOES = os.getenv("UPLOAD_FOLDER_AQUISICOES")
+    UPLOAD_FOLDER_OPORTUNIDADES = os.getenv("UPLOAD_FOLDER_OPORTUNIDADES")
 
+    # Configurações do banco de dados
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+        # Chave secreta da aplicação
     SECRET_KEY = os.getenv('SECRET_KEY')
     
     # Configurações de sessão
-    SESSION_TYPE = 'filesystem'  # Use 'filesystem' para manter as sessões persistentes
+    SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = False
 
     # Variáveis de ambiente do OAuth Google

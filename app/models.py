@@ -34,3 +34,27 @@ class EstatutoSocial(db.Model):
 
     def __repr__(self):
         return f'<EstatutoSocial Versão {self.versao}>'
+    
+class AquisicoesAlienacoes(db.Model):
+    __tablename__ = 'aquisicoes_alienacoes'
+    versao = db.Column(db.Integer, primary_key=True)
+    vigencia_inicio = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date)
+    status = db.Column(db.Enum('aprovado', 'registrado'))
+    texto = db.Column(db.Text)
+    hash = db.Column(db.String(64))
+
+    def __repr__(self):
+        return f'<AquisicoesAlienacoes Versão {self.versao}>'
+    
+class OportunidadesInvestimento(db.Model):
+    __tablename__ = 'oportunidades_investimento'
+    versao = db.Column(db.Integer, primary_key=True)
+    vigencia_inicio = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date)
+    status = db.Column(db.Enum('aprovado', 'registrado'))
+    texto = db.Column(db.Text)
+    hash = db.Column(db.String(64))
+
+    def __repr__(self):
+        return f'<OportunidadesInvestimento Versão {self.versao}>'

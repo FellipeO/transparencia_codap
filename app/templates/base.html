@@ -33,7 +33,9 @@
     {% set permissoes_sidebar = {
       'lancamentos': ['super_admin', 'admin', 'usuario'],
       'usuarios': ['super_admin'],
-      'estatuto_social': ['super_admin', 'admin', 'usuario']
+      'estatuto_social': ['super_admin', 'admin', 'usuario'],
+      'aquisicoes_alienacoes' : ['super_admin', 'admin', 'usuario'],
+      'oportunidades_investimento' : ['super_admin', 'admin', 'usuario']
     } %}
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -61,7 +63,7 @@
       <!-- Dropdown para Documentos -->
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#documentos-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-folder"></i>
+          <i class="bi bi-file-earmark-text"></i>
           <span>Documentos</span>
           <i class="bi bi-chevron-down ms-auto"></i>
         </a>
@@ -70,8 +72,26 @@
           {% if session.get('grupo') in permissoes_sidebar['estatuto_social'] %}
           <li>
             <a href="{{ url_for('admin.estatuto_social') }}">
-              <i class="bi bi-file-earmark-text"></i>
+              <i class="bi bi-circle"></i>
               <span>Estatuto Social</span>
+            </a>
+          </li>
+          {% endif %}
+          <!-- Link para Aquisições e Alienações dentro do Dropdown Documentos -->
+          {% if session.get('grupo') in permissoes_sidebar['aquisicoes_alienacoes'] %}
+          <li>
+            <a href="{{ url_for('admin.aquisicoes_alienacoes') }}">
+              <i class="bi bi-circle"></i>
+              <span>Regulamento de Aquisições e Alienações</span>
+            </a>
+          </li>
+          {% endif %}
+          <!-- Link para Oportunidades de Investimento dentro do Dropdown Documentos -->
+          {% if session.get('grupo') in permissoes_sidebar['oportunidades_investimento'] %}
+          <li>
+            <a href="{{ url_for('admin.oportunidades_investimento') }}">
+              <i class="bi bi-circle"></i>
+              <span>Política de Seleção e Avaliação de Oportunidades de Investimento</span>
             </a>
           </li>
           {% endif %}

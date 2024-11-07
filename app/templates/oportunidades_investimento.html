@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Política de Seleção e Avaliação de Oportunidades de Investimento{% endblock %}
+{% block page_title %}Política de Seleção e Avaliação de Oportunidades de Investimento{% endblock %}
+{% block breadcrumb %}Política de Seleção e Avaliação de Oportunidades de Investimento{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>Política de Seleção e Avaliação de Oportunidades de Investimento</h3>
+  {% if session.get('grupo') == 'super_admin' %}
+  <a href="{{ url_for('admin.oportunidades_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
+  {% endif %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Versão</th>
+        <th scope="col">Vigência Início</th>
+        <th scope="col">Vigência Fim</th>
+        <th scope="col">Status</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for oportunidade in oportunidades %}
+      <tr>
+        <td>{{ oportunidade.versao }}</td>
+        <td>{{ oportunidade.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
+        <td>{{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') }}</td>
+        <td>{{ oportunidade.status }}</td>
+        <td>
+          <a href="{{ url_for('admin.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-info">Visualizar</a>
+          
+          {% if session.get('grupo') == 'super_admin' %}
+          <form action="{{ url_for('admin.oportunidades_deletar', versao=oportunidade.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
+            <button type="submit" class="btn btn-danger">Deletar</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
