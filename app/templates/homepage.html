@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Transparência CODAP</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <h1>Transparência CODAP</h1>
-    <p>Bem-vindo ao portal de transparência.</p>
-    <!-- Link para acessar a área administrativa -->
-    <a href="{{ url_for('admin.admin_homepage') }}">Admin</a>
-</body>
-</html>
+{% extends 'base_frontend.html' %}
+
+{% block title %}Homepage - Transparência CODAP{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h5 class="text-body-tertiary fw-semibold">Bem-vindo à</h5>
+    <h2 class="mb-2">Empresa mais transparente do mundo</h2>
+</div>
+{% endblock %}
