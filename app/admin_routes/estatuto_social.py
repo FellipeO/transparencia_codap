@@ -221,7 +221,6 @@ def estatuto_editar(versao):
     return render_template('estatuto_editar.html', estatuto=estatuto)
 
 @estatuto_bp.route('/estatuto_social/<int:versao>/download')
-@login_required
 def estatuto_download(versao):
     estatuto = EstatutoSocial.query.get(versao)
     if estatuto and estatuto.hash:

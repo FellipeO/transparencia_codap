@@ -221,7 +221,6 @@ def aquisicoes_editar(versao):
     return render_template('aquisicoes_editar.html', aquisicao=aquisicao)
 
 @aquisicoes_bp.route('/aquisicoes_alienacoes/<int:versao>/download')
-@login_required
 def aquisicao_download(versao):
     aquisicao = AquisicoesAlienacoes.query.get(versao)
     if aquisicao and aquisicao.hash:

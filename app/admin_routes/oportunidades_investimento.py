@@ -221,7 +221,6 @@ def oportunidades_editar(versao):
     return render_template('oportunidades_editar.html', oportunidade=oportunidade)
 
 @oportunidades_bp.route('/oportunidades_investimento/<int:versao>/download')
-@login_required
 def oportunidade_download(versao):
     oportunidade = OportunidadesInvestimento.query.get(versao)
     if oportunidade and oportunidade.hash:
