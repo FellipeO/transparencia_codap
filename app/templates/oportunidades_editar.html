@@ -56,6 +56,9 @@
   <div class="row mb-3" id="documento-field">
     <label for="documento" class="col-sm-2 col-form-label">Upload de Documento</label>
     <div class="col-sm-10">
+      {% if oportunidade.hash %}
+        <p>Um documento já está associado a esta versão. Você pode fazer upload de um novo documento para substituí-lo.</p>
+      {% endif %}
       <input type="file" name="documento" id="documento" class="form-control" accept=".pdf">
     </div>
   </div>
@@ -90,9 +93,12 @@
 function toggleDocumentoField() {
     const statusField = document.getElementById('status');
     const documentoField = document.getElementById('documento-field');
+    const documentoInput = document.getElementById('documento');
     if (statusField.value === 'registrado') {
         documentoField.style.display = 'block';
-        document.getElementById('documento').setAttribute('required', 'required');
+        if (!hasExistingDocument) {
+          documentoInput.setAttribute('required', 'required');
+        }
     } else {
         documentoField.style.display = 'none';
         document.getElementById('documento').removeAttribute('required');

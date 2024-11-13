@@ -5,6 +5,14 @@
 {% block breadcrumb %}Documentos / Política de Investimento{% endblock %}
 
 {% block content %}
+<style>
+    /* CSS para corrigir quebra de linha entre 1200px e 1500px de largura */
+    @media (min-width: 1200px) and (max-width: 1500px) {
+        .doc-nav .nav-link {
+            white-space: nowrap;
+        }
+    }
+</style>
 <div class="mb-8">
     <h2 class="mb-2 lh-sm">Política de Investimento</h2>
     <p class="text-body-tertiary lead mb-2"> Regulamento que define critérios e procedimentos para selecionar e avaliar os investimentos da Companhia. </p>

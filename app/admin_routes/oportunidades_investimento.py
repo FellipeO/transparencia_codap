@@ -186,27 +186,26 @@ def oportunidades_editar(versao):
                 os.remove(old_filepath)  # Remove o arquivo associado
             oportunidade.hash = None  # Remove o hash já que não deve haver documento para a versão aprovada
 
-        # Atualiza o arquivo se o status for registrado e um novo arquivo for enviado
-        if status == 'registrado' and 'documento' in request.files:
-            documento = request.files['documento']
-            if documento:
-                # Gera novo hash para o arquivo com base na nova versão
-                hash_arquivo = gerar_hash_oportunidades(nova_versao)
-                filename = f"{hash_arquivo}.pdf"
-                
-                # Salva o novo documento
-                documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_OPORTUNIDADES'], filename))
-                
-                # Deleta o arquivo antigo (se houver) e atualiza o hash no banco
-                if oportunidade.hash and oportunidade.hash != hash_arquivo:  # Verifica se a hash é diferente
-                    old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_OPORTUNIDADES'], f"{oportunidade.hash}.pdf")
-                    if os.path.exists(old_filepath):
-                        os.remove(old_filepath)
-                
-                oportunidade.hash = hash_arquivo
-            else:
-                flash("Erro ao fazer upload do documento. Por favor, tente novamente.", "danger")
-                return redirect(url_for('oportunidades.oportunidades_editar', versao=versao))
+        # Verifica se um novo documento foi enviado
+        documento = request.files.get('documento')
+        if status == 'registrado' and documento and documento.filename != '':
+            # Gera novo hash para o arquivo com base na nova versão
+            hash_arquivo = gerar_hash_oportunidades(nova_versao)
+            filename = f"{hash_arquivo}.pdf"
+            
+            # Salva o novo documento
+            documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_OPORTUNIDADES'], filename))
+            
+            # Deleta o arquivo antigo (se houver) e atualiza o hash no banco
+            if oportunidade.hash and oportunidade.hash != hash_arquivo:  # Verifica se a hash é diferente
+                old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_OPORTUNIDADES'], f"{oportunidade.hash}.pdf")
+                if os.path.exists(old_filepath):
+                    os.remove(old_filepath)
+            
+            oportunidade.hash = hash_arquivo
+        elif status == 'registrado' and not oportunidade.hash:
+            flash("Erro: Nenhum documento foi selecionado para upload. Por favor, selecione um arquivo.", "danger")
+            return redirect(url_for('oportunidades.oportunidades_editar', versao=versao))
 
         # Atualiza os valores no banco de dados
         oportunidade.versao = int(nova_versao)

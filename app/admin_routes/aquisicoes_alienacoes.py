@@ -186,27 +186,26 @@ def aquisicoes_editar(versao):
                 os.remove(old_filepath)  # Remove o arquivo associado
             aquisicao.hash = None  # Remove o hash já que não deve haver documento para a versão aprovada
 
-        # Atualiza o arquivo se o status for registrado e um novo arquivo for enviado
-        if status == 'registrado' and 'documento' in request.files:
-            documento = request.files['documento']
-            if documento:
-                # Gera novo hash para o arquivo com base na nova versão
-                hash_arquivo = gerar_hash_aquisicoes(nova_versao)
-                filename = f"{hash_arquivo}.pdf"
-                
-                # Salva o novo documento
-                documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_AQUISICOES'], filename))
-                
-                # Deleta o arquivo antigo (se houver) e atualiza o hash no banco
-                if aquisicao.hash and aquisicao.hash != hash_arquivo:  # Verifica se a hash é diferente
-                    old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_AQUISICOES'], f"{aquisicao.hash}.pdf")
-                    if os.path.exists(old_filepath):
-                        os.remove(old_filepath)
-                
-                aquisicao.hash = hash_arquivo
-            else:
-                flash("Erro ao fazer upload do documento. Por favor, tente novamente.", "danger")
-                return redirect(url_for('aquisicoes.aquisicoes_editar', versao=versao))
+        # Verifica se um novo documento foi enviado
+        documento = request.files.get('documento')
+        if status == 'registrado' and documento and documento.filename != '':
+            # Gera novo hash para o arquivo com base na nova versão
+            hash_arquivo = gerar_hash_aquisicoes(nova_versao)
+            filename = f"{hash_arquivo}.pdf"
+            
+            # Salva o novo documento
+            documento.save(os.path.join(current_app.config['UPLOAD_FOLDER_AQUISICOES'], filename))
+            
+            # Deleta o arquivo antigo (se houver) e atualiza o hash no banco
+            if aquisicao.hash and aquisicao.hash != hash_arquivo:  # Verifica se a hash é diferente
+                old_filepath = os.path.join(current_app.config['UPLOAD_FOLDER_AQUISICOES'], f"{aquisicao.hash}.pdf")
+                if os.path.exists(old_filepath):
+                    os.remove(old_filepath)
+            
+            aquisicao.hash = hash_arquivo
+        elif status == 'registrado' and not aquisicao.hash:
+            flash("Erro: Nenhum documento foi selecionado para upload. Por favor, selecione um arquivo.", "danger")
+            return redirect(url_for('aquisicoes.aquisicoes_editar', versao=versao))
 
         # Atualiza os valores no banco de dados
         aquisicao.versao = int(nova_versao)

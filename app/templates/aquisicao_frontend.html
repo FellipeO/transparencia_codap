@@ -5,6 +5,14 @@
 {% block breadcrumb %}Documentos / Regulamento de Aquisições{% endblock %}
 
 {% block content %}
+<style>
+    /* CSS para corrigir quebra de linha entre 1200px e 1500px de largura */
+    @media (min-width: 1200px) and (max-width: 1500px) {
+        .doc-nav .nav-link {
+            white-space: nowrap;
+        }
+    }
+</style>
 <div class="mb-8">
     <h2 class="mb-2 lh-sm">Regulamento de Aquisições</h2>
     <p class="text-body-tertiary lead mb-2"> Documento que estabelece normas para contratações e alienações, privilegiando a eficiência e transparência. </p>
