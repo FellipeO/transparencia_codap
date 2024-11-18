@@ -35,6 +35,13 @@
     </div>
   </div>
 
+  <div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="em_vigencia" name="em_vigencia" onchange="toggleVigenciaFim()">
+    <label class="form-check-label" for="em_vigencia">
+        Esta versão ainda está em vigência
+    </label>
+  </div>
+
   <div class="row mb-3">
     <label for="vigencia_fim" class="col-sm-2 col-form-label">Vigência Fim</label>
     <div class="col-sm-10">
@@ -91,23 +98,35 @@
     });
 
     function toggleDocumentoField() {
-    const statusField = document.getElementById('status');
-    const documentoField = document.getElementById('documento-field');
-    const documentoInput = document.getElementById('documento');
-    if (statusField.value === 'registrado') {
-        documentoField.style.display = 'block';
-        if (!hasExistingDocument) {
-          documentoInput.setAttribute('required', 'required');
-        }
-    } else {
-        documentoField.style.display = 'none';
-        document.getElementById('documento').removeAttribute('required');
+      const statusField = document.getElementById('status');
+      const documentoField = document.getElementById('documento-field');
+      const documentoInput = document.getElementById('documento');
+      if (statusField.value === 'registrado') {
+          documentoField.style.display = 'block';
+          if (!hasExistingDocument) {
+            documentoInput.setAttribute('required', 'required');
+          }
+      } else {
+          documentoField.style.display = 'none';
+          document.getElementById('documento').removeAttribute('required');
+      }
     }
-}
+    function toggleVigenciaFim() {
+      const vigenciaFimField = document.getElementById('vigencia_fim');
+      const emVigencia = document.getElementById('em_vigencia').checked;
+      
+      if (emVigencia) {
+          vigenciaFimField.value = '';  // Limpa o campo de data de fim
+          vigenciaFimField.setAttribute('disabled', 'disabled'); // Desabilita o campo
+      } else {
+          vigenciaFimField.removeAttribute('disabled'); // Habilita o campo
+      }
+    }
 
 // Inicializa a exibição correta do campo de upload ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
     toggleDocumentoField();
+    toggleVigenciaFim();
 });
 </script>
 {% endblock %}

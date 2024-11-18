@@ -50,7 +50,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link {% if estatuto.versao == estatuto_atual.versao %}active{% endif %}" 
                                            href="{{ url_for('public.estatuto', versao=estatuto.versao) }}">
-                                            Vigente de<br> {{ estatuto.vigencia_inicio.strftime('%d/%m/%y') }} a {{ estatuto.vigencia_fim.strftime('%d/%m/%y') }}
+                                            Vigente de<br> {{ estatuto.vigencia_inicio.strftime('%d/%m/%y') }} a {{ estatuto.vigencia_fim.strftime('%d/%m/%y') if estatuto.vigencia_fim else '(Em vigência)'}}
                                         </a>
                                     </li>
                                 {% endfor %}

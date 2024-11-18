@@ -28,7 +28,7 @@
       <tr>
         <td>{{ oportunidade.versao }}</td>
         <td>{{ oportunidade.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
-        <td>{{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') }}</td>
+        <td>{{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') if oportunidade.vigencia_fim else 'Em vigência' }}</p></td>
         <td>{{ oportunidade.status }}</td>
         <td>
           <a href="{{ url_for('oportunidades.oportunidades_detalhe', versao=oportunidade.versao) }}" class="btn btn-info">Visualizar</a>

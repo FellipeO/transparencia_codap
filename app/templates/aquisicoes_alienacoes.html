@@ -28,7 +28,7 @@
       <tr>
         <td>{{ aquisicao.versao }}</td>
         <td>{{ aquisicao.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
-        <td>{{ aquisicao.vigencia_fim.strftime('%d/%m/%Y') }}</td>
+        <td>{{ aquisicao.vigencia_fim.strftime('%d/%m/%Y') if aquisicao.vigencia_fim else 'Em vigência' }}</p></td>
         <td>{{ aquisicao.status }}</td>
         <td>
           <a href="{{ url_for('aquisicoes.aquisicoes_detalhe', versao=aquisicao.versao) }}" class="btn btn-info">Visualizar</a>

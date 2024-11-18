@@ -9,6 +9,8 @@ class Lancamento(db.Model):
     nValorLanc = db.Column(db.Float)
     dDtLanc = db.Column(db.DateTime)
     cNatureza = db.Column(db.String(1))
+    nCodCliente = db.Column(db.BigInteger, nullable=True)
+    nCodCCDestino = db.Column(db.BigInteger, nullable=True)
 
     def __repr__(self):
         return f'<Lancamento {self.nCodLanc}>'
@@ -27,7 +29,7 @@ class EstatutoSocial(db.Model):
     __tablename__ = 'estatuto_social'
     versao = db.Column(db.Integer, primary_key=True)
     vigencia_inicio = db.Column(db.Date)
-    vigencia_fim = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date, nullable=True)
     status = db.Column(db.Enum('aprovado', 'registrado'))
     texto = db.Column(db.Text)
     hash = db.Column(db.String(64))
@@ -39,7 +41,7 @@ class AquisicoesAlienacoes(db.Model):
     __tablename__ = 'aquisicoes_alienacoes'
     versao = db.Column(db.Integer, primary_key=True)
     vigencia_inicio = db.Column(db.Date)
-    vigencia_fim = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date, nullable=True)
     status = db.Column(db.Enum('aprovado', 'registrado'))
     texto = db.Column(db.Text)
     hash = db.Column(db.String(64))
@@ -51,7 +53,7 @@ class OportunidadesInvestimento(db.Model):
     __tablename__ = 'oportunidades_investimento'
     versao = db.Column(db.Integer, primary_key=True)
     vigencia_inicio = db.Column(db.Date)
-    vigencia_fim = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date, nullable=True)
     status = db.Column(db.Enum('aprovado', 'registrado'))
     texto = db.Column(db.Text)
     hash = db.Column(db.String(64))

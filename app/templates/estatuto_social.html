@@ -28,7 +28,7 @@
       <tr>
         <td>{{ estatuto.versao }}</td>
         <td>{{ estatuto.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
-        <td>{{ estatuto.vigencia_fim.strftime('%d/%m/%Y') }}</td>
+        <td>{{ estatuto.vigencia_fim.strftime('%d/%m/%Y') if estatuto.vigencia_fim else 'Em vigência' }}</p></td>
         <td>{{ estatuto.status }}</td>
         <td>
           <a href="{{ url_for('estatuto.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>

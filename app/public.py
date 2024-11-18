@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento
 
 public_bp = Blueprint('public', __name__)
 
@@ -7,6 +7,12 @@ public_bp = Blueprint('public', __name__)
 @public_bp.route('/')
 def homepage():
     return render_template('homepage.html')
+
+@public_bp.route('/lancamentos')
+def lancamentos():
+    # Consulta ao banco de dados para buscar lançamentos ordenados por data
+    lancamentos = Lancamento.query.order_by(Lancamento.dDtLanc.desc()).all()
+    return render_template('lancamentos_frontend.html', lancamentos=lancamentos)
 
 # Rota para exibir o estatuto, com a versão selecionada
 @public_bp.route('/estatuto')

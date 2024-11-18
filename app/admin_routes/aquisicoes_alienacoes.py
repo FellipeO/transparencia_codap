@@ -25,16 +25,21 @@ def aquisicoes_adicionar():
     if request.method == 'POST':
         versao = request.form.get('versao')
         vigencia_inicio = request.form.get('vigencia_inicio')
-        vigencia_fim = request.form.get('vigencia_fim')
+        vigencia_fim = request.form.get('vigencia_fim') if not request.form.get('em_vigencia') else None
         status = request.form.get('status')
         texto = request.form.get('texto')
 
         # Converte as datas para o tipo datetime e depois para date
         try:
             vigencia_inicio_date = datetime.strptime(vigencia_inicio, '%Y-%m-%d').date()
-            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date()
+            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date() if vigencia_fim else None
         except ValueError:
             flash('Datas inválidas. Por favor, insira uma data válida.', 'danger')
+            return redirect(url_for('aquisicoes.aquisicoes_adicionar'))
+        
+        # Verificação para vigência em andamento
+        if vigencia_fim_date and vigencia_inicio_date > vigencia_fim_date:
+            flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('aquisicoes.aquisicoes_adicionar'))
 
         # Verifica se a versão já existe na tabela
@@ -124,7 +129,7 @@ def aquisicoes_editar(versao):
     if request.method == 'POST':
         nova_versao = request.form.get('versao')
         vigencia_inicio = request.form.get('vigencia_inicio')
-        vigencia_fim = request.form.get('vigencia_fim')
+        vigencia_fim = request.form.get('vigencia_fim') if not request.form.get('em_vigencia') else None
         status = request.form.get('status')
         texto = request.form.get('texto')
 
@@ -138,12 +143,18 @@ def aquisicoes_editar(versao):
         # Converte as datas e realiza a validação
         try:
             vigencia_inicio_date = datetime.strptime(vigencia_inicio, '%Y-%m-%d').date()
-            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date()
+            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date() if vigencia_fim else None
         except ValueError:
             flash('Datas inválidas. Por favor, insira uma data válida.', 'danger')
             return redirect(url_for('aquisicoes.aquisicoes_editar', versao=versao))
-
-        if vigencia_inicio_date > vigencia_fim_date:
+        
+        if vigencia_fim:
+            if vigencia_inicio_date > vigencia_fim_date:
+                flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
+                return redirect(url_for('aquisicoes.aquisicoes_editar', versao=versao))
+        
+        # Verificação para vigência em andamento
+        if vigencia_fim_date and vigencia_inicio_date > vigencia_fim_date:
             flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('aquisicoes.aquisicoes_editar', versao=versao))
 

@@ -25,16 +25,21 @@ def estatuto_adicionar():
     if request.method == 'POST':
         versao = request.form.get('versao')
         vigencia_inicio = request.form.get('vigencia_inicio')
-        vigencia_fim = request.form.get('vigencia_fim')
+        vigencia_fim = request.form.get('vigencia_fim') if not request.form.get('em_vigencia') else None
         status = request.form.get('status')
         texto = request.form.get('texto')
 
         # Converte as datas para o tipo datetime e depois para date
         try:
             vigencia_inicio_date = datetime.strptime(vigencia_inicio, '%Y-%m-%d').date()
-            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date()
+            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date() if vigencia_fim else None
         except ValueError:
             flash('Datas inválidas. Por favor, insira uma data válida.', 'danger')
+            return redirect(url_for('estatuto.estatuto_adicionar'))
+
+        # Verificação para vigência em andamento
+        if vigencia_fim_date and vigencia_inicio_date > vigencia_fim_date:
+            flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('estatuto.estatuto_adicionar'))
 
         # Verifica se a versão já existe na tabela
@@ -42,7 +47,7 @@ def estatuto_adicionar():
         if versao_existente:
             flash('Erro: A versão já existe. Por favor, insira uma versão única.', 'danger')
             return redirect(url_for('estatuto.estatuto_adicionar'))
-
+        
         # Verifica se vigencia_inicio não é posterior a vigencia_fim
         if vigencia_inicio_date > vigencia_fim_date:
             flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
@@ -57,7 +62,7 @@ def estatuto_adicionar():
         )
 
         # Se houver uma versão anterior, valida a nova data de vigência contra a vigência final da versão anterior
-        if versao_anterior and vigencia_inicio_date < versao_anterior.vigencia_fim:
+        if versao_anterior and versao_anterior.vigencia_fim and vigencia_inicio_date < versao_anterior.vigencia_fim:
             flash(
                 f'Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).', 
                 'danger'
@@ -73,7 +78,7 @@ def estatuto_adicionar():
         )
 
         # Se houver uma versão subsequente, valida a data de vigência final contra a data de vigência inicial da versão subsequente
-        if versao_subsequente and vigencia_fim_date > versao_subsequente.vigencia_inicio:
+        if versao_subsequente and vigencia_fim_date and vigencia_fim_date > versao_subsequente.vigencia_inicio:
             flash(
                 f'Erro: A data de fim da nova vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
                 'danger'
@@ -124,7 +129,7 @@ def estatuto_editar(versao):
     if request.method == 'POST':
         nova_versao = request.form.get('versao')
         vigencia_inicio = request.form.get('vigencia_inicio')
-        vigencia_fim = request.form.get('vigencia_fim')
+        vigencia_fim = request.form.get('vigencia_fim') if not request.form.get('em_vigencia') else None
         status = request.form.get('status')
         texto = request.form.get('texto')
 
@@ -138,12 +143,18 @@ def estatuto_editar(versao):
         # Converte as datas e realiza a validação
         try:
             vigencia_inicio_date = datetime.strptime(vigencia_inicio, '%Y-%m-%d').date()
-            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date()
+            vigencia_fim_date = datetime.strptime(vigencia_fim, '%Y-%m-%d').date() if vigencia_fim else None
         except ValueError:
             flash('Datas inválidas. Por favor, insira uma data válida.', 'danger')
             return redirect(url_for('estatuto.estatuto_editar', versao=versao))
+        
+        if vigencia_fim:
+            if vigencia_inicio_date > vigencia_fim_date:
+                flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
+                return redirect(url_for('estatuto.estatuto_editar', versao=versao))
 
-        if vigencia_inicio_date > vigencia_fim_date:
+        # Verificação para vigência em andamento
+        if vigencia_fim_date and vigencia_inicio_date > vigencia_fim_date:
             flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
             return redirect(url_for('estatuto.estatuto_editar', versao=versao))
 
@@ -155,15 +166,15 @@ def estatuto_editar(versao):
             .first()
         )
 
-        # Valida a nova data de vigência contra a vigência final da versão anterior
-        if versao_anterior and vigencia_inicio_date < versao_anterior.vigencia_fim:
+        # Valida a nova data de vigência contra a vigência final da versão anterior, se houver
+        if versao_anterior and versao_anterior.vigencia_fim and vigencia_inicio_date < versao_anterior.vigencia_fim:
             flash(
-                f'Erro: A data de início da vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).', 
+                f'Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).',
                 'danger'
             )
             return redirect(url_for('estatuto.estatuto_editar', versao=versao))
 
-        # Busca a menor versão superior à versão atual, excluindo a própria versão
+        # Busca a menor versão superior à nova versão
         versao_subsequente = (
             EstatutoSocial.query
             .filter(EstatutoSocial.versao > int(nova_versao), EstatutoSocial.versao != estatuto.versao)
@@ -171,10 +182,10 @@ def estatuto_editar(versao):
             .first()
         )
 
-        # Valida a nova data de vigência contra a vigência inicial da versão subsequente
-        if versao_subsequente and vigencia_fim_date > versao_subsequente.vigencia_inicio:
+        # Valida a data de vigência final contra a data de vigência inicial da versão subsequente, se houver
+        if versao_subsequente and vigencia_fim_date and vigencia_fim_date > versao_subsequente.vigencia_inicio:
             flash(
-                f'Erro: A data de fim da vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
+                f'Erro: A data de fim da nova vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
                 'danger'
             )
             return redirect(url_for('estatuto.estatuto_editar', versao=versao))

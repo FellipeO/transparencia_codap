@@ -9,7 +9,7 @@
   <div class="card-body">
     <h5 class="card-title">Versão: {{ oportunidade.versao }}</h5>
     <p><strong>Vigência Início:</strong> {{ oportunidade.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
-    <p><strong>Vigência Fim:</strong> {{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') }}</p>
+    <p><strong>Vigência Fim:</strong> {{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') if oportunidade.vigencia_fim else 'Em vigência' }}</p>
     <p><strong>Status:</strong> {{ oportunidade.status }}</p>
     <p><strong>Texto:</strong> {{ oportunidade.texto | safe }}</p>  <!-- Aqui está a alteração -->
     

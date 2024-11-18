@@ -9,7 +9,7 @@
   <div class="card-body">
     <h5 class="card-title">Versão: {{ estatuto.versao }}</h5>
     <p><strong>Vigência Início:</strong> {{ estatuto.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
-    <p><strong>Vigência Fim:</strong> {{ estatuto.vigencia_fim.strftime('%d/%m/%Y') }}</p>
+    <p><strong>Vigência Fim:</strong> {{ estatuto.vigencia_fim.strftime('%d/%m/%Y') if estatuto.vigencia_fim else 'Em vigência' }}</p>
     <p><strong>Status:</strong> {{ estatuto.status }}</p>
     <p><strong>Texto:</strong> {{ estatuto.texto | safe }}</p>  <!-- Aqui está a alteração -->
     
