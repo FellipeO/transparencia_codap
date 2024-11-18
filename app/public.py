@@ -1,5 +1,6 @@
+from . import db
 from flask import Blueprint, render_template, request
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes
 
 public_bp = Blueprint('public', __name__)
 
@@ -8,11 +9,16 @@ public_bp = Blueprint('public', __name__)
 def homepage():
     return render_template('homepage.html')
 
-@public_bp.route('/lancamentos')
-def lancamentos():
-    # Consulta ao banco de dados para buscar lançamentos ordenados por data
-    lancamentos = Lancamento.query.order_by(Lancamento.dDtLanc.desc()).all()
-    return render_template('lancamentos_frontend.html', lancamentos=lancamentos)
+@public_bp.route('/fluxocaixa')
+def fluxocaixa():
+    # Consulta ao banco de dados para buscar lançamentos com os clientes associados
+    lancamentos = (
+        db.session.query(Lancamento)
+        .outerjoin(Clientes, Lancamento.nCodCliente == Clientes.codigo_cliente_omie)
+        .order_by(Lancamento.dDtLanc.desc())
+        .all()
+    )
+    return render_template('fluxocaixa_frontend.html', lancamentos=lancamentos)
 
 # Rota para exibir o estatuto, com a versão selecionada
 @public_bp.route('/estatuto')

@@ -1,4 +1,5 @@
 from . import db
+from sqlalchemy.orm import relationship
 
 class Lancamento(db.Model):
     __tablename__ = 'lancamentos'
@@ -9,12 +10,21 @@ class Lancamento(db.Model):
     nValorLanc = db.Column(db.Float)
     dDtLanc = db.Column(db.DateTime)
     cNatureza = db.Column(db.String(1))
-    nCodCliente = db.Column(db.BigInteger, nullable=True)
+    nCodCliente = db.Column(db.BigInteger, db.ForeignKey('clientes.codigo_cliente_omie'))
     nCodCCDestino = db.Column(db.BigInteger, nullable=True)
+
+    cliente = relationship('Clientes', backref='lancamentos')
 
     def __repr__(self):
         return f'<Lancamento {self.nCodLanc}>'
 
+class Clientes(db.Model):
+    __tablename__='clientes'
+
+    codigo_cliente_omie = db.Column(db.BigInteger, primary_key=True)
+    nome_fantasia = db.Column(db.String(255))
+    razao_social = db.Column(db.String(255))
+    cnpj_cpf = db.Column(db.String(20))
 
 class GrupoUsuario(db.Model):
     __tablename__ = 'grupos_usuarios'
