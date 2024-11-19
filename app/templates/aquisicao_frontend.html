@@ -14,8 +14,8 @@
     }
 </style>
 <div class="mb-8">
-    <h2 class="mb-2 lh-sm">Regulamento de Aquisições</h2>
-    <p class="text-body-tertiary lead mb-2"> Documento que estabelece normas para contratações e alienações, privilegiando a eficiência e transparência. </p>
+    <h2 class="mb-2">Regulamento de Aquisições</h2>
+    <h5 class="text-body-tertiary fw-semibold"> Documento que estabelece normas para contratações e alienações, privilegiando a eficiência e transparência. </h5>
     {% if aquisicao_atual.hash %}
         <a class="btn btn-primary me-1 mb-1" href="{{ url_for('aquisicoes.aquisicao_download', versao=aquisicao_atual.versao) }}" type="button">
             Download

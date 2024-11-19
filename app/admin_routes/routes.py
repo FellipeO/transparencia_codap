@@ -12,9 +12,9 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 def admin_homepage():
     return render_template('admin.html')
 
-@admin_bp.route('/lancamentos')
+@admin_bp.route('/extratofinanceiro')
 @login_required
-def lancamentos():
+def extratofinanceiro():
     email = session.get('email')
     usuario = GrupoUsuario.query.filter_by(email=email).first()
     if usuario is None:
@@ -23,7 +23,7 @@ def lancamentos():
         return redirect(url_for('auth.error'))
 
     lancamentos = Lancamento.query.order_by(Lancamento.dDtLanc.desc()).all()
-    return render_template('lancamentos.html', lancamentos=lancamentos)
+    return render_template('extratofinanceiro.html', lancamentos=lancamentos)
 
 @admin_bp.route('/usuarios', methods=['GET', 'POST'])
 @login_required

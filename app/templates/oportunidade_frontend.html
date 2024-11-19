@@ -14,8 +14,8 @@
     }
 </style>
 <div class="mb-8">
-    <h2 class="mb-2 lh-sm">Política de Investimento</h2>
-    <p class="text-body-tertiary lead mb-2"> Regulamento que define critérios e procedimentos para selecionar e avaliar os investimentos da Companhia. </p>
+    <h2 class="mb-2">Política de Investimento</h2>
+    <h5 class="text-body-tertiary fw-semibold"> Regulamento que define critérios e procedimentos para selecionar e avaliar os investimentos da Companhia. </h5>
     {% if oportunidade_atual.hash %}
         <a class="btn btn-primary me-1 mb-1" href="{{ url_for('oportunidades.oportunidade_download', versao=oportunidade_atual.versao) }}" type="button">
             Download

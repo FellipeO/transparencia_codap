@@ -1,0 +1,90 @@
+{% extends "base_frontend.html" %}
+{% block title %}Extrato Financeiro{% endblock %}
+
+{% block content %}
+    <h2 class="mb-2">Extrato Financeiro</h2>
+    <h5 class="text-body-tertiary fw-semibold">Acompanhe aqui toda movimentação financeira nas contas da Companhia.</h5>
+
+    <!-- Filtros -->
+    <div class="mb-4">
+      <div class="d-flex justify-content-end gap-3 mb-4">
+        <!-- Filtro de Conta (nCodCC) -->
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownAccountButton" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if cod_cc_selecionada %}
+              Conta {{ cod_cc_selecionada }}
+            {% else %}
+              Todas as contas
+            {% endif %}
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{{ url_for('public.extratofinanceiro', mes=mes_atual, ano=ano_atual, cod_cc=None) }}">
+                Todas as contas
+              </a>
+            </li>
+            {% for conta in contas %}
+              <li>
+                <a class="dropdown-item" href="{{ url_for('public.extratofinanceiro', mes=mes_atual, ano=ano_atual, cod_cc=conta) }}">
+                  Conta {{ conta }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Filtro de Mês -->
+        <div class="dropdown">
+          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ formatar_mes_em_portugues(mes_atual, ano_atual) }}
+          </button>
+          <ul class="dropdown-menu">
+            {% for mes in meses_dropdown %}
+              <li>
+                <a class="dropdown-item" href="{{ url_for('public.extratofinanceiro', mes=mes.mes, ano=mes.ano, cod_cc=cod_cc_selecionada) }}">
+                  {{ mes.label }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Exibir Lançamentos -->
+    <div class="timeline-vertical timeline-with-details">
+      {% for item in lancamentos %}
+      <div class="timeline-item position-relative">
+        <div class="row g-md-3">
+          <div class="col-12 col-md-auto d-flex">
+            <div class="timeline-item-date order-1 order-md-0 me-md-4 text-nowrap">
+              <p class="fs-10 fw-semibold text-body-tertiary text-opacity-85 text-end" style="min-width: 80px;">
+                {{ item.dDtLanc.strftime('%d/%m/%y') }}
+              </p>
+            </div>
+            <div class="timeline-item-bar position-md-relative me-3 me-md-0">
+              <div class="icon-item icon-item-sm rounded-7 shadow-none bg-primary-subtle">
+                <i class="fa-solid {% if item.nCodCCDestino != 0 %}fas fa-arrows-alt-h{% elif item.cNatureza == 'R' %}fas fa-plus-circle text-success{% else %}fas fa-minus-circle text-danger{% endif %} fs-8"></i>
+              </div>
+              {% if not loop.last %}
+                <span class="timeline-bar border-end border-dashed"></span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="col">
+            <div class="timeline-item-content ps-6 ps-md-3">
+              <h5 class="fs-9 lh-sm">
+                {{ item.cliente.nome_fantasia if item.cliente else "Desconhecido" }}
+              </h5>
+              <p class="fs-9 fw-semibold">
+                R$ {{ '{:,.2f}'.format(item.nValorLanc).replace(',', 'X').replace('.', ',').replace('X', '.') }}
+              </p>
+              <p class="fs-9 text-body-secondary mb-5">{{ item.cObs }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+{% endblock %}

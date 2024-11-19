@@ -1,24 +1,93 @@
 from . import db
 from flask import Blueprint, render_template, request
+from datetime import datetime
+from sqlalchemy import extract
 from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes
 
 public_bp = Blueprint('public', __name__)
+
+meses_pt = {
+    1: 'janeiro',
+    2: 'fevereiro',
+    3: 'março',  # Corrige o problema com o "ç"
+    4: 'abril',
+    5: 'maio',
+    6: 'junho',
+    7: 'julho',
+    8: 'agosto',
+    9: 'setembro',
+    10: 'outubro',
+    11: 'novembro',
+    12: 'dezembro'
+}
 
 # Rota para a página inicial pública
 @public_bp.route('/')
 def homepage():
     return render_template('homepage.html')
 
-@public_bp.route('/fluxocaixa')
-def fluxocaixa():
-    # Consulta ao banco de dados para buscar lançamentos com os clientes associados
-    lancamentos = (
+def formatar_mes_em_portugues(mes, ano):
+    return f'{meses_pt[mes].capitalize()} {ano}'
+
+@public_bp.route('/extratofinanceiro')
+def extratofinanceiro():
+    # Obtém o mês e ano atual caso nenhum seja fornecido
+    mes = request.args.get('mes', default=datetime.now().month, type=int)
+    ano = request.args.get('ano', default=datetime.now().year, type=int)
+    
+    # Obtém o código da conta (nCodCC), se fornecido, senão retorna None (todos)
+    cod_cc = request.args.get('cod_cc', default=None, type=int)
+
+    # Filtra os lançamentos pelo mês e ano selecionados, e pela conta (se fornecida)
+    lancamentos_query = (
         db.session.query(Lancamento)
         .outerjoin(Clientes, Lancamento.nCodCliente == Clientes.codigo_cliente_omie)
-        .order_by(Lancamento.dDtLanc.desc())
+        .filter(
+            extract('month', Lancamento.dDtLanc) == mes,
+            extract('year', Lancamento.dDtLanc) == ano
+        )
+    )
+    
+    # Aplica o filtro de conta se um nCodCC for selecionado
+    if cod_cc is not None:
+        lancamentos_query = lancamentos_query.filter(Lancamento.nCodCC == cod_cc)
+
+    # Obter todos os lançamentos que atendem aos filtros (mês, ano, e cod_cc)
+    lancamentos = lancamentos_query.order_by(Lancamento.dDtLanc.desc()).all()
+
+    # Obter todos os meses disponíveis para o dropdown
+    meses_disponiveis = (
+        db.session.query(
+            extract('month', Lancamento.dDtLanc).label('mes'),
+            extract('year', Lancamento.dDtLanc).label('ano')
+        )
+        .distinct()
+        .order_by(extract('year', Lancamento.dDtLanc).desc(), extract('month', Lancamento.dDtLanc).desc())
         .all()
     )
-    return render_template('fluxocaixa_frontend.html', lancamentos=lancamentos)
+
+    # Obter todas as contas (nCodCC) distintas
+    contas_disponiveis = db.session.query(Lancamento.nCodCC).distinct().all()
+    contas = [conta[0] for conta in contas_disponiveis]  # Extrai os valores de nCodCC das tuplas
+
+    # Formatar os meses para exibir no dropdown
+    meses_dropdown = [
+    {'mes': int(mes), 'ano': int(ano), 'label': formatar_mes_em_portugues(mes, ano)}
+    for mes, ano in meses_disponiveis
+    ]
+
+    # Renderizar o template com os dados necessários
+    return render_template(
+        'extratofinanceiro_frontend.html',
+        lancamentos=lancamentos,
+        meses_dropdown=meses_dropdown,
+        mes_atual=mes,
+        ano_atual=ano,
+        contas=contas,  # Passar as contas para o template
+        cod_cc_selecionada=cod_cc,  # Passar o código da conta selecionada
+        datetime=datetime,  # Passar datetime para uso no template
+        formatar_mes_em_portugues=formatar_mes_em_portugues
+    )
 
 # Rota para exibir o estatuto, com a versão selecionada
 @public_bp.route('/estatuto')

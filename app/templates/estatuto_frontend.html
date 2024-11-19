@@ -15,8 +15,8 @@
 </style>
 
 <div class="mb-8">
-    <h2 class="mb-2 lh-sm">Estatuto Social</h2>
-    <p class="text-body-tertiary lead mb-2"> Documento que define as regras e estrutura de funcionamento da Companhia.</p>
+    <h2 class="mb-2">Estatuto Social</h2>
+    <h5 class="text-body-tertiary fw-semibold"> Documento que define as regras e estrutura de funcionamento da Companhia.</p>
     {% if estatuto_atual.hash %}
         <a class="btn btn-primary me-1 mb-1" href="{{ url_for('estatuto.estatuto_download', versao=estatuto_atual.versao) }}" type="button">
             Download

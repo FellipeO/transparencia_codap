@@ -31,7 +31,7 @@
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
     {% set permissoes_sidebar = {
-      'lancamentos': ['super_admin', 'diretor', 'assessor'],
+      'extratofinanceiro': ['super_admin', 'diretor', 'assessor'],
       'usuarios': ['super_admin'],
       'estatuto_social': ['super_admin', 'diretor', 'assessor'],
       'aquisicoes_alienacoes' : ['super_admin', 'diretor', 'assessor'],
@@ -41,11 +41,11 @@
     <ul class="sidebar-nav" id="sidebar-nav">
       
       <!-- Link para Lançamentos -->
-      {% if session.get('grupo') in permissoes_sidebar['lancamentos'] %}
+      {% if session.get('grupo') in permissoes_sidebar['extratofinanceiro'] %}
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for('admin.lancamentos') }}">
+        <a class="nav-link collapsed" href="{{ url_for('admin.extratofinanceiro') }}">
           <i class="bi bi-file-earmark-text"></i>
-          <span>Lançamentos</span>
+          <span>Extrato Financeiro</span>
         </a>
       </li>
       {% endif %}
