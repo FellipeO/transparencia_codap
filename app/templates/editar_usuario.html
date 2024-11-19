@@ -18,8 +18,8 @@
     <div class="col-sm-10">
       <select class="form-control" name="grupo">
         <option value="super_admin" {% if usuario.grupo == 'super_admin' %}selected{% endif %}>Super Admin</option>
-        <option value="admin" {% if usuario.grupo == 'admin' %}selected{% endif %}>Admin</option>
-        <option value="usuario" {% if usuario.grupo == 'usuario' %}selected{% endif %}>Usuário</option>
+        <option value="diretor" {% if usuario.grupo == 'diretor' %}selected{% endif %}>Diretor</option>
+        <option value="assessor" {% if usuario.grupo == 'assessor' %}selected{% endif %}>Assessor</option>
       </select>
     </div>
   </div>

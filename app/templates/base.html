@@ -31,11 +31,11 @@
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
     {% set permissoes_sidebar = {
-      'lancamentos': ['super_admin', 'admin', 'usuario'],
+      'lancamentos': ['super_admin', 'diretor', 'assessor'],
       'usuarios': ['super_admin'],
-      'estatuto_social': ['super_admin', 'admin', 'usuario'],
-      'aquisicoes_alienacoes' : ['super_admin', 'admin', 'usuario'],
-      'oportunidades_investimento' : ['super_admin', 'admin', 'usuario']
+      'estatuto_social': ['super_admin', 'diretor', 'assessor'],
+      'aquisicoes_alienacoes' : ['super_admin', 'diretor', 'assessor'],
+      'oportunidades_investimento' : ['super_admin', 'diretor', 'assessor']
     } %}
 
     <ul class="sidebar-nav" id="sidebar-nav">

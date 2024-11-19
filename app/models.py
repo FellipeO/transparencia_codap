@@ -30,7 +30,7 @@ class GrupoUsuario(db.Model):
     __tablename__ = 'grupos_usuarios'
     
     email = db.Column(db.String(255), primary_key=True)
-    grupo = db.Column(db.Enum('super_admin', 'admin', 'usuario'))
+    grupo = db.Column(db.Enum('super_admin', 'diretor', 'assessor'))
 
     def __repr__(self):
         return f'<GrupoUsuario {self.email}, {self.grupo}>'
