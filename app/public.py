@@ -1,7 +1,7 @@
 from . import db
 from flask import Blueprint, render_template, request
 from datetime import datetime
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes
 
 public_bp = Blueprint('public', __name__)
@@ -24,7 +24,45 @@ meses_pt = {
 # Rota para a página inicial pública
 @public_bp.route('/')
 def homepage():
-    return render_template('homepage.html')
+    # Obtém o mês e ano atual
+    #mes = datetime.now().month
+    ano = datetime.now().year
+
+    # Calcula o total de contas a pagar (cNatureza = 'P') e a receber (cNatureza = 'R')
+    totais = (
+        db.session.query(
+            Lancamento.cNatureza,
+            func.sum(Lancamento.nValorLanc).label('total')
+        )
+        .filter(
+            #extract('month', Lancamento.dDtLanc) == mes,
+            extract('year', Lancamento.dDtLanc) == ano,
+            Lancamento.cNatureza.in_(['P', 'R']),  # Apenas "Pagar" e "Receber"
+            Lancamento.nCodCCDestino == 0
+        )
+        .group_by(Lancamento.cNatureza)
+        .all()
+    )
+
+    # Inicializa os valores como zero
+    contas_a_pagar = 0
+    contas_a_receber = 0
+
+    # Processa os resultados da consulta
+    for natureza, total in totais:
+        if natureza == 'P':
+            contas_a_pagar = total
+        elif natureza == 'R':
+            contas_a_receber = total
+
+    # Formata os dados para o gráfico
+    dados_grafico = [
+        {"value": contas_a_receber, "name": "Contas Recebidas"},
+        {"value": contas_a_pagar, "name": "Contas Pagas"}
+    ]
+
+    # Renderiza o template com os dados do gráfico
+    return render_template('homepage.html', dados_grafico=dados_grafico)
 
 def formatar_mes_em_portugues(mes, ano):
     return f'{meses_pt[mes].capitalize()} {ano}'
