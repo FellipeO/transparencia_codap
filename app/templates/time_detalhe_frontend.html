@@ -1,0 +1,109 @@
+{% extends 'base_frontend.html' %}
+
+{% block title %}{{ pessoa.nome }} - Transparência CODAP{% endblock %}
+
+{% block content %}
+<div class="card mb-5">
+    <div class="card-header d-flex justify-content-center align-items-end position-relative mb-7 mb-xxl-0" style="min-height: 214px;">
+      <div class="bg-holder rounded-top" 
+            style="background-image: url('/static/assets/img/cover-photo.png'); 
+              background-size: cover; 
+              background-position: center;">
+      </div>
+        <div class="hoverbox feed-profile" style="width: 150px; height: 150px">
+            <div class="position-relative bg-body-quaternary rounded-circle cursor-pointer d-flex flex-center mb-xxl-7">
+                <div class="avatar avatar-5xl">
+                    <img class="rounded-circle img-thumbnail shadow-sm border-0" src="/static/frontend/assets/img/team/9.webp" alt="{{ pessoa.nome }}" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row justify-content-xl-between">
+            <div class="col-auto">
+                <div class="d-flex flex-wrap mb-3 align-items-center">
+                    <h2 class="me-2">{{ pessoa.nome }}</h2>
+                </div>
+                <div class="mb-5">
+                    <div class="d-md-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span class="fa-solid fa-address-card fs-9 text-body-tertiary me-2 me-lg-1 me-xl-2"></span>
+                            <span class="fs-7 text-body-tertiary text-opacity-85 fw-semibold ms-1 me-4">{{ pessoa.cargo }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="fa-solid fa-calendar-alt fs-9 text-body-tertiary me-2 me-lg-1 me-xl-2"></span>
+                            <span class="fs-7 text-body-tertiary text-opacity-85 fw-semibold ms-1 me-4">
+                                Há {{ (current_date - pessoa.data_admissao).days }} dias na Companhia
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="fa-solid fa-location-dot fs-9 text-body-tertiary me-2 me-lg-1 me-xl-2"></span>
+                            <span class="fs-7 fw-semibold text-body-tertiary text-opacity-85">{{ pessoa.cidade }}, {{ pessoa.estado }}</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="fs-6 text-body-secondary">“{{ pessoa.frase }}”</p>
+            </div>
+            <div class="col-auto">
+                <div class="row g-2">
+                    <div class="col-auto order-xxl-1">
+                        <button class="btn btn-phoenix-primary lh-1"><span class="fa-solid fa-message me-2"></span>Enviar Mensagem</button>
+                    </div>
+                    <div class="col-auto">
+                        <div class="position-static">
+                            <button class="btn btn-phoenix-secondary lh-1" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                <span class="fa-solid fa-chevron-down me-2"></span> Redes Sociais
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                {% if pessoa.linkedin %}
+                                <a class="dropdown-item" href="{{ pessoa.linkedin }}"><span class="fab fa-linkedin text-body-secondary me-2"></span><span>Linkedin</span></a>
+                                {% endif %}
+                                {% if pessoa.instagram %}
+                                <a class="dropdown-item" href="{{ pessoa.instagram }}"><span class="fab fa-instagram text-body-secondary me-2"></span><span>Instagram</span></a>
+                                {% endif %}
+                                {% if pessoa.twitter %}
+                                <a class="dropdown-item" href="{{ pessoa.twitter }}"><span class="fab fa-twitter text-body-secondary me-2"></span><span>Twitter</span></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Side card-->
+<div class="col-12 col-md-3">
+    <div class="card mb-3 h-100">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-5">
+                <h3>Sobre</h3>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-calendar-alt"></span>
+                    <h5 class="text-body-highlight mb-0">Data de admissão</h5>
+                </div>
+                <p class="mb-0 text-body-secondary">{{ pessoa.data_admissao.strftime('%d/%m/%Y') }}</p>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-calender"></span>
+                    <h5 class="text-body-highlight mb-0">Aniversário</h5>
+                </div>
+                <p class="mb-0 text-body-secondary">{{ pessoa.aniversario.strftime('%d/%m/%Y') }}</p>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-user"></span>
+                    <h5 class="text-body-highlight mb-0">Gênero</h5>
+                </div>
+                <p class="mb-0 text-body-secondary">{{ pessoa.genero }}</p>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-user"></span>
+                    <h5 class="text-body-highlight mb-0">Etnia</h5>
+                </div>
+                <p class="mb-0 text-body-secondary">{{ pessoa.etnia }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

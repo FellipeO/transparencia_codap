@@ -33,6 +33,7 @@
     {% set permissoes_sidebar = {
       'extratofinanceiro': ['super_admin', 'diretor', 'assessor'],
       'usuarios': ['super_admin'],
+      'time': ['super_admin', 'diretor', 'assessor'],
       'estatuto_social': ['super_admin', 'diretor', 'assessor'],
       'aquisicoes_alienacoes' : ['super_admin', 'diretor', 'assessor'],
       'oportunidades_investimento' : ['super_admin', 'diretor', 'assessor']
@@ -58,6 +59,16 @@
           <span>Gerenciar Usuários</span>
         </a>
       </li>
+      {% endif %}
+
+      <!-- Link para Time-->
+      {% if session.get('grupo') in permissoes_sidebar['time'] %}
+      <li clas="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('time.time') }}">
+          <i class = "bi bi-people"></i>
+            <span>Time</span>
+        </a>
+      </li> 
       {% endif %}
 
       <!-- Dropdown para Documentos -->

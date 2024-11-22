@@ -1,8 +1,9 @@
 from . import db
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from datetime import datetime
 from sqlalchemy import extract, func
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes
+from sqlalchemy.exc import NoResultFound
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas
 
 public_bp = Blueprint('public', __name__)
 
@@ -177,3 +178,15 @@ def oportunidade():
     # Se nenhuma versão for selecionada, exibe a mais recente
     oportunidade_atual = oportunidades[0] if oportunidades else None
     return render_template('oportunidade_frontend.html', oportunidades=oportunidades, oportunidade_atual=oportunidade_atual)
+
+@public_bp.route('/time/<string:email>')
+def time_detalhe(email):
+    # Tenta buscar a pessoa pelo email
+    try:
+        pessoa = db.session.query(Pessoas).filter_by(email=email).one()
+    except NoResultFound:
+        abort(404, description="Pessoa não encontrada.")
+
+    current_date = datetime.utcnow().date()
+    
+    return render_template('time_detalhe_frontend.html', pessoa=pessoa, current_date=current_date)

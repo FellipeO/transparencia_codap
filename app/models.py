@@ -18,6 +18,23 @@ class Lancamento(db.Model):
     def __repr__(self):
         return f'<Lancamento {self.nCodLanc}>'
 
+class Pessoas(db.Model):
+    __tablename__ = 'pessoas'
+
+    email = db.Column(db.String(255), primary_key=True, nullable=False)
+    nome = db.Column(db.String(255), nullable=False)
+    cargo = db.Column(db.String(100), nullable=False)
+    cidade = db.Column(db.String(100), nullable=False)
+    estado = db.Column(db.String(50), nullable=False)
+    data_admissao = db.Column(db.Date, nullable=False)
+    aniversario = db.Column(db.Date, nullable=False)
+    genero = db.Column(db.String(50), nullable=False)
+    etnia = db.Column(db.String(50), nullable=False)
+    linkedin = db.Column(db.String(255))
+    instagram = db.Column(db.String(255))
+    twitter = db.Column(db.String(255))
+    frase = db.Column(db.String(255))
+    
 class Clientes(db.Model):
     __tablename__='clientes'
 

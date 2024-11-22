@@ -33,6 +33,7 @@ def create_app():
     from app.admin_routes.estatuto_social import estatuto_bp
     from app.admin_routes.aquisicoes_alienacoes import aquisicoes_bp
     from app.admin_routes.oportunidades_investimento import oportunidades_bp
+    from app.admin_routes.time import time_bp
     from app.public import public_bp
 
     # Registra os blueprints com os caminhos específicos
@@ -41,6 +42,7 @@ def create_app():
     app.register_blueprint(estatuto_bp, url_prefix='/admin')
     app.register_blueprint(aquisicoes_bp, url_prefix='/admin')
     app.register_blueprint(oportunidades_bp, url_prefix='/admin')
+    app.register_blueprint(time_bp, url_prefix='/admin')
     app.register_blueprint(public_bp)  # Rotas públicas para a homepage
 
     return app

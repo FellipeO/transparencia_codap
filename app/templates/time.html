@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Time{% endblock %}
+{% block page_title %}Time{% endblock %}
+{% block breadcrumb %}Time{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>Lista de Pessoas</h3>
+  {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+  <a href="{{ url_for('time.time_adicionar') }}" class="btn btn-success">Adicionar Pessoa</a>
+  {% endif %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">Email</th>
+        <th scope="col">Cargo</th>
+        <th scope="col">Data de Admissão</th>
+        <th scope="col">Ações</th>        
+      </tr>
+    </thead>
+    <tbody>
+      {% for pessoa in pessoas %}
+      <tr>
+        <td>{{ pessoa.nome }}</td>
+        <td>{{ pessoa.email}}</td>
+        <td>{{ pessoa.cargo }}</td>
+        <td>{{ pessoa.data_admissao.strftime('%d/%m/%Y') }}</td>
+        {% if session.get('grupo') in ['super_admin', 'diretor'] or session.get('email') == pessoa.email%}
+        <td>
+          <a href="{{ url_for('time.time_editar', email=pessoa.email) }}" class="btn btn-warning btn-sm">Editar</a>
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+            <form action="{{ url_for('time.time_deletar', email=pessoa.email) }}" method="post" style="display: inline;">
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar?')">Deletar</button>
+            </form>
+            {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

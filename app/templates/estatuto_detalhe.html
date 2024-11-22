@@ -11,7 +11,7 @@
     <p><strong>Vigência Início:</strong> {{ estatuto.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
     <p><strong>Vigência Fim:</strong> {{ estatuto.vigencia_fim.strftime('%d/%m/%Y') if estatuto.vigencia_fim else 'Em vigência' }}</p>
     <p><strong>Status:</strong> {{ estatuto.status }}</p>
-    <p><strong>Texto:</strong> {{ estatuto.texto | safe }}</p>  <!-- Aqui está a alteração -->
+    <p><strong>Texto:</strong> {{ estatuto.texto | safe }}</p>
     
     <a href="{{ url_for('estatuto.estatuto_social') }}" class="btn btn-secondary">Voltar</a>
     

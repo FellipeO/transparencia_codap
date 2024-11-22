@@ -110,3 +110,12 @@ def verificar_super_admin():
         flash('Seu acesso foi revogado. Por favor, faça login novamente.', 'danger')
         return False
     return True
+
+def verificar_diretor():
+    email = session.get('email')
+    usuario = GrupoUsuario.query.filter_by(email=email).first()
+    # Verifica se o usuário é None ou não pertence a nenhum dos grupos
+    if usuario is None or (usuario.grupo not in ['diretor', 'super_admin']):
+        session.clear()
+        return False
+    return True
