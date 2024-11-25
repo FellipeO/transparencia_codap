@@ -3,7 +3,7 @@ from app.models import OportunidadesInvestimento
 from app.decorators import login_required
 from app import db
 from datetime import datetime
-from app.admin_routes.routes import verificar_super_admin
+from app.admin_routes.routes import verificar_diretor
 import os
 
 oportunidades_bp = Blueprint('oportunidades', __name__, url_prefix='/admin')
@@ -19,7 +19,7 @@ def oportunidades_investimento():
 @oportunidades_bp.route('/oportunidades_investimento/adicionar', methods=['GET', 'POST'])
 @login_required
 def oportunidades_adicionar():
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
 
     if request.method == 'POST':
@@ -118,7 +118,7 @@ def oportunidades_adicionar():
 @oportunidades_bp.route('/oportunidades_investimento/editar/<int:versao>', methods=['GET', 'POST'])
 @login_required
 def oportunidades_editar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     oportunidade = OportunidadesInvestimento.query.get(versao)
@@ -250,7 +250,7 @@ def oportunidade_download(versao):
 @oportunidades_bp.route('/oportunidades_investimento/deletar/<int:versao>', methods=['POST'])
 @login_required
 def oportunidades_deletar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     # Tenta buscar a versão da política

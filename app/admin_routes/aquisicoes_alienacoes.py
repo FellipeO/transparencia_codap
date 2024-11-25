@@ -3,7 +3,7 @@ from app.models import AquisicoesAlienacoes
 from app.decorators import login_required
 from app import db
 from datetime import datetime
-from app.admin_routes.routes import verificar_super_admin
+from app.admin_routes.routes import verificar_diretor
 import os
 
 aquisicoes_bp = Blueprint('aquisicoes', __name__, url_prefix='/admin')
@@ -19,7 +19,7 @@ def aquisicoes_alienacoes():
 @aquisicoes_bp.route('/aquisicoes_alienacoes/adicionar', methods=['GET', 'POST'])
 @login_required
 def aquisicoes_adicionar():
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
 
     if request.method == 'POST':
@@ -118,7 +118,7 @@ def aquisicoes_adicionar():
 @aquisicoes_bp.route('/aquisicoes_alienacoes/editar/<int:versao>', methods=['GET', 'POST'])
 @login_required
 def aquisicoes_editar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     aquisicao = AquisicoesAlienacoes.query.get(versao)
@@ -250,7 +250,7 @@ def aquisicao_download(versao):
 @aquisicoes_bp.route('/aquisicoes_alienacoes/deletar/<int:versao>', methods=['POST'])
 @login_required
 def aquisicoes_deletar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     # Tenta buscar a versão do regulamento

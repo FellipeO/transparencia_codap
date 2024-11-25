@@ -3,7 +3,7 @@ from app.models import EstatutoSocial
 from app.decorators import login_required
 from app import db
 from datetime import datetime
-from app.admin_routes.routes import verificar_super_admin
+from app.admin_routes.routes import verificar_diretor
 import os
 
 estatuto_bp = Blueprint('estatuto', __name__, url_prefix='/admin')
@@ -19,7 +19,7 @@ def estatuto_social():
 @estatuto_bp.route('/estatuto_social/adicionar', methods=['GET', 'POST'])
 @login_required
 def estatuto_adicionar():
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
 
     if request.method == 'POST':
@@ -118,7 +118,7 @@ def estatuto_adicionar():
 @estatuto_bp.route('/estatuto_social/editar/<int:versao>', methods=['GET', 'POST'])
 @login_required
 def estatuto_editar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     estatuto = EstatutoSocial.query.get(versao)
@@ -250,7 +250,7 @@ def estatuto_download(versao):
 @estatuto_bp.route('/estatuto_social/deletar/<int:versao>', methods=['POST'])
 @login_required
 def estatuto_deletar(versao):
-    if not verificar_super_admin():
+    if not verificar_diretor():
         return redirect(url_for('auth.error'))
     
     # Tenta buscar a versão do estatuto
