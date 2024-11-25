@@ -179,11 +179,11 @@ def oportunidade():
     oportunidade_atual = oportunidades[0] if oportunidades else None
     return render_template('oportunidade_frontend.html', oportunidades=oportunidades, oportunidade_atual=oportunidade_atual)
 
-@public_bp.route('/time/<string:email>')
-def time_detalhe(email):
-    # Tenta buscar a pessoa pelo email
+@public_bp.route('/time/<string:slug>')
+def time_detalhe(slug):
+    # Tenta buscar a pessoa pelo slug
     try:
-        pessoa = db.session.query(Pessoas).filter_by(email=email).one()
+        pessoa = db.session.query(Pessoas).filter_by(slug=slug).one()
     except NoResultFound:
         abort(404, description="Pessoa não encontrada.")
 

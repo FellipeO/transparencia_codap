@@ -3,6 +3,8 @@ from app.models import db, Pessoas
 from app.decorators import login_required
 from app import db
 from app.admin_routes.routes import verificar_diretor
+from unidecode import unidecode
+import re
 
 time_bp = Blueprint('time', __name__, url_prefix='/admin')
 
@@ -39,6 +41,9 @@ def time_adicionar():
         if not all([nome, cargo, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
             flash('Todos os campos obrigatórios devem ser preenchidos.', 'danger')
             return redirect(url_for('time.time_adicionar'))
+        
+        # Gerar o slug a partir do nome
+        slug = generate_slug(nome)
 
         # Criar e salvar o novo registro
         nova_pessoa = Pessoas(
@@ -54,7 +59,8 @@ def time_adicionar():
             linkedin=linkedin,
             instagram=instagram,
             twitter=twitter,
-            frase=frase
+            frase=frase,
+            slug=slug
         )
 
         try:
@@ -124,4 +130,11 @@ def time_deletar(email):
         flash('Erro ao deletar pessoa: ' + str(e), 'danger')
     
     return redirect(url_for('time.time'))
+
+# Função para gerar slug a partir do nome
+def generate_slug(nome):
+    nome = unidecode(nome)  # Remove acentos
+    slug = re.sub(r'[^a-zA-Z0-9\s]', '', nome)  # Remove caracteres especiais
+    slug = re.sub(r'\s+', '_', slug)  # Substitui espaços por _
+    return slug.lower()
 
