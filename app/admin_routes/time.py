@@ -1,12 +1,34 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from app.models import db, Pessoas
 from app.decorators import login_required
 from app import db
 from app.admin_routes.routes import verificar_diretor
 from unidecode import unidecode
 import re
+import os
+import hashlib
 
 time_bp = Blueprint('time', __name__, url_prefix='/admin')
+
+# Função para gerar o hash da foto com base no email
+def generate_photo_hash(email):
+    return hashlib.sha256((email + "foto").encode('utf-8')).hexdigest()
+
+# Função para salvar a foto no diretório
+def save_photo(file, email):
+    if file and file.filename != '':
+        # Gera o hash do nome do arquivo com base no email
+        hash_name = generate_photo_hash(email)
+        filename = f"{hash_name}.jpg"
+        upload_folder = current_app.config['UPLOAD_FOLDER_TIME']
+        filepath = os.path.join(upload_folder, filename)
+
+        # Log para verificar o caminho
+        print(f"Salvando arquivo em: {filepath}")
+        
+        file.save(filepath)
+        return hash_name
+    return None
 
 # Rota para visualizar a tabela de pessoas
 @time_bp.route('/time')
@@ -36,12 +58,19 @@ def time_adicionar():
         instagram = request.form.get('instagram')
         twitter = request.form.get('twitter')
         frase = request.form.get('frase')
+        foto = request.files.get('foto')
 
         # Validar campos obrigatórios
         if not all([nome, cargo, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
             flash('Todos os campos obrigatórios devem ser preenchidos.', 'danger')
             return redirect(url_for('time.time_adicionar'))
         
+        # Salva a foto e obtém o hash
+        hash_foto = save_photo(foto, email)
+        
+        # Verifique o valor do hash
+        print(f"Hash da foto gerado: {hash_foto}")
+
         # Gerar o slug a partir do nome
         slug = generate_slug(nome)
 
@@ -60,7 +89,8 @@ def time_adicionar():
             instagram=instagram,
             twitter=twitter,
             frase=frase,
-            slug=slug
+            slug=slug,
+            hash_foto=hash_foto
         )
 
         try:
@@ -101,6 +131,12 @@ def time_editar(email):
         pessoa.twitter = request.form.get('twitter')
         pessoa.frase = request.form.get('frase')
         
+        # Atualizar a foto se enviada
+        nova_foto = request.files.get('foto')
+        if nova_foto:
+            hash_foto = save_photo(nova_foto, email)
+            pessoa.hash_foto = hash_foto
+
         try:
             db.session.commit()
             return redirect(url_for('time.time'))
@@ -122,6 +158,15 @@ def time_deletar(email):
         flash('Pessoa não encontrada.', 'danger')
         return redirect(url_for('time.time'))
     
+    # Caminho completo da foto
+    if pessoa.hash_foto:
+        foto_path = os.path.join(current_app.config['UPLOAD_FOLDER_TIME'], f"{pessoa.hash_foto}.jpg")
+        if os.path.exists(foto_path):
+            try:
+                os.remove(foto_path)
+            except Exception as e:
+                flash('Erro ao remover a foto associada: ' + str(e), 'warning')
+
     try:
         db.session.delete(pessoa)
         db.session.commit()

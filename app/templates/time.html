@@ -29,9 +29,10 @@
         <td>{{ pessoa.nome }}</td>
         <td>{{ pessoa.email}}</td>
         <td>{{ pessoa.cargo }}</td>
-        <td>{{ pessoa.data_admissao.strftime('%d/%m/%Y') }}</td>
-        {% if session.get('grupo') in ['super_admin', 'diretor'] or session.get('email') == pessoa.email%}
+        <td>{{ pessoa.data_admissao.strftime('%d/%m/%Y') }}</td>  
         <td>
+          <a href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}" class="btn btn-info btn-sm">Visualizar</a>
+          {% if session.get('grupo') in ['super_admin', 'diretor'] or session.get('email') == pessoa.email%}
           <a href="{{ url_for('time.time_editar', email=pessoa.email) }}" class="btn btn-warning btn-sm">Editar</a>
           {% if session.get('grupo') in ['super_admin', 'diretor'] %}
             <form action="{{ url_for('time.time_deletar', email=pessoa.email) }}" method="post" style="display: inline;">

@@ -13,7 +13,9 @@
         <div class="hoverbox feed-profile" style="width: 150px; height: 150px">
             <div class="position-relative bg-body-quaternary rounded-circle cursor-pointer d-flex flex-center mb-xxl-7">
                 <div class="avatar avatar-5xl">
-                    <img class="rounded-circle img-thumbnail shadow-sm border-0" src="/static/frontend/assets/img/team/9.webp" alt="{{ pessoa.nome }}" />
+                    <img class="rounded-circle img-thumbnail shadow-sm border-0" 
+                        src="{{ url_for('public.uploads', filename=pessoa.hash_foto + '.jpg') if pessoa.hash_foto else url_for('static', filename='assets/img/SIMBOLO_1.png') }}" 
+                        alt="{{ pessoa.nome }}" />
                 </div>
             </div>
         </div>

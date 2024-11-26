@@ -35,7 +35,8 @@ class Pessoas(db.Model):
     instagram = db.Column(db.String(255))
     twitter = db.Column(db.String(255))
     frase = db.Column(db.String(255))
-    
+    hash_foto = db.Column(db.String(255), nullable=True)
+
 class Clientes(db.Model):
     __tablename__='clientes'
 

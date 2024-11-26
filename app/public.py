@@ -1,5 +1,5 @@
 from . import db
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, send_from_directory, current_app
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
@@ -186,3 +186,8 @@ def time_detalhe(slug):
     current_date = datetime.utcnow().date()
     
     return render_template('time_detalhe_frontend.html', pessoa=pessoa, current_date=current_date)
+
+@public_bp.route('/uploads/<path:filename>')
+def uploads(filename):
+    """Serve arquivos do diretório de uploads."""
+    return send_from_directory(current_app.config['UPLOAD_FOLDER_TIME'], filename)
