@@ -1,7 +1,7 @@
 from . import db
-import json
 from flask import Blueprint, render_template, request, abort
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
 from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas
@@ -26,9 +26,11 @@ meses_pt = {
 # Rota para a página inicial pública
 @public_bp.route('/')
 def homepage():
-    # Obtém o mês e ano atual
-    #mes = datetime.now().month
-    ano = datetime.now().year
+    # Obtém o ano e mês atuais
+    hoje = datetime.now()
+
+    # Calcula a data de 12 meses atrás
+    data_12_meses_antes = hoje - relativedelta(months=12)
 
     # Calcula o total de contas a pagar (cNatureza = 'P') e a receber (cNatureza = 'R')
     totais = (
@@ -37,8 +39,7 @@ def homepage():
             func.sum(Lancamento.nValorLanc).label('total')
         )
         .filter(
-            #extract('month', Lancamento.dDtLanc) == mes,
-            extract('year', Lancamento.dDtLanc) == ano,
+            Lancamento.dDtLanc >= data_12_meses_antes,
             Lancamento.cNatureza.in_(['P', 'R']),  # Apenas "Pagar" e "Receber"
             Lancamento.nCodCCDestino == 0
         )
