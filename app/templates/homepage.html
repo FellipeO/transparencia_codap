@@ -3,96 +3,279 @@
 {% block title %}Homepage - Transparência CODAP{% endblock %}
 
 {% block content %}
-<div class="col-12 col-xxl-6">
-    <div class="mb-8">
-        <h5 class="text-body-tertiary fw-semibold">Você está na</h5>
-        <h2 class="mb-2">Companhia mais transparente do mundo</h2>
-    </div>
-    <hr class="bg-body-secondary mb-6 mt-4" />
-    <div class="row flex-between-center mb-4 g-3">
-        <div class="col-auto">
-            <h3>Resumo Financeiro</h3>
-            <p class="text-body-tertiary lh-sm mb-0">Resumo do Extrato Financeiro neste ano</p>
+<div class="pb-5">
+    <div class="row g-4">
+      <div class="col-12 col-xxl-6">
+        <div class="mb-8">
+            <h5 class="text-body-tertiary fw-semibold">Você está na</h5>
+            <h2 class="mb-2">Companhia mais transparente do mundo</h2>
         </div>
+        <!--
+        <div class="row align-items-center g-4">
+          <div class="col-12 col-md-auto">
+            <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-star text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+              <div class="ms-3">
+                <h4 class="mb-0">57 new orders</h4>
+                <p class="text-body-secondary fs-9 mb-0">Awating processing</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-auto">
+            <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-pause text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+              <div class="ms-3">
+                <h4 class="mb-0">5 orders</h4>
+                <p class="text-body-secondary fs-9 mb-0">On hold</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-auto">
+            <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-xmark text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
+              <div class="ms-3">
+                <h4 class="mb-0">15 products</h4>
+                <p class="text-body-secondary fs-9 mb-0">Out of stock</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+        <!--
+        <hr class="bg-body-secondary mb-6 mt-4" />
+        <div class="row flex-between-center mb-4 g-3">
+          <div class="col-auto">
+            <h3>Total sells</h3>
+            <p class="text-body-tertiary lh-sm mb-0">Payment received across all channels</p>
+          </div>
+          <div class="col-8 col-sm-4">
+            <select class="form-select form-select-sm" id="select-gross-revenue-month">
+              <option>Mar 1 - 31, 2022</option>
+              <option>April 1 - 30, 2022</option>
+              <option>May 1 - 31, 2022</option>
+            </select>
+          </div>
+        </div>
+        <div class="echart-total-sales-chart" style="min-height:320px;width:100%"></div>
+        -->
+      </div>
+      <div class="col-12 col-xxl-6">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h5 class="mb-1">Resumo Financeiro<span class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"><!--<span class="badge-label">-6.8%</span>--></span></h5>
+                    <h6 class="text-body-tertiary">Últimos 12 meses</h6>
+                  </div>
+                  <h4><!--16,247--></h4>
+                </div>
+                <div class="d-flex justify-content-center px-4 py-6">
+                    <div id="grafico-resumo-financeiro" class="echart-financial-summary" style="height:115px; width:100%;"></div>
+                </div>
+                <div class="mt-2">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item me-2" style="background-color: #57cc99;"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Entradas</h6>
+                    <h6 class="text-body fw-semibold mb-0">
+                      R$ {{ '{:0,.2f}'.format(contas_a_receber) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.') }}
+                    </h6>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div class="bullet-item me-2" style="background-color: #4b38a8;"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Saídas</h6>
+                    <h6 class="text-body fw-semibold mb-0">
+                      R$ {{ '{:0,.2f}'.format(contas_a_pagar) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.') }}
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--
+          <div class="col-12 col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h5 class="mb-1">New customers<span class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"> <span class="badge-label">+26.5%</span></span></h5>
+                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                  </div>
+                  <h4>356</h4>
+                </div>
+                <div class="pb-0 pt-4">
+                  <div class="echarts-new-customers" style="height:180px;width:100%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          -->
+          <!--
+          <div class="col-12 col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h5 class="mb-2">Top coupons</h5>
+                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                  </div>
+                </div>
+                <div class="pb-4 pt-3">
+                  <div class="echart-top-coupons" style="height:115px;width:100%;"></div>
+                </div>
+                <div>
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item bg-primary me-2"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Percentage discount</h6>
+                    <h6 class="text-body fw-semibold mb-0">72%</h6>
+                  </div>
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item bg-primary-lighter me-2"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Fixed card discount</h6>
+                    <h6 class="text-body fw-semibold mb-0">18%</h6>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div class="bullet-item bg-info-dark me-2"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Fixed product discount</h6>
+                    <h6 class="text-body fw-semibold mb-0">10%</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          -->
+          <!--
+          <div class="col-12 col-md-6">
+            <div class="card h-100">
+              <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h5 class="mb-2">Paying vs non paying</h5>
+                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center pt-3 flex-1">
+                  <div class="echarts-paying-customer-chart" style="height:100%;width:100%;"></div>
+                </div>
+                <div class="mt-3">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item bg-primary me-2"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Paying customer</h6>
+                    <h6 class="text-body fw-semibold mb-0">30%</h6>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div class="bullet-item bg-primary-subtle me-2"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Non-paying customer</h6>
+                    <h6 class="text-body fw-semibold mb-0">70%</h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          -->
+        </div>
+      </div>
     </div>
-    <div id="grafico-pie" style="width: 100%; height: 450px;"></div>
 </div>
 
+<script src="/static/frontend/css/theme.min.css"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
 <script>
-    // Dados passados da rota
-    const dadosGrafico = JSON.parse('{{ dados_grafico | tojson | safe }}');
+    function getColor(colorName) {
+        const colors = {
+            primary: '#57cc99',
+            'primary-lighter': '#4b38a8',
+            'info-dark': '#228be6',
+            'body-highlight-bg': '#f8f9fa',
+            'border-color': '#dee2e6',
+            'light-text-emphasis': '#495057',
+            'body-bg': '#6b6b6b`'
+        };
+        return colors[colorName] || '#000000'; // Cor padrão caso o nome não exista.
+    }
 
-    // Função para formatar valores monetários no formato brasileiro
-    const formatarValor = valor => {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(valor);
-    };
+    document.addEventListener('DOMContentLoaded', function () {
+      const valorPagar = JSON.parse('{{ contas_a_pagar | default(0) | tojson }}');
+      const valorReceber = JSON.parse('{{ contas_a_receber | default(0) | tojson }}');
+      const chartElement = document.getElementById('grafico-resumo-financeiro');
+    
+      if (chartElement) {
+          // Dados do gráfico
+          const chartData =  [
+              { value: valorReceber, name: 'Entradas' },
+              { value: valorPagar, name: 'Saídas' }
+          ];
+    
+          // Instanciar o gráfico
+          const chart = echarts.init(chartElement);
+    
+          // Configuração do gráfico
+          const options = {
+              color: [
+                  getColor('primary'),
+                  getColor('primary-lighter'),
+                  getColor('info-dark')
+              ],
 
-    // Inicializar o gráfico
-    const graficoPie = echarts.init(document.getElementById('grafico-pie'));
-
-    // Configuração do gráfico
-    const opcoesGrafico = {
-        tooltip: {
-            trigger: 'item',
-            formatter: params => `${params.seriesName} <br/>${params.name}: ${formatarValor(params.value)} (${params.percent}%)`,
-            position: function (point, params, dom, rect, size) {
-                // Garantir que a tooltip não fique fora da tela
-                let x = point[0];
-                let y = point[1];
-
-                // Ajustar a posição horizontal se necessário
-                if (x + dom.offsetWidth > size.viewSize[0]) {
-                    x = size.viewSize[0] - dom.offsetWidth;
-                }
-
-                // Ajustar a posição vertical se necessário
-                if (y + dom.offsetHeight > size.viewSize[1]) {
-                    y = size.viewSize[1] - dom.offsetHeight;
-                }
-
-                return [x, y];
-            }
-        },
-        legend: {
-            left: 'left',
-            textStyle: {
-                color: '#666'
-            }
-        },
-        series: [
-            {
-                name: 'Resumo Financeiro',
+            tooltip: {
+              trigger: 'item',
+              padding: [7, 10],
+              backgroundColor: getColor('body-highlight-bg'),
+              borderColor: getColor('border-color'),
+              textStyle: { color: getColor('light-text-emphasis') },
+              borderWidth: 1,
+              transitionDuration: 0,
+              position(pos, params, el, elRect, size) {
+              const obj = { top: pos[1] - 35 }; // set tooltip position over 35px from pointer
+                  if (window.innerWidth > 540) {
+                      if (pos[0] <= size.viewSize[0] / 2) {
+                          obj.left = pos[0] + 20; // 'move in right';
+                      } else {
+                          obj.left = pos[0] - size.contentSize[0] - 20;
+                      }
+                  } else {
+                      obj[pos[0] < size.viewSize[0] / 2 ? 'left' : 'right'] = 0;
+                  }
+                  return obj;
+              },
+              formatter: params => {
+                const valorFormatado = `R$ ${params.data.value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+                return `<strong>${params.data.name}:</strong> ${valorFormatado}`;
+              },
+              extraCssText: 'z-index: 1000'
+            },
+            legend: { show: false },
+            series: [
+              {
+                name: '',
                 type: 'pie',
-                radius: '90%',
-                data: dadosGrafico,
+                radius: ['100%', '87%'],
+                avoidLabelOverlap: false,
                 emphasis: {
-                    itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                }
-            }
-        ]
-    };
-
-    // Aplicar as opções no gráfico
-    graficoPie.setOption(opcoesGrafico);
-    window.addEventListener("resize", function () {
-        graficoPie.resize();
+                  scale: false,
+                  itemStyle: {
+                      color:'inherit'
+                  }
+                },
+                itemStyle: {
+                  borderWidth: 2,
+                  borderColor: getColor('body-bg')
+                },
+                label: {
+                  show: true,
+                  position: 'center',
+                  formatter: '{a}',
+                  fontSize: 23,
+                  color: getColor('light-text-emphasis')
+                },
+                data: chartData
+              }
+            ],
+            grid: { containLabel: true}
+          };
+    
+          // Aplicar configurações e renderizar
+          chart.setOption(options);
+        }
     });
 </script>
-
-<style>
-    #grafico-pie {
-        width: 100%;
-        max-width: 600px;  /* Limita o tamanho máximo */
-        height: 450px;
-    }
-</style>
-
 {% endblock %}

@@ -1,4 +1,5 @@
 from . import db
+import json
 from flask import Blueprint, render_template, request, abort
 from datetime import datetime
 from sqlalchemy import extract, func
@@ -56,14 +57,8 @@ def homepage():
         elif natureza == 'R':
             contas_a_receber = total
 
-    # Formata os dados para o gráfico
-    dados_grafico = [
-        {"value": contas_a_receber, "name": "Contas Recebidas"},
-        {"value": contas_a_pagar, "name": "Contas Pagas"}
-    ]
-
     # Renderiza o template com os dados do gráfico
-    return render_template('homepage.html', dados_grafico=dados_grafico)
+    return render_template('homepage.html', contas_a_pagar=contas_a_pagar, contas_a_receber=contas_a_receber)
 
 def formatar_mes_em_portugues(mes, ano):
     return f'{meses_pt[mes].capitalize()} {ano}'
