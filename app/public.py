@@ -58,8 +58,21 @@ def homepage():
         elif natureza == 'R':
             contas_a_receber = total
 
-    # Renderiza o template com os dados do gráfico
-    return render_template('homepage.html', contas_a_pagar=contas_a_pagar, contas_a_receber=contas_a_receber)
+    # Consulta para contar o total de funcionários e a porcentagem de mulheres
+    total_funcionarios = db.session.query(func.count(Pessoas.email)).scalar()
+    total_mulheres = db.session.query(func.count(Pessoas.email)).filter(Pessoas.genero == 'Feminino').scalar()
+
+    # Calcula a porcentagem de mulheres
+    porcentagem_mulheres = (total_mulheres / total_funcionarios * 100) if total_funcionarios > 0 else 0
+
+    # Renderiza o template com os dados
+    return render_template(
+        'homepage.html',
+        contas_a_pagar=contas_a_pagar,
+        contas_a_receber=contas_a_receber,
+        total_funcionarios=total_funcionarios,
+        porcentagem_mulheres=porcentagem_mulheres
+    )
 
 def formatar_mes_em_portugues(mes, ano):
     return f'{meses_pt[mes].capitalize()} {ano}'
