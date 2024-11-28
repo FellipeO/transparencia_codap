@@ -48,11 +48,6 @@ def oportunidades_adicionar():
             flash('Erro: A versão já existe. Por favor, insira uma versão única.', 'danger')
             return redirect(url_for('oportunidades.oportunidades_adicionar'))
 
-        # Verifica se vigencia_inicio não é posterior a vigencia_fim
-        if vigencia_inicio_date > vigencia_fim_date:
-            flash('Erro: A data de início da vigência não pode ser posterior à data de fim.', 'danger')
-            return redirect(url_for('oportunidades.oportunidades_adicionar'))
-
         # Busca a maior versão inferior à nova versão
         versao_anterior = (
             OportunidadesInvestimento.query
@@ -61,10 +56,10 @@ def oportunidades_adicionar():
             .first()
         )
 
-        # Se houver uma versão anterior, valida a nova data de vigência contra a vigência final da versão anterior
-        if versao_anterior and vigencia_inicio_date < versao_anterior.vigencia_fim:
+         # Valida a nova data de vigência contra a vigência final da versão anterior, se houver
+        if versao_anterior and versao_anterior.vigencia_fim and vigencia_inicio_date < versao_anterior.vigencia_fim:
             flash(
-                f'Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).', 
+                f'Erro: A data de início da nova vigência deve ser igual ou posterior à data de fim da versão anterior ({versao_anterior.versao}).',
                 'danger'
             )
             return redirect(url_for('oportunidades.oportunidades_adicionar'))
@@ -77,10 +72,10 @@ def oportunidades_adicionar():
             .first()
         )
 
-        # Se houver uma versão subsequente, valida a data de vigência final contra a data de vigência inicial da versão subsequente
-        if versao_subsequente and vigencia_fim_date > versao_subsequente.vigencia_inicio:
+        # Valida a data de vigência final contra a data de vigência inicial da versão subsequente, se houver
+        if versao_subsequente and vigencia_fim_date and vigencia_fim_date > versao_subsequente.vigencia_inicio:
             flash(
-                f'Erro: A data de fim da nova vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).', 
+                f'Erro: A data de fim da nova vigência deve ser igual ou anterior à data de início da próxima versão ({versao_subsequente.versao}).',
                 'danger'
             )
             return redirect(url_for('oportunidades.oportunidades_adicionar'))

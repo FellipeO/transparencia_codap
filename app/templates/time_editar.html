@@ -64,10 +64,10 @@
         <label for="genero" class="col-sm-2 col-form-label">Gênero</label>
         <div class="col-sm-4">
             <select class="form-select" id="genero" name="genero" required>
-                <option value="" selected>Escolha...</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Feminino">Feminino</option>
-                <option value="Outro">Outro</option>
+                <option value="" {% if not pessoa.genero %}selected{% endif %}>Escolha...</option>
+                <option value="Masculino" {% if pessoa.genero == "Masculino" %}selected{% endif %}>Masculino</option>
+                <option value="Feminino" {% if pessoa.genero == "Feminino" %}selected{% endif %}>Feminino</option>
+                <option value="Outro" {% if pessoa.genero == "Outro" %}selected{% endif %}>Outro</option>
             </select>
         </div>
         <label for="etnia" class="col-sm-2 col-form-label">Etnia</label>
@@ -100,7 +100,7 @@
     <div class="row mb-3">
         <label for="frase" class="col-sm-2 col-form-label">Frase</label>
         <div class="col-sm-10">
-            <textarea class="form-control" id="frase" name="frase" rows="3" value="{{pessoa.frase}}"></textarea>
+            <textarea class="form-control" id="frase" name="frase" rows="3">{{ pessoa.frase }}</textarea>
         </div>
     </div>
 

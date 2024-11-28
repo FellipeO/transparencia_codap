@@ -204,3 +204,8 @@ def time_detalhe(slug):
 def uploads(filename):
     """Serve arquivos do diretório de uploads."""
     return send_from_directory(current_app.config['UPLOAD_FOLDER_TIME'], filename)
+
+
+@public_bp.route('/evento')
+def evento():
+    return render_template('evento_detalhe_frontend.html')

@@ -1,5 +1,6 @@
 from . import db
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 class Lancamento(db.Model):
     __tablename__ = 'lancamentos'
@@ -17,6 +18,23 @@ class Lancamento(db.Model):
 
     def __repr__(self):
         return f'<Lancamento {self.nCodLanc}>'
+
+class Evento(db.Model):
+    __tablename__ = 'eventos'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nome = db.Column(db.String(255), nullable=False)
+    data = db.Column(db.Date, nullable=False)
+    hora = db.Column(db.Time, nullable=False)
+    endereco = db.Column(db.String(255), nullable=False)
+    email_organizador = db.Column(db.String(255), nullable=False)
+    criado_em = db.Column(db.DateTime, default=datetime.utcnow)
+    atualizado_em = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+
 
 class Pessoas(db.Model):
     __tablename__ = 'pessoas'

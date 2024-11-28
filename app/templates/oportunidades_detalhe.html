@@ -11,7 +11,7 @@
     <p><strong>Vigência Início:</strong> {{ oportunidade.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
     <p><strong>Vigência Fim:</strong> {{ oportunidade.vigencia_fim.strftime('%d/%m/%Y') if oportunidade.vigencia_fim else 'Em vigência' }}</p>
     <p><strong>Status:</strong> {{ oportunidade.status }}</p>
-    <p><strong>Texto:</strong> {{ oportunidade.texto | safe }}</p>  <!-- Aqui está a alteração -->
+    <p><strong>Texto:</strong> {{ oportunidade.texto | safe }}</p>
     
     <a href="{{ url_for('oportunidades.oportunidades_investimento') }}" class="btn btn-secondary">Voltar</a>
     
@@ -19,7 +19,7 @@
     <a href="{{ url_for('oportunidades.oportunidade_download', versao=oportunidade.versao) }}" class="btn btn-primary">Baixar Documento</a>
     {% endif %}
 
-    {% if session.get('grupo') == 'super_admin' %}
+    {% if session.get('grupo') in ['super_admin', 'diretor'] %}
     <a href="{{ url_for('oportunidades.oportunidades_editar', versao=oportunidade.versao) }}" class="btn btn-primary">Editar</a>
     {% endif %}
   </div>

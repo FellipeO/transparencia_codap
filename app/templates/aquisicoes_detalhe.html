@@ -11,7 +11,7 @@
     <p><strong>Vigência Início:</strong> {{ aquisicao.vigencia_inicio.strftime('%d/%m/%Y') }}</p>
     <p><strong>Vigência Fim:</strong> {{ aquisicao.vigencia_fim.strftime('%d/%m/%Y') if aquisicao.vigencia_fim else 'Em vigência' }}</p>
     <p><strong>Status:</strong> {{ aquisicao.status }}</p>
-    <p><strong>Texto:</strong> {{ aquisicao.texto | safe }}</p>  <!-- Aqui está a alteração -->
+    <p><strong>Texto:</strong> {{ aquisicao.texto | safe }}</p>
     
     <a href="{{ url_for('aquisicoes.aquisicoes_alienacoes') }}" class="btn btn-secondary">Voltar</a>
     
@@ -19,7 +19,7 @@
     <a href="{{ url_for('aquisicoes.aquisicao_download', versao=aquisicao.versao) }}" class="btn btn-primary">Baixar Documento</a>
     {% endif %}
 
-    {% if session.get('grupo') == 'super_admin' %}
+    {% if session.get('grupo') in ['super_admin', 'diretor'] %}
     <a href="{{ url_for('aquisicoes.aquisicoes_editar', versao=aquisicao.versao) }}" class="btn btn-primary">Editar</a>
     {% endif %}
   </div>

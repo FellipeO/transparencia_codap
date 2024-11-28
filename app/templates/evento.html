@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Eventos{% endblock %}
+{% block page_title %}Eventos{% endblock %}
+{% block breadcrumb %}Eventos{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>Lista de Eventos</h3>
+  {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+  <a href="{{ url_for('evento.evento_adicionar') }}" class="btn btn-success">Adicionar Evento</a>
+  {% endif %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Nome</th>
+        <th scope="col">Data</th>
+        <th scope="col">Hora</th>
+        <th scope="col">Endereço</th>
+        <th scope="col">Organizador</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for evento in eventos %}
+      <tr>
+        <td>{{ evento.nome }}</td>
+        <td>{{ evento.data.strftime('%d/%m/%Y') }}</td>
+        <td>{{ evento.hora.strftime('%H:%M') }}</td>
+        <td>{{ evento.endereco }}</td>
+        <td>{{ evento.email_organizador }}</td>
+        <td>
+          <a href="{{ url_for('evento.evento_editar', id=evento.id) }}" class="btn btn-warning btn-sm">Editar</a>
+          <form action="{{ url_for('evento.evento_deletar', id=evento.id) }}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar?')">Deletar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

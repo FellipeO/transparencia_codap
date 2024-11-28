@@ -7,7 +7,7 @@
 {% block content %}
 <div class="d-flex justify-content-between mb-3">
   <h3>Estatuto Social</h3>
-  {% if session.get('grupo') == 'super_admin' %}
+  {% if session.get('grupo') in ['super_admin', 'diretor'] %}
   <a href="{{ url_for('estatuto.estatuto_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
   {% endif %}
 </div>
@@ -31,11 +31,15 @@
         <td>{{ estatuto.vigencia_fim.strftime('%d/%m/%Y') if estatuto.vigencia_fim else 'Em vigência' }}</p></td>
         <td>{{ estatuto.status }}</td>
         <td>
-          <a href="{{ url_for('estatuto.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info">Visualizar</a>
+          <a href="{{ url_for('estatuto.estatuto_detalhe', versao=estatuto.versao) }}" class="btn btn-info btn-sm">Visualizar</a>
+
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+          <a href="{{ url_for('estatuto.estatuto_editar', versao=estatuto.versao) }}" class="btn btn-warning btn-sm">Editar</a>
+          {% endif %}
           
-          {% if session.get('grupo') == 'super_admin' %}
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
           <form action="{{ url_for('estatuto.estatuto_deletar', versao=estatuto.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
-            <button type="submit" class="btn btn-danger">Deletar</button>
+            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
           </form>
           {% endif %}
         </td>
