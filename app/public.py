@@ -4,7 +4,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas, Evento
 
 public_bp = Blueprint('public', __name__)
 
@@ -206,6 +206,19 @@ def uploads(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER_TIME'], filename)
 
 
-@public_bp.route('/evento')
-def evento():
-    return render_template('evento_detalhe_frontend.html')
+# Rota para exibir os detalhes de um evento
+@public_bp.route('/evento/<int:id>')
+def evento_detalhe(id):
+    # Buscar o evento pelo ID
+    evento = db.session.get(Evento, id)
+    if not evento:
+        abort(404)  # Retorna erro 404 se o evento não for encontrado
+
+    # Buscar organizador relacionado
+    organizador = db.session.query(Pessoas).filter_by(email=evento.email_organizador).first()
+
+    return render_template(
+        'evento_detalhe_frontend.html',
+        evento=evento,
+        organizador=organizador
+    )

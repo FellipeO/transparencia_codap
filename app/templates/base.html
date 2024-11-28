@@ -36,7 +36,8 @@
       'time': ['super_admin', 'diretor', 'assessor'],
       'estatuto_social': ['super_admin', 'diretor', 'assessor'],
       'aquisicoes_alienacoes' : ['super_admin', 'diretor', 'assessor'],
-      'oportunidades_investimento' : ['super_admin', 'diretor', 'assessor']
+      'oportunidades_investimento' : ['super_admin', 'diretor', 'assessor'],
+      'evento' : ['super_admin', 'diretor', 'assessor']
     } %}
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -59,6 +60,16 @@
           <span>Gerenciar Usuários</span>
         </a>
       </li>
+      {% endif %}
+
+      <!-- Link para Evento-->
+      {% if session.get('grupo') in permissoes_sidebar['evento'] %}
+      <li clas="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('evento.evento') }}">
+          <i class = "bi bi-bookmark"></i>
+            <span>Eventos</span>
+        </a>
+      </li> 
       {% endif %}
 
       <!-- Link para Time-->

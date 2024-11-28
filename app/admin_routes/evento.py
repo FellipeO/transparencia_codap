@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
 from app.models import db, Evento
 from app.decorators import login_required
+from app.admin_routes.routes import verificar_diretor
 from datetime import datetime
 
 # Blueprint para eventos
@@ -17,12 +18,16 @@ def evento():
 @evento_bp.route('/evento/adicionar', methods=['GET', 'POST'])
 @login_required
 def evento_adicionar():
+    if not verificar_diretor():  # Verifica se o usuário tem permissão
+        return redirect(url_for('auth.error'))
+
     if request.method == 'POST':
         nome = request.form.get('nome')
         data = request.form.get('data')
         hora = request.form.get('hora')
         endereco = request.form.get('endereco')
         email_organizador = request.form.get('email_organizador')
+        descricao = request.form.get('descricao')
 
         # Validação de campos obrigatórios
         if not all([nome, data, hora, endereco, email_organizador]):
@@ -43,7 +48,8 @@ def evento_adicionar():
             data=data,
             hora=hora,
             endereco=endereco,
-            email_organizador=email_organizador
+            email_organizador=email_organizador,
+            descricao=descricao
         )
 
         try:
@@ -62,6 +68,9 @@ def evento_adicionar():
 @evento_bp.route('/evento/editar/<int:id>', methods=['GET', 'POST'])
 @login_required
 def evento_editar(id):
+    if not verificar_diretor():
+        return redirect(url_for('auth.error'))
+    
     evento = db.session.get(Evento, id)
     if not evento:
         flash('Evento não encontrado.', 'danger')
@@ -73,6 +82,7 @@ def evento_editar(id):
         evento.hora = request.form.get('hora')
         evento.endereco = request.form.get('endereco')
         evento.email_organizador = request.form.get('email_organizador')
+        evento.descricao = request.form.get('descricao')
 
         # Validação de campos obrigatórios
         if not all([evento.nome, evento.data, evento.hora, evento.endereco, evento.email_organizador]):
@@ -102,6 +112,9 @@ def evento_editar(id):
 @evento_bp.route('/evento/deletar/<int:id>', methods=['POST'])
 @login_required
 def evento_deletar(id):
+    if not verificar_diretor():
+        return redirect(url_for('auth.error'))
+    
     evento = db.session.get(Evento, id)
     if not evento:
         flash('Evento não encontrado.', 'danger')
@@ -116,3 +129,4 @@ def evento_deletar(id):
         flash(f'Erro ao deletar evento: {str(e)}', 'danger')
     
     return redirect(url_for('evento.evento'))
+

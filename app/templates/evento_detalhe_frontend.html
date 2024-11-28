@@ -9,7 +9,7 @@
       <div class="col-xl-8 border-end-xl">
         <div class="card mb-9">
           <div class="card-body">
-            <h1 class="lh-sm fs-6 fs-xxl-4 mb-2">Brandmyth presents- Shironamhin 25 years celebration with symphony orchestra</h1>
+            <h1 class="lh-sm fs-6 fs-xxl-4 mb-2">{{ evento.nome }}</h1>
             <!--<p class="fs-8 mb-4 text-body-tertiary">Tavern on the Greend, New York</p>-->
             <div class="card mb-5 mb-xxl-7">
               <div class="card-body">
@@ -19,10 +19,10 @@
                       <div class="mb-3">
                         <div class="d-flex align-items-center">
                           <div class="px-2 py-1 bg-info-subtle rounded"><span class="text-info" data-feather="map-pin"></span></div>
-                          <h5 class="ms-2 text-body-emphasis mb-0">Location</h5>
+                          <h5 class="ms-2 text-body-emphasis mb-0">Local</h5>
                         </div>
                       </div>
-                      <p class="lh-sm mb-0 text-body-tertiary">36/4A, James Tiberius Auditorium,<br />Vancouver, British Columbia, Canada </p>
+                      <p class="lh-sm mb-0 text-body-tertiary">{{ evento.endereco }}</p>
                     </div>
                     <div class="my-4 mx-3 border-start border-translucent d-none d-md-block"></div>
                   </div>
@@ -30,10 +30,13 @@
                     <div class="mb-3">
                       <div class="d-flex align-items-center">
                         <div class="px-2 py-1 bg-primary-subtle rounded"><span class="text-primary" data-feather="clock"></span></div>
-                        <h5 class="ms-2 mb-0">Date &amp; Time</h5>
+                        <h5 class="ms-2 mb-0">Data &amp; Hora</h5>
                       </div>
                     </div>
-                    <p class="lh-sm mb-0 text-body-tertiary">28th June - 2nd July 2022,<br />10 am - 4 pm Eastern Daylight Time</p>
+                    <p class="lh-sm mb-0 text-body-tertiary">
+                      {{ evento.data.strftime('%d/%m/%Y') }}<br />
+                      {{ evento.hora.strftime('%H:%M') }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -56,6 +59,7 @@
             -->
           </div>
         </div>
+        <p>{{ evento.descricao|safe }}</p>
         <!--
         <h2 class="mb-3">About this event</h2>
         <p class="text-justify text-body-secondary mb-6 mb-xxl-8">The Festival Season hopes to continue its rescheduled events in 2023 during the spring block. This will be a continuation of the tradition for the loyal fanbase to watch a jam-packed day full of exciting top-notch performances. With a unique lineup, you’ll know what to expect and get ready to embrace the festivity. Moreover, we’ve added a detailed list of the performers, with details of dates, lineups and prospective entry requirements. We will keep you posted with necessary updates regarding the event.</p>
@@ -111,13 +115,20 @@
         <button class="btn btn-phoenix-primary w-100 mb-5 mb-xl-0" type="button">Load more</button>
         -->
       </div>
-      <div class="col-xl-4">
-        
-        <h3 class="mb-5 mb-xl-4">Organized by</h3>
-        <div class="row g-2 mb-6 align-items-center">
-          <div class="col-auto"><img class="rounded img-fluid" src="../../assets/img/brand2/b.png" alt="..." width="40" height="40" /></div>
-          <div class="col-sm-auto flex-1"><a class="mb-0 text-primary fw-semibold lh-sm" href="#!">Bass Events, Inc.</a></div>
-        </div>
+      <div class="col-xl-4">      
+        <h3 class="mb-5 mb-xl-4">Organizado por</h3>
+        {% if organizador %}
+          <div class="row g-2 mb-6 align-items-center">
+            <div class="col-auto"><img class="rounded img-fluid" src="{{ url_for('public.uploads', filename=organizador.hash_foto + '.jpg') if organizador.hash_foto else url_for('static', filename='assets/img/SIMBOLO_1.png') }}"
+              alt="{{ organizador.nome }}" width="40" height="40" /></div>
+          <div class="col-sm-auto flex-1"><a class="mb-0 text-primary fw-semibold lh-sm" href="{{ url_for('public.time_detalhe', slug=organizador.slug) }}">
+              {{ organizador.nome }}
+            </a><p class="mb-0">{{ organizador.cargo }}</p></div>
+          </div>
+        {% else %}
+            <p>Informações do organizador não disponíveis.</p>
+        {% endif %}
+
         <!--
         <div class="mb-8">
           <h3 class="mb-5 mb-xl-4">Location </h3>

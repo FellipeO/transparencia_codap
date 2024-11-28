@@ -28,6 +28,7 @@ class Evento(db.Model):
     hora = db.Column(db.Time, nullable=False)
     endereco = db.Column(db.String(255), nullable=False)
     email_organizador = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(db.Text)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
     atualizado_em = db.Column(
         db.DateTime,
