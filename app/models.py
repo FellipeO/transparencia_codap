@@ -26,6 +26,8 @@ class Evento(db.Model):
     nome = db.Column(db.String(255), nullable=False)
     data = db.Column(db.Date, nullable=False)
     hora = db.Column(db.Time, nullable=False)
+    estado = db.Column(db.String(100), nullable=False)
+    cidade = db.Column(db.String(100), nullable=False)
     endereco = db.Column(db.String(255), nullable=False)
     email_organizador = db.Column(db.String(255), nullable=False)
     descricao = db.Column(db.Text)

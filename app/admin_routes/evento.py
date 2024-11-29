@@ -25,12 +25,14 @@ def evento_adicionar():
         nome = request.form.get('nome')
         data = request.form.get('data')
         hora = request.form.get('hora')
+        estado = request.form.get('estado')
+        cidade = request.form.get('cidade')
         endereco = request.form.get('endereco')
         email_organizador = request.form.get('email_organizador')
         descricao = request.form.get('descricao')
 
         # Validação de campos obrigatórios
-        if not all([nome, data, hora, endereco, email_organizador]):
+        if not all([nome, data, hora, estado, cidade, endereco, email_organizador]):
             flash('Todos os campos devem ser preenchidos.', 'danger')
             return redirect(url_for('evento.evento_adicionar'))
         
@@ -47,6 +49,8 @@ def evento_adicionar():
             nome=nome,
             data=data,
             hora=hora,
+            estado=estado,
+            cidade=cidade,
             endereco=endereco,
             email_organizador=email_organizador,
             descricao=descricao
@@ -55,7 +59,6 @@ def evento_adicionar():
         try:
             db.session.add(novo_evento)
             db.session.commit()
-            flash('Evento adicionado com sucesso!', 'success')
             return redirect(url_for('evento.evento'))
         except Exception as e:
             db.session.rollback()
@@ -80,12 +83,14 @@ def evento_editar(id):
         evento.nome = request.form.get('nome')
         evento.data = request.form.get('data')
         evento.hora = request.form.get('hora')
+        evento.estado = request.form.get('estado')
+        evento.cidade = request.form.get('cidade')
         evento.endereco = request.form.get('endereco')
         evento.email_organizador = request.form.get('email_organizador')
         evento.descricao = request.form.get('descricao')
 
         # Validação de campos obrigatórios
-        if not all([evento.nome, evento.data, evento.hora, evento.endereco, evento.email_organizador]):
+        if not all([evento.nome, evento.data, evento.hora, evento.estado, evento.cidade, evento.endereco, evento.email_organizador]):
             flash('Todos os campos devem ser preenchidos.', 'danger')
             return redirect(url_for('evento.evento_editar', id=id))
         
@@ -99,7 +104,6 @@ def evento_editar(id):
 
         try:
             db.session.commit()
-            flash('Evento atualizado com sucesso!', 'success')
             return redirect(url_for('evento.evento'))
         except Exception as e:
             db.session.rollback()

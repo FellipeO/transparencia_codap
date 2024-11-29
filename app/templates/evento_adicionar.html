@@ -25,6 +25,20 @@
   </div>
 
   <div class="form-group">
+    <label for="estado">Estado</label>
+    <select id="estado" name="estado" class="form-control" required>
+      <option value="" disabled selected>Selecione o estado</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="cidade">Cidade</label>
+    <select id="cidade" name="cidade" class="form-control" required>
+      <option value="" disabled selected>Selecione a cidade</option>
+    </select>
+  </div>
+  
+  <div class="form-group">
     <label for="endereco">Endereço</label>
     <input type="text" id="endereco" name="endereco" class="form-control" value="{{ evento.endereco if evento else '' }}" required>
   </div>
@@ -63,5 +77,44 @@
     document.querySelector('form').addEventListener('submit', function (e) {
         const content = tinymce.get('descricao').getContent();
     });
+</script>
+
+<script>
+  // Função para carregar estados
+  async function carregarEstados() {
+    const response = await fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados");
+    const estados = await response.json();
+    const estadoSelect = document.getElementById("estado");
+
+    estados.sort((a, b) => a.nome.localeCompare(b.nome)); // Ordenar estados por nome
+    estados.forEach(estado => {
+      const option = document.createElement("option");
+      option.value = estado.sigla; // Sigla do estado
+      option.textContent = estado.nome; // Nome do estado
+      estadoSelect.appendChild(option);
+    });
+  }
+
+  // Função para carregar cidades com base no estado selecionado
+  async function carregarCidades(estadoSigla) {
+    const response = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`);
+    const cidades = await response.json();
+    const cidadeSelect = document.getElementById("cidade");
+
+    cidadeSelect.innerHTML = '<option value="" disabled selected>Selecione a cidade</option>';
+    cidades.sort((a, b) => a.nome.localeCompare(b.nome)); // Ordenar cidades por nome
+    cidades.forEach(cidade => {
+      const option = document.createElement("option");
+      option.value = cidade.nome; // Nome da cidade
+      option.textContent = cidade.nome;
+      cidadeSelect.appendChild(option);
+    });
+  }
+
+  // Eventos para carregar estados e cidades
+  document.addEventListener("DOMContentLoaded", carregarEstados);
+  document.getElementById("estado").addEventListener("change", (e) => {
+    carregarCidades(e.target.value);
+  });
 </script>
 {% endblock %}
