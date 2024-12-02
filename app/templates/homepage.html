@@ -39,8 +39,58 @@
           </div>
           -->
         </div>
-        <!--
         <hr class="bg-body-secondary mb-6 mt-4" />
+        <div class="col-auto">
+          <div class="col-auto" id="list-container" data-list='{"valueNames":["nome","cargo","tempo"],"page":5}'>
+            <div class="mb-5 mt-7">
+              <h3>Time</h3>
+              <p class="text-body-tertiary">Conheça o time e sua trajetória</p>
+            </div>
+            <div class="table-responsive scrollbar">
+              <table class="table fs-10 mb-0">
+                <thead>
+                  <tr>
+                    <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="nome" style="width:32%">NOME</th>
+                    <th class="sort border-top border-translucent align-middle" scope="col" data-sort="cargo" style="width:17%">CARGO</th>
+                    <th class="sort border-top border-translucent text-end align-middle" scope="col" data-sort="tempo" style="width:16%">TEMPO NA COMPANHIA</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for pessoa in pessoas %}
+                  <tr>
+                    <td class="white-space-nowrap ps-0 nome" style="width:32%">
+                      <div class="d-flex align-items-center">
+                        <a class="fw-bold text-primary fs-9" href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}">
+                          {{ pessoa.nome }}
+                        </a>
+                      </div>
+                    </td>
+                    <td class="align-middle cargo" style="width:17%">
+                      {{ pessoa.cargo }}
+                    </td>
+                    <td class="align-middle text-end tempo" style="width:16%">
+                      {{ pessoa.longevidade }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                
+              </table>
+            </div>
+            <div class="row align-items-center py-1">
+              <div class="pagination d-none"></div>
+              <div class="col d-flex fs-9">
+                <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p>
+              </div>
+              <div class="col-auto d-flex">
+
+                <button class="btn btn-link px-1 me-1" type="button" title="Previous" data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous</button>
+                <button class="btn btn-link px-1 ms-1" type="button" title="Next" data-list-pagination="next">Next<span class="fas fa-chevron-right ms-2"></span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--
         <div class="row flex-between-center mb-4 g-3">
           <div class="col-auto">
             <h3>Total sells</h3>
@@ -64,10 +114,9 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between">
                   <div>
-                    <h5 class="mb-1">Resumo Financeiro<span class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"><!--<span class="badge-label">-6.8%</span>--></span></h5>
+                    <h5 class="mb-1">Resumo Financeiro<span class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"></span></h5>
                     <h6 class="text-body-tertiary">Últimos 12 meses</h6>
                   </div>
-                  <h4><!--16,247--></h4>
                 </div>
                 <div class="d-flex justify-content-center px-4 py-6">
                     <div id="grafico-resumo-financeiro" class="echart-financial-summary" style="height:115px; width:100%;"></div>
@@ -90,6 +139,74 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <div class="card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <div>
+                    <h5 class="mb-1">Estrutura Societária<span class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"></span></h5>
+                    <h6 class="text-body-tertiary"><br></h6>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-center px-4 py-6">
+                  <div id="grafico-estrutura-societaria" style="height:115px; width:100%;"></div>
+                </div>
+                <div class="mt-2">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item me-2" style="background-color: #57cc99;"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Município de Aparecida de Goiânia</h6>
+                    <h6 class="text-body fw-semibold mb-0">
+                      50,1%
+                    </h6>
+                  </div>
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item me-2" style="background-color: #4b38a8;"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Capital não subscrito</h6>
+                    <h6 class="text-body fw-semibold mb-0">
+                      48,9%
+                    </h6>
+                  </div>
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="bullet-item me-2" style="background-color: #6b6b6b;"></div>
+                    <h6 class="text-body fw-semibold flex-1 mb-0">Associação dos Bancos</h6>
+                    <h6 class="text-body fw-semibold mb-0">
+                      1%
+                    </h6>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-xxl-4 ms-auto">
+            <div class="row g-0 py-3 border-bottom border-dashed align-items-end justify-content-between">
+              <div class="col-auto">
+                <h3 class="flex-1 mb-0 text-nowrap me-3">Próximos eventos</h3>
+              </div>
+            </div> 
+            {% if eventos %}
+              {% for evento, organizador_nome, organizador_slug in eventos %}
+                  <div class="py-3 border-bottom border-translucent border-dashed">
+                      <div class="d-flex flex-between-center">
+                          <p class="text-warning fs-10 mb-0 fw-bold mb-1">{{ evento.data.strftime('%d/%m/%Y') }}</p>
+                      </div>
+                      <a class="text-primary-hover text-body-highlight fw-bold mb-2 line-clamp-1 me-5 lh-base" href="{{ url_for('public.evento_detalhe', id=evento.id) }}">{{ evento.nome }}</a>
+                      <p class="text-body-secondary fs-9 mb-2">Organizado por <br />
+                        <a class="fw-bold text-primary" href="{{ url_for('public.time_detalhe', slug=organizador_slug) }}">
+                          {{ organizador_nome }}
+                        </a>
+                      </p>
+                      <p class="fs-9 text-body-tertiary fw-bold mb-1">
+                          <span class="fa-solid fa-clock text-body-secondary me-1"></span>{{ evento.hora.strftime('%H:%M') }}
+                      </p>
+                      <p class="fs-9 text-body-tertiary fw-bold mb-0">
+                          <span class="fa-solid fa-map-marker-alt text-body-secondary me-1"></span>{{ evento.cidade }}, {{ evento.estado }}
+                      </p>
+                  </div>
+              {% endfor %}
+          {% else %}
+              <p class="text-body-tertiary fs-9 mb-0">Nenhum evento próximo encontrado.</p>
+          {% endif %}
           </div>
           <!--
           <div class="col-12 col-md-6">
@@ -174,11 +291,13 @@
           -->
         </div>
       </div>
+      
     </div>
 </div>
 
 <script src="/static/frontend/css/theme.min.css"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
 
 <script>
     function getColor(colorName) {
@@ -189,7 +308,7 @@
             'body-highlight-bg': '#f8f9fa',
             'border-color': '#dee2e6',
             'light-text-emphasis': '#495057',
-            'body-bg': '#6b6b6b`'
+            'body-bg': '#6b6b6b'
         };
         return colors[colorName] || '#000000'; // Cor padrão caso o nome não exista.
     }
@@ -223,7 +342,7 @@
               backgroundColor: getColor('body-highlight-bg'),
               borderColor: getColor('border-color'),
               textStyle: { color: getColor('light-text-emphasis') },
-              borderWidth: 1,
+              borderWidth: 0,
               transitionDuration: 0,
               position(pos, params, el, elRect, size) {
               const obj = { top: pos[1] - 35 }; // set tooltip position over 35px from pointer
@@ -258,7 +377,7 @@
                   }
                 },
                 itemStyle: {
-                  borderWidth: 2,
+                  borderWidth: 0,
                   borderColor: getColor('body-bg')
                 },
                 label: {
@@ -279,4 +398,92 @@
         }
     });
 </script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const chartElement = document.getElementById('grafico-estrutura-societaria');
+    
+    if (chartElement) {
+      // Ajusta as dimensões do elemento
+      chartElement.style.width = '100%';
+      chartElement.style.height = '115px';
+
+      // Dados do gráfico
+      const chartData = [
+        { 
+          value: 50.1, 
+          name: 'Município de Aparecida de Goiânia (50,1%)',
+          itemStyle: { color: '#57cc99' } 
+        },
+        { 
+          value: 1, 
+          name: 'Associação dos Bancos (1%)',
+          itemStyle: { color: '#6b6b6b' } 
+        },
+        { 
+          value: 48.9, 
+          name: 'Capital não subscrito (48,9%)',
+          itemStyle: { color: '#4b38a8' } 
+        }
+      ];
+
+      // Instanciar o gráfico
+      const chart = echarts.init(chartElement);
+
+      // Configuração do gráfico
+      const options = {
+        tooltip: {
+          trigger: 'item',
+          padding: [7, 10],
+          backgroundColor: getColor('body-highlight-bg'),
+          borderColor: getColor('border-color'),
+          textStyle: { color: getColor('light-text-emphasis') },
+          borderWidth: 0,
+          formatter: params => {
+            const valorFormatado = `R$ ${params.value.toLocaleString('pt-BR')}`;
+            return `<strong>${params.name}:</strong> ${valorFormatado}`;
+          },
+        },
+        legend: {
+          show: false, // Oculta a legenda
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: '100%',
+            center: ['50%', '50%'],
+            data: chartData,
+            label: {
+              show: false, // Oculta os rótulos
+            },
+            labelLine: {
+              show: false, // Oculta as linhas dos rótulos
+            },
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            },
+          },
+        ],
+      };
+
+      // Aplicar configurações e renderizar
+      chart.setOption(options);
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+  var options = {
+    valueNames: ["nome", "cargo", "tempo"]
+  };
+
+  var userList = new List('list-container', options);
+});
+</script>
+
 {% endblock %}

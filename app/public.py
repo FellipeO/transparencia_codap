@@ -1,6 +1,6 @@
 from . import db
 from flask import Blueprint, render_template, request, abort, send_from_directory, current_app
-from datetime import datetime
+from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
@@ -65,13 +65,31 @@ def homepage():
     # Calcula a porcentagem de mulheres
     porcentagem_mulheres = (total_mulheres / total_funcionarios * 100) if total_funcionarios > 0 else 0
 
+    # Pesquisa todas as pessoas presentes no time
+    pessoas = Pessoas.query.all()
+    hoje = date.today()
+    for pessoa in pessoas:
+        pessoa.longevidade = (hoje - pessoa.data_admissao).days
+
+    # Consulta os próximos três eventos, com o nome do organizador
+    proximos_eventos = (
+        db.session.query(Evento, Pessoas.nome.label('organizador_nome'), Pessoas.slug.label('organizador_slug'))
+        .join(Pessoas, Pessoas.email == Evento.email_organizador)  # Faz o join para pegar o nome do organizador
+        .filter(Evento.data >= hoje)
+        .order_by(Evento.data, Evento.hora)  # Ordena por data e hora
+        .limit(3)  # Limita a 3 resultados
+        .all()
+    )
+
     # Renderiza o template com os dados
     return render_template(
         'homepage.html',
         contas_a_pagar=contas_a_pagar,
         contas_a_receber=contas_a_receber,
         total_funcionarios=total_funcionarios,
-        porcentagem_mulheres=porcentagem_mulheres
+        porcentagem_mulheres=porcentagem_mulheres,
+        pessoas=pessoas,
+        eventos=proximos_eventos
     )
 
 def formatar_mes_em_portugues(mes, ano):
