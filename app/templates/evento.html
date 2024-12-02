@@ -33,7 +33,7 @@
         <td>{{ evento.endereco }}</td>
         <td>{{ evento.email_organizador }}</td>
         <td>
-          <a href="{{ url_for('public.evento_detalhe', id=evento.id) }}" class="btn btn-info btn-sm">Visualizar</a>
+          <a href="{{ url_for('public.evento_detalhe', id=evento.id) }}" class="btn btn-info btn-sm" target="_blank">Visualizar</a>
           {% if session.get('grupo') in ['super_admin', 'diretor'] %}
             <a href="{{ url_for('evento.evento_editar', id=evento.id) }}" class="btn btn-warning btn-sm">Editar</a>
             <form action="{{ url_for('evento.evento_deletar', id=evento.id) }}" method="post" style="display: inline;">

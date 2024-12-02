@@ -9,8 +9,7 @@
         <div class="mb-8">
             <h5 class="text-body-tertiary fw-semibold">Você está na</h5>
             <h2 class="mb-2">Companhia mais transparente do mundo</h2>
-        </div>
-        
+        </div>   
         <div class="row align-items-center g-4">
           <div class="col-12 col-md-auto">
             <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-users text-success " data-fa-transform="shrink-2 up-8 right-6"></span></span>
@@ -20,15 +19,15 @@
               </div>
             </div>
           </div>
-          <!--
           <div class="col-12 col-md-auto">
             <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-warning-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-warning" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-pause text-warning " data-fa-transform="shrink-2 up-8 right-6"></span></span>
               <div class="ms-3">
-                <h4 class="mb-0">5 orders</h4>
-                <p class="text-body-secondary fs-9 mb-0">On hold</p>
+                <h4 class="mb-0">16.69 de NPS-I</h4>
+                <p class="text-body-secondary fs-9 mb-0">37% de engajamento</p>
               </div>
             </div>
           </div>
+          <!--
           <div class="col-12 col-md-auto">
             <div class="d-flex align-items-center"><span class="fa-stack" style="min-height: 46px;min-width: 46px;"><span class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light" data-fa-transform="down-4 rotate--10 left-4"></span><span class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger" data-fa-transform="up-4 right-3 grow-2"></span><span class="fa-stack-1x fa-solid fa-xmark text-danger " data-fa-transform="shrink-2 up-8 right-6"></span></span>
               <div class="ms-3">
@@ -60,7 +59,7 @@
                   <tr>
                     <td class="white-space-nowrap ps-0 nome" style="width:32%">
                       <div class="d-flex align-items-center">
-                        <a class="fw-bold text-primary fs-9" href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}">
+                        <a class="fw-bold text-primary fs-9" target="_blank" href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}">
                           {{ pessoa.nome }}
                         </a>
                       </div>
@@ -178,36 +177,6 @@
               </div>
             </div>
           </div>
-          <div class="col-xxl-4 ms-auto">
-            <div class="row g-0 py-3 border-bottom border-dashed align-items-end justify-content-between">
-              <div class="col-auto">
-                <h3 class="flex-1 mb-0 text-nowrap me-3">Próximos eventos</h3>
-              </div>
-            </div> 
-            {% if eventos %}
-              {% for evento, organizador_nome, organizador_slug in eventos %}
-                  <div class="py-3 border-bottom border-translucent border-dashed">
-                      <div class="d-flex flex-between-center">
-                          <p class="text-warning fs-10 mb-0 fw-bold mb-1">{{ evento.data.strftime('%d/%m/%Y') }}</p>
-                      </div>
-                      <a class="text-primary-hover text-body-highlight fw-bold mb-2 line-clamp-1 me-5 lh-base" href="{{ url_for('public.evento_detalhe', id=evento.id) }}">{{ evento.nome }}</a>
-                      <p class="text-body-secondary fs-9 mb-2">Organizado por <br />
-                        <a class="fw-bold text-primary" href="{{ url_for('public.time_detalhe', slug=organizador_slug) }}">
-                          {{ organizador_nome }}
-                        </a>
-                      </p>
-                      <p class="fs-9 text-body-tertiary fw-bold mb-1">
-                          <span class="fa-solid fa-clock text-body-secondary me-1"></span>{{ evento.hora.strftime('%H:%M') }}
-                      </p>
-                      <p class="fs-9 text-body-tertiary fw-bold mb-0">
-                          <span class="fa-solid fa-map-marker-alt text-body-secondary me-1"></span>{{ evento.cidade }}, {{ evento.estado }}
-                      </p>
-                  </div>
-              {% endfor %}
-          {% else %}
-              <p class="text-body-tertiary fs-9 mb-0">Nenhum evento próximo encontrado.</p>
-          {% endif %}
-          </div>
           <!--
           <div class="col-12 col-md-6">
             <div class="card h-100">
@@ -290,8 +259,37 @@
           </div>
           -->
         </div>
-      </div>
-      
+        <div class="col-12 md-6">
+          <div class="row g-0 py-3 border-bottom border-dashed align-items-end justify-content-between">
+            <div class="col-auto">
+              <h3 class="flex-1 mb-0 text-nowrap me-3">Próximos eventos</h3>
+            </div>
+          </div> 
+          {% if eventos %}
+            {% for evento, organizador_nome, organizador_slug in eventos %}
+                <div class="py-3 border-bottom border-translucent border-dashed">
+                    <div class="d-flex flex-between-center">
+                        <p class="text-warning fs-10 mb-0 fw-bold mb-1">{{ evento.data.strftime('%d/%m/%Y') }}</p>
+                    </div>
+                    <a class="text-primary-hover text-body-highlight fw-bold mb-2 line-clamp-1 me-5 lh-base" target="_blank" href="{{ url_for('public.evento_detalhe', id=evento.id) }}">{{ evento.nome }}</a>
+                    <p class="text-body-secondary fs-9 mb-2">Organizado por <br />
+                      <a class="fw-bold text-primary" target="_blank" href="{{ url_for('public.time_detalhe', slug=organizador_slug) }}">
+                        {{ organizador_nome }}
+                      </a>
+                    </p>
+                    <p class="fs-9 text-body-tertiary fw-bold mb-1">
+                        <span class="fa-solid fa-clock text-body-secondary me-1"></span>{{ evento.hora.strftime('%H:%M') }}
+                    </p>
+                    <p class="fs-9 text-body-tertiary fw-bold mb-0">
+                        <span class="fa-solid fa-map-marker-alt text-body-secondary me-1"></span>{{ evento.cidade }}, {{ evento.estado }}
+                    </p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-body-tertiary fs-9 mb-0">Nenhum evento próximo encontrado.</p>
+        {% endif %}
+        </div> 
+      </div>    
     </div>
 </div>
 
