@@ -10,6 +10,12 @@ db = SQLAlchemy()
 # Inicializa o OAuth para o Google SSO
 oauth = OAuth()
 
+def filesize(filepath):
+    try:
+        return os.path.getsize(filepath)
+    except FileNotFoundError:
+        return 0
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -17,6 +23,9 @@ def create_app():
     # Inicializa as extensões
     db.init_app(app)
     oauth.init_app(app)
+
+    # Registrar filtros personalizados
+    app.jinja_env.filters['filesize'] = filesize
 
     # Registra o cliente OAuth do Google
     google = oauth.register(

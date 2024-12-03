@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
 from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas, Evento
+import os
 
 public_bp = Blueprint('public', __name__)
 
@@ -235,8 +236,20 @@ def evento_detalhe(id):
     # Buscar organizador relacionado
     organizador = db.session.query(Pessoas).filter_by(email=evento.email_organizador).first()
 
+    # Diretório do evento
+    evento_folder = os.path.join(current_app.config['UPLOAD_FOLDER_EVENTOS'], str(id))
+    arquivos = os.listdir(evento_folder) if os.path.exists(evento_folder) else []
+
     return render_template(
         'evento_detalhe_frontend.html',
         evento=evento,
-        organizador=organizador
+        organizador=organizador,
+        arquivos=arquivos,
+        evento_folder=evento_folder
     )
+
+# Rota para fazer o download de um arquivo
+@public_bp.route('/evento/<int:id>/download/<path:arquivo>')
+def download_arquivo(id, arquivo):
+    evento_folder = os.path.join(current_app.config['UPLOAD_FOLDER_EVENTOS'], str(id))
+    return send_from_directory(evento_folder, arquivo, as_attachment=True)
