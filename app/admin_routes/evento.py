@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from app.models import db, Evento
+from app.models import db, Evento, EventoArquivo
 from app.decorators import login_required
 from app.admin_routes.routes import verificar_diretor
 from datetime import datetime
@@ -139,6 +139,7 @@ def evento_arquivos(id):
             return redirect(url_for('evento.evento_arquivos', id=id))
         
         file = request.files['file']
+        descricao = request.form.get('descricao', '').strip()
         if file.filename == '':
             flash('Nenhum arquivo selecionado.', 'danger')
             return redirect(url_for('evento.evento_arquivos', id=id))
@@ -146,11 +147,21 @@ def evento_arquivos(id):
         # Salvar o arquivo no diretório do evento
         filename = secure_filename(file.filename)
         file.save(os.path.join(evento_folder, filename))
+
+        # Salvar os dados do arquivo no banco
+        novo_arquivo = EventoArquivo(
+            evento_id=id,
+            nome_arquivo=filename,
+            descricao=descricao
+        )
+        db.session.add(novo_arquivo)
+        db.session.commit()
+
         flash('Arquivo enviado com sucesso!', 'success')
         return redirect(url_for('evento.evento_arquivos', id=id))
     
-    # Listar arquivos no diretório do evento
-    arquivos = os.listdir(evento_folder)
+    # Listar arquivos associados ao evento
+    arquivos = EventoArquivo.query.filter_by(evento_id=id).all()
 
     return render_template('evento_arquivos.html', evento=evento, arquivos=arquivos, evento_folder=evento_folder)
 
@@ -161,15 +172,35 @@ def evento_deletar_arquivo(id, arquivo):
     if not verificar_diretor():
         return redirect(url_for('auth.error'))
 
-    # Obter o caminho do diretório do evento dinamicamente
+    # Obter o evento e verificar se ele existe
+    evento = db.session.get(Evento, id)
+    if not evento:
+        flash('Evento não encontrado.', 'danger')
+        return redirect(url_for('evento.evento_arquivos', id=id))
+
+    # Obter o arquivo do banco de dados
+    arquivo_obj = db.session.query(EventoArquivo).filter_by(evento_id=id, nome_arquivo=arquivo).first()
+    if not arquivo_obj:
+        flash('Arquivo não encontrado no banco de dados.', 'danger')
+        return redirect(url_for('evento.evento_arquivos', id=id))
+
+    # Caminho completo do arquivo no sistema de arquivos
     evento_folder = os.path.join(current_app.config['UPLOAD_FOLDER_EVENTOS'], str(id))
     file_path = os.path.join(evento_folder, arquivo)
 
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    try:
+        # Excluir arquivo do sistema de arquivos
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        # Excluir entrada do banco de dados
+        db.session.delete(arquivo_obj)
+        db.session.commit()
+
         flash('Arquivo excluído com sucesso!', 'success')
-    else:
-        flash('Arquivo não encontrado.', 'danger')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao excluir arquivo: {str(e)}', 'danger')
 
     return redirect(url_for('evento.evento_arquivos', id=id))
 

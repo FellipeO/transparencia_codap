@@ -38,6 +38,17 @@ class Evento(db.Model):
         onupdate=datetime.utcnow
     )
 
+class EventoArquivo(db.Model):
+    __tablename__ = 'eventos_arquivos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    evento_id = db.Column(db.Integer, db.ForeignKey('eventos.id'), nullable=False)
+    nome_arquivo = db.Column(db.String(255), nullable=False)
+    descricao = db.Column(db.Text, nullable=True)
+    data_upload = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relacionamento com o evento
+    evento = db.relationship('Evento', backref=db.backref('arquivos', cascade="all, delete-orphan"))
 
 class Pessoas(db.Model):
     __tablename__ = 'pessoas'
