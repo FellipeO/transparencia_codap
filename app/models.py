@@ -121,3 +121,15 @@ class OportunidadesInvestimento(db.Model):
 
     def __repr__(self):
         return f'<OportunidadesInvestimento Versão {self.versao}>'
+    
+class RegimentoInterno(db.Model):
+    __tablename__ = 'regimento_interno'
+    versao = db.Column(db.Integer, primary_key=True)
+    vigencia_inicio = db.Column(db.Date)
+    vigencia_fim = db.Column(db.Date, nullable=True)
+    status = db.Column(db.Enum('aprovado', 'registrado'))
+    texto = db.Column(db.Text)
+    hash = db.Column(db.String(64))
+
+    def __repr__(self):
+        return f'<RegimentoInterno Versão {self.versao}>'

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Regimento Interno{% endblock %}
+{% block page_title %}Regimento Interno{% endblock %}
+{% block breadcrumb %}Regimento Interno{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h3>Regimento Interno</h3>
+  {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+  <a href="{{ url_for('regimento.regimento_adicionar') }}" class="btn btn-success">Adicionar Nova Versão</a>
+  {% endif %}
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">Versão</th>
+        <th scope="col">Vigência Início</th>
+        <th scope="col">Vigência Fim</th>
+        <th scope="col">Status</th>
+        <th scope="col">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for regimento in regimentos %}
+      <tr>
+        <td>{{ regimento.versao }}</td>
+        <td>{{ regimento.vigencia_inicio.strftime('%d/%m/%Y') }}</td>
+        <td>{{ regimento.vigencia_fim.strftime('%d/%m/%Y') if regimento.vigencia_fim else 'Em vigência' }}</p></td>
+        <td>{{ regimento.status }}</td>
+        <td>
+          <a href="{{ url_for('regimento.regimento_detalhe', versao=regimento.versao) }}" class="btn btn-info btn-sm" target="_blank">Visualizar</a>
+
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+          <a href="{{ url_for('regimento.regimento_editar', versao=regimento.versao) }}" class="btn btn-warning btn-sm">Editar</a>
+          {% endif %}
+          
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+          <form action="{{ url_for('regimento.regimento_deletar', versao=regimento.versao) }}" method="post" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta versão?');">
+            <button type="submit" class="btn btn-danger btn-sm">Deletar</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -4,7 +4,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, Lancamento, Clientes, Pessoas, Evento, EventoArquivo
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo
 import os
 
 public_bp = Blueprint('public', __name__)
@@ -206,6 +206,23 @@ def oportunidade():
     # Se nenhuma versão for selecionada, exibe a mais recente
     oportunidade_atual = oportunidades[0] if oportunidades else None
     return render_template('oportunidade_frontend.html', oportunidades=oportunidades, oportunidade_atual=oportunidade_atual)
+
+# Rota para exibir o regimento, com a versão selecionada
+@public_bp.route('/regimento')
+def regimento():
+    versao = request.args.get('versao', default=None, type=int)  # Captura o parâmetro de versão da URL
+    
+    # Sempre pega todas as versões para a barra lateral
+    regimentos = RegimentoInterno.query.order_by(RegimentoInterno.versao.desc()).all()
+
+    if versao:
+        # Filtra apenas a versão selecionada para exibir o conteúdo principal
+        regimento_atual = RegimentoInterno.query.filter_by(versao=versao).first()
+        return render_template('regimento_frontend.html', regimentos=regimentos, regimento_atual=regimento_atual)
+    
+    # Se nenhuma versão for selecionada, exibe a mais recente
+    regimento_atual = regimentos[0] if regimentos else None
+    return render_template('regimento_frontend.html', regimentos=regimentos, regimento_atual=regimento_atual)
 
 @public_bp.route('/time/<string:slug>')
 def time_detalhe(slug):
