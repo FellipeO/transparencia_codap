@@ -57,6 +57,7 @@ class Pessoas(db.Model):
     nome = db.Column(db.String(255), nullable=False)
     slug = db.Column(db.String, unique=True, nullable=False)
     cargo = db.Column(db.String(100), nullable=False)
+    lotacao = db.Column(db.String(100), nullable=False)
     cidade = db.Column(db.String(100), nullable=False)
     estado = db.Column(db.String(50), nullable=False)
     data_admissao = db.Column(db.Date, nullable=False)

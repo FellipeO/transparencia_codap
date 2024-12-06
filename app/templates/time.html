@@ -19,6 +19,7 @@
         <th scope="col">Nome</th>
         <th scope="col">Email</th>
         <th scope="col">Cargo</th>
+        <th scope="col">Lotação</th>
         <th scope="col">Data de Admissão</th>
         <th scope="col">Ações</th>        
       </tr>
@@ -29,6 +30,7 @@
         <td>{{ pessoa.nome }}</td>
         <td>{{ pessoa.email}}</td>
         <td>{{ pessoa.cargo }}</td>
+        <td>{{ pessoa.lotacao}}</td>
         <td>{{ pessoa.data_admissao.strftime('%d/%m/%Y') }}</td>  
         <td>
           <a href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}" class="btn btn-info btn-sm" target="_blank">Visualizar</a>

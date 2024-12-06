@@ -48,6 +48,7 @@ def time_adicionar():
         nome = request.form.get('nome')
         email = request.form.get('email')
         cargo = request.form.get('cargo')
+        lotacao = request.form.get('lotacao')
         cidade = request.form.get('cidade')
         estado = request.form.get('estado')
         data_admissao = request.form.get('data_admissao')
@@ -61,7 +62,7 @@ def time_adicionar():
         foto = request.files.get('foto')
 
         # Validar campos obrigatórios
-        if not all([nome, cargo, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
+        if not all([nome, cargo, lotacao, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
             flash('Todos os campos obrigatórios devem ser preenchidos.', 'danger')
             return redirect(url_for('time.time_adicionar'))
         
@@ -79,6 +80,7 @@ def time_adicionar():
             nome=nome,
             email=email,
             cargo=cargo,
+            lotacao=lotacao,
             cidade=cidade,
             estado=estado,
             data_admissao=data_admissao,
@@ -120,6 +122,7 @@ def time_editar(email):
     if request.method == 'POST':
         pessoa.nome = request.form.get('nome')
         pessoa.cargo = request.form.get('cargo')
+        pessoa.lotacao = request.form.get('lotacao')
         pessoa.cidade = request.form.get('cidade')
         pessoa.estado = request.form.get('estado')
         pessoa.data_admissao = request.form.get('data_admissao')

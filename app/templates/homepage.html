@@ -51,6 +51,7 @@
                   <tr>
                     <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="nome" style="width:32%">NOME</th>
                     <th class="sort border-top border-translucent align-middle" scope="col" data-sort="cargo" style="width:17%">CARGO</th>
+                    <th class="sort border-top border-translucent align-middle" scope="col" data-sort="lotacao" style="width:17%">LOTAÇÃO</th>
                     <th class="sort border-top border-translucent text-end align-middle" scope="col" data-sort="tempo" style="width:16%">TEMPO NA COMPANHIA</th>
                   </tr>
                 </thead>
@@ -66,6 +67,9 @@
                     </td>
                     <td class="align-middle cargo" style="width:17%">
                       {{ pessoa.cargo }}
+                    </td>
+                    <td class="align-middle lotacao" style="width:17%">
+                      {{ pessoa.lotacao }}
                     </td>
                     <td class="align-middle text-end tempo" style="width:16%">
                       {{ pessoa.longevidade }}
@@ -477,7 +481,7 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
   var options = {
-    valueNames: ["nome", "cargo", "tempo"]
+    valueNames: ["nome", "cargo", "lotacao", "tempo"]
   };
 
   var userList = new List('list-container', options);

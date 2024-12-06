@@ -277,3 +277,9 @@ def evento_detalhe(id):
 def download_arquivo(id, arquivo):
     evento_folder = os.path.join(current_app.config['UPLOAD_FOLDER_EVENTOS'], str(id))
     return send_from_directory(evento_folder, arquivo, as_attachment=True)
+
+@public_bp.route('/composicao')
+def composicao():
+    # Consulta todas as pessoas cuja lotação seja 'Conselho Administrativo'
+    pessoas = Pessoas.query.filter_by(lotacao='Conselho Administrativo').all()
+    return render_template('composicao_frontend.html', pessoas=pessoas)

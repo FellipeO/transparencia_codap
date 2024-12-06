@@ -34,7 +34,31 @@
     <div class="row mb-3">
         <label for="cargo" class="col-sm-2 col-form-label">Cargo</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="cargo" name="cargo" required>
+            <select class="form-select" id="cargo" name="cargo" required>
+                <option value="" selected>Escolha...</option>
+                <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                <option value="Presidente">Presidente</option>
+                <option value="Vice-Presidente">Vice-Presidente</option>
+                <option value="Diretor">Diretor</option>
+                <option value="Assessor">Assessor</option>
+                <option value="Conselheiro">Conselheiro</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="lotacao" class="col-sm-2 col-form-label">Lotação</label>
+        <div class="col-sm-10">
+            <select class="form-select" id="lotacao" name="lotacao" required>
+                <option value="" selected>Escolha...</option>
+                <option value="Conselho Fiscal">Conselho Fiscal</option>
+                <option value="Conselho Administrativo">Conselho Administrativo</option>
+                <option value="Presidente">Presidente</option>
+                <option value="Vice-Presidente">Vice-Presidente</option>
+                <option value="Diretoria Administrativa">Diretoria Administrativa</option>
+                <option value="Diretoria Técnica">Diretoria Técnica</option>
+                <option value="Diretoria Financeira">Diretoria Financeira</option>
+            </select>
         </div>
     </div>
 
@@ -98,7 +122,7 @@
     </div>
 
     <div class="row mb-3">
-        <label for="frase" class="col-sm-2 col-form-label">Frase</label>
+        <label for="frase" class="col-sm-2 col-form-label">Sobre</label>
         <div class="col-sm-10">
             <textarea class="form-control" id="frase" name="frase" rows="3"></textarea>
         </div>
