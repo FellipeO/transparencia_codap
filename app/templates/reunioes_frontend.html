@@ -1,0 +1,73 @@
+{% extends 'base_frontend.html' %}
+
+{% block title %}Reuniões{% endblock %}
+{% block page_title %}Reuniões{% endblock %}
+{% block breadcrumb %}Conselho de Administração / Reuniões{% endblock %}
+
+{% block content %}
+<div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis py-5 border-y">
+    <div id="projectSummary" data-list='{"valueNames":["descricao","data","horario","local"],"page":6}'>
+        <div class="row align-items-end justify-content-between pb-4 g-3">
+            <div class="col-auto">
+                <h3>Últimas Reuniões</h3>
+            </div>
+        </div>
+        <div class="table-responsive ms-n1 ps-1 scrollbar">
+            <table class="table fs-9 mb-0 border-top border-translucent">
+                <thead>
+                    <tr>
+                        <th class="sort white-space-nowrap align-middle ps-0" scope="col" data-sort="descricao" style="width:30%;">DESCRIÇÃO</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="data" style="width:10%;">DATA</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="horario" style="width:15%;">HORÁRIO</th>
+                        <th class="sort align-middle ps-3" scope="col" data-sort="local" style="width:12%;">LOCAL</th>
+                        <th class="sort align-middle text-end" scope="col" style="width:20%;"></th>
+                    </tr>
+                </thead>
+                <tbody class="list" id="project-summary-table-body">
+                    {% for evento in eventos %}
+                    <tr class="position-static">
+                        <td class="align-middle time white-space-nowrap ps-0 descricao">
+                            <a class="fw-bold fs-8" target="_blank" href="{{ url_for('public.evento_detalhe', id=evento.id) }}">{{ evento.nome }}</a>
+                        </td>
+                        <td class="align-middle white-space-nowrap data ps-3" data-date="{{ evento.data.strftime('%Y-%m-%d') }}">
+                            <p class="mb-0 fs-9 text-body">{{ evento.data.strftime('%d/%m/%Y') }}</p>
+                        </td>
+                        <td class="align-middle white-space-nowrap horario ps-3">
+                            <p class="mb-0 fs-9 text-body">{{ evento.hora.strftime('%H:%M') }}</p>
+                        </td>
+                        <td class="align-middle white-space-nowrap local ps-3">
+                            <p class="fw-bold text-body-emphasis fs-9 mb-0">{{ evento.endereco }}</p>
+                            <p class="fw-semibold fs-10 text-body-tertiary mb-0">{{ evento.cidade }}, {{ evento.estado }}</p>
+                        </td>
+                        <td class="align-middle text-end white-space-nowrap pe-0 action">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    var options = {
+        valueNames: [
+            "descricao",
+            { name: "data", attr: "data-date" }, // Adiciona a definição do atributo data-date
+            "horario",
+            "local"
+        ]
+    };
+
+    var userList = new List('projectSummary', options);
+
+        // Ordenação personalizada para o campo "data"
+        userList.sort('data', { order: "asc", sortFunction: function (a, b) {
+            var dateA = new Date(a.values().data); // Converte para objeto Date
+            var dateB = new Date(b.values().data);
+            return dateA - dateB; // Retorna a diferença para ordenar
+        }});
+    });
+</script>
+{% endblock %}

@@ -283,3 +283,12 @@ def composicao():
     # Consulta todas as pessoas cuja lotação seja 'Conselho Administrativo'
     pessoas = Pessoas.query.filter_by(lotacao='Conselho Administrativo').all()
     return render_template('composicao_frontend.html', pessoas=pessoas)
+
+@public_bp.route('/reunioes')
+def reunioes():
+    # Recupera os eventos futuros, ordenados por data e hora
+    eventos = Evento.query.filter(
+        (Evento.data > datetime.utcnow().date()) |
+        ((Evento.data == datetime.utcnow().date()) & (Evento.hora > datetime.utcnow().time()))
+    ).order_by(Evento.data.asc(), Evento.hora.asc()).all()
+    return render_template('reunioes_frontend.html', eventos=eventos)
