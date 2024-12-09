@@ -257,17 +257,24 @@ def evento_detalhe(id):
     evento_folder = os.path.join(current_app.config['UPLOAD_FOLDER_EVENTOS'], str(id))
     arquivos = os.listdir(evento_folder) if os.path.exists(evento_folder) else []
 
-    # Obter as descrições dos arquivos associados ao evento
+    # Obter as descrições dos arquivos associados ao evento, ordenados por data_upload
+    arquivos_evento = (
+        db.session.query(EventoArquivo)
+        .filter_by(evento_id=id)
+        .order_by(EventoArquivo.data_upload.asc())  # Ordenação crescente por data_upload
+        .all()
+    )
+
     descricoes_arquivos = {
         arquivo.nome_arquivo: arquivo.descricao
-        for arquivo in db.session.query(EventoArquivo).filter_by(evento_id=id).all()
+        for arquivo in arquivos_evento
     }
 
     return render_template(
         'evento_detalhe_frontend.html',
         evento=evento,
         organizador=organizador,
-        arquivos=arquivos,
+        arquivos=[arquivo.nome_arquivo for arquivo in arquivos_evento],  # Retorna a lista ordenada
         evento_folder=evento_folder,
         descricoes_arquivos=descricoes_arquivos
     )
@@ -280,8 +287,8 @@ def download_arquivo(id, arquivo):
 
 @public_bp.route('/composicao')
 def composicao():
-    # Consulta todas as pessoas cuja lotação seja 'Conselho Administrativo'
-    pessoas = Pessoas.query.filter_by(lotacao='Conselho Administrativo').all()
+    # Consulta todas as pessoas cuja lotação seja 'Conselho de Administração'
+    pessoas = Pessoas.query.filter_by(lotacao='Conselho de Administração').all()
     return render_template('composicao_frontend.html', pessoas=pessoas)
 
 @public_bp.route('/reunioes')

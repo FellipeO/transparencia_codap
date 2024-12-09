@@ -52,7 +52,7 @@
             <select class="form-select" id="lotacao" name="lotacao" required>
                 <option value="" {% if not pessoa.lotacao %}selected{% endif %}>Escolha...</option>
                 <option value="Conselho Fiscal" {% if pessoa.lotacao == 'Conselho Fiscal' %}selected{% endif %}>Conselho Fiscal</option>
-                <option value="Conselho Administrativo" {% if pessoa.lotacao == 'Conselho Administrativo' %}selected{% endif %}>Conselho Administrativo</option>
+                <option value="Conselho de Administração" {% if pessoa.lotacao == 'Conselho de Administração' %}selected{% endif %}>Conselho de Administração</option>
                 <option value="Presidente" {% if pessoa.lotacao == 'Presidente' %}selected{% endif %}>Presidente</option>
                 <option value="Vice-Presidente" {% if pessoa.lotacao == 'Vice-Presidente' %}selected{% endif %}>Vice-Presidente</option>
                 <option value="Diretoria Administrativa" {% if pessoa.lotacao == 'Diretoria Administrativa' %}selected{% endif %}>Diretoria Administrativa</option>
