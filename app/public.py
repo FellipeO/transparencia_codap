@@ -4,7 +4,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo, PessoaLotacao
 import os
 
 public_bp = Blueprint('public', __name__)
@@ -233,8 +233,12 @@ def time_detalhe(slug):
         abort(404, description="Pessoa não encontrada.")
 
     current_date = datetime.utcnow().date()
+
+    # Coletar cargos e lotações associados
+    cargos = [cargo.cargo for cargo in pessoa.cargos]
+    lotacoes = [lotacao.lotacao for lotacao in pessoa.lotacoes]
     
-    return render_template('time_detalhe_frontend.html', pessoa=pessoa, current_date=current_date)
+    return render_template('time_detalhe_frontend.html', pessoa=pessoa, cargos=cargos, lotacoes=lotacoes, current_date=current_date)
 
 @public_bp.route('/uploads/<path:filename>')
 def uploads(filename):
@@ -287,9 +291,24 @@ def download_arquivo(id, arquivo):
 
 @public_bp.route('/composicao')
 def composicao():
-    # Consulta todas as pessoas cuja lotação seja 'Conselho de Administração'
-    pessoas = Pessoas.query.filter_by(lotacao='Conselho de Administração').all()
-    return render_template('composicao_frontend.html', pessoas=pessoas)
+    # Consulta todas as pessoas que possuem a lotação "Conselho de Administração"
+    pessoas = (
+        db.session.query(Pessoas)
+        .join(PessoaLotacao, Pessoas.email == PessoaLotacao.pessoa_email)
+        .filter(PessoaLotacao.lotacao == 'Conselho de Administração')
+        .all()
+    )
+
+    # Preparar uma lista de pessoas com seus cargos associados
+    pessoas_com_cargos = [
+        {
+            "pessoa": pessoa,
+            "cargos": [cargo.cargo for cargo in pessoa.cargos]
+        }
+        for pessoa in pessoas
+    ]
+
+    return render_template('composicao_frontend.html', pessoas_com_cargos=pessoas_com_cargos)
 
 @public_bp.route('/reunioes')
 def reunioes():

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from app.models import db, Pessoas
+from app.models import db, Pessoas, PessoaCargo, PessoaLotacao
 from app.decorators import login_required
 from app import db
 from app.admin_routes.routes import verificar_diretor
@@ -47,8 +47,8 @@ def time_adicionar():
     if request.method == 'POST':
         nome = request.form.get('nome')
         email = request.form.get('email')
-        cargo = request.form.get('cargo')
-        lotacao = request.form.get('lotacao')
+        cargos = request.form.getlist('cargos[]')
+        lotacoes = request.form.getlist('lotacoes[]')
         cidade = request.form.get('cidade')
         estado = request.form.get('estado')
         data_admissao = request.form.get('data_admissao')
@@ -57,30 +57,25 @@ def time_adicionar():
         etnia = request.form.get('etnia')
         linkedin = request.form.get('linkedin')
         instagram = request.form.get('instagram')
-        twitter = request.form.get('twitter')
+        twitter = request.form.get('twitter')  
         frase = request.form.get('frase')
         foto = request.files.get('foto')
 
         # Validar campos obrigatórios
-        if not all([nome, cargo, lotacao, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
+        if not all([nome, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
             flash('Todos os campos obrigatórios devem ser preenchidos.', 'danger')
             return redirect(url_for('time.time_adicionar'))
-        
+
         # Salva a foto e obtém o hash
         hash_foto = save_photo(foto, email)
-        
-        # Verifique o valor do hash
-        print(f"Hash da foto gerado: {hash_foto}")
 
         # Gerar o slug a partir do nome
         slug = generate_slug(nome)
 
-        # Criar e salvar o novo registro
+        # Criar e salvar a nova pessoa
         nova_pessoa = Pessoas(
             nome=nome,
             email=email,
-            cargo=cargo,
-            lotacao=lotacao,
             cidade=cidade,
             estado=estado,
             data_admissao=data_admissao,
@@ -92,11 +87,20 @@ def time_adicionar():
             twitter=twitter,
             frase=frase,
             slug=slug,
-            hash_foto=hash_foto
+            hash_foto=hash_foto,
         )
 
         try:
             db.session.add(nova_pessoa)
+            db.session.flush()  # Garante que a pessoa foi inserida antes de adicionar os cargos e lotações
+
+            # Criar os objetos de cargo e lotação após a pessoa estar na sessão
+            pessoa_cargos = [PessoaCargo(cargo=c, pessoa_email=email) for c in cargos]
+            pessoa_lotacoes = [PessoaLotacao(lotacao=l, pessoa_email=email) for l in lotacoes]
+
+            db.session.add_all(pessoa_cargos)
+            db.session.add_all(pessoa_lotacoes)
+
             db.session.commit()
             return redirect(url_for('time.time'))
         except Exception as e:
@@ -120,25 +124,55 @@ def time_editar(email):
         return redirect(url_for('time.time'))
     
     if request.method == 'POST':
-        pessoa.nome = request.form.get('nome')
-        pessoa.cargo = request.form.get('cargo')
-        pessoa.lotacao = request.form.get('lotacao')
-        pessoa.cidade = request.form.get('cidade')
-        pessoa.estado = request.form.get('estado')
-        pessoa.data_admissao = request.form.get('data_admissao')
-        pessoa.aniversario = request.form.get('aniversario')
-        pessoa.genero = request.form.get('genero')
-        pessoa.etnia = request.form.get('etnia')
-        pessoa.linkedin = request.form.get('linkedin')
-        pessoa.instagram = request.form.get('instagram')
-        pessoa.twitter = request.form.get('twitter')
-        pessoa.frase = request.form.get('frase')
-        
-        # Atualizar a foto se enviada
-        nova_foto = request.files.get('foto')
-        if nova_foto:
-            hash_foto = save_photo(nova_foto, email)
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        cargos = request.form.getlist('cargos[]')
+        lotacoes = request.form.getlist('lotacoes[]')
+        cidade = request.form.get('cidade')
+        estado = request.form.get('estado')
+        data_admissao = request.form.get('data_admissao')
+        aniversario = request.form.get('aniversario')
+        genero = request.form.get('genero')
+        etnia = request.form.get('etnia')
+        linkedin = request.form.get('linkedin')
+        instagram = request.form.get('instagram')
+        twitter = request.form.get('twitter')  
+        frase = request.form.get('frase')
+        foto = request.files.get('foto')
+
+        # Validar campos obrigatórios
+        if not all([nome, cidade, estado, data_admissao, aniversario, genero, etnia, email]):
+            flash('Todos os campos obrigatórios devem ser preenchidos.', 'danger')
+            return redirect(url_for('time.time_editar', email=email))
+
+        # Salva a foto e obtém o hash, se nova foto for enviada
+        if foto:
+            hash_foto = save_photo(foto, email)
             pessoa.hash_foto = hash_foto
+
+        # Atualizar os dados da pessoa
+        pessoa.nome = nome
+        pessoa.email = email
+        pessoa.cidade = cidade
+        pessoa.estado = estado
+        pessoa.data_admissao = data_admissao
+        pessoa.aniversario = aniversario
+        pessoa.genero = genero
+        pessoa.etnia = etnia
+        pessoa.linkedin = linkedin
+        pessoa.instagram = instagram
+        pessoa.twitter = twitter
+        pessoa.frase = frase
+
+        # Atualizar cargos e lotações
+        db.session.query(PessoaCargo).filter(PessoaCargo.pessoa_email == email).delete()
+        db.session.query(PessoaLotacao).filter(PessoaLotacao.pessoa_email == email).delete()
+
+        pessoa_cargos = [PessoaCargo(cargo=c, pessoa_email=email) for c in cargos]
+        pessoa_lotacoes = [PessoaLotacao(lotacao=l, pessoa_email=email) for l in lotacoes]
+
+        db.session.add_all(pessoa_cargos)
+        db.session.add_all(pessoa_lotacoes)
 
         try:
             db.session.commit()
@@ -167,15 +201,17 @@ def time_deletar(email):
         if os.path.exists(foto_path):
             try:
                 os.remove(foto_path)
+                flash('Foto associada removida com sucesso.', 'info')
             except Exception as e:
-                flash('Erro ao remover a foto associada: ' + str(e), 'warning')
+                flash(f'Erro ao remover a foto associada: {e}', 'warning')
 
     try:
         db.session.delete(pessoa)
         db.session.commit()
+        flash(f'Pessoa {pessoa.nome} e dados relacionados removidos com sucesso!', 'success')
     except Exception as e:
         db.session.rollback()
-        flash('Erro ao deletar pessoa: ' + str(e), 'danger')
+        flash(f'Erro ao deletar pessoa: {e}', 'danger')
     
     return redirect(url_for('time.time'))
 

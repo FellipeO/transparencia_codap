@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row">
-    {% for pessoa in pessoas %}
+    {% for pessoa_data in pessoas_com_cargos %}
     <div class="col-12 col-md-4 col-xxl-3 mb-4">
         <div class="card h-100">
             <div class="card-header position-relative mb-7" style="min-height: 130px;">
@@ -12,7 +12,7 @@
                 </div>
                 <label class="avatar avatar-4xl feed-avatar-profile">
                     <img class="rounded-circle img-thumbnail shadow-sm border-0" 
-                         src="{{ url_for('public.uploads', filename=pessoa.hash_foto + '.jpg') if pessoa.hash_foto else url_for('static', filename='assets/img/SIMBOLO_1.png') }}" 
+                         src="{{ url_for('public.uploads', filename=pessoa_data.pessoa.hash_foto + '.jpg') if pessoa_data.pessoa.hash_foto else url_for('static', filename='assets/img/SIMBOLO_1.png') }}" 
                          width="200" alt="" />
                 </label>
             </div>
@@ -20,19 +20,23 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="d-flex flex-wrap mb-3 align-items-center">
-                            <a class="fw-bold text-primary" href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}">
-                                <h3 class="me-2">{{ pessoa.nome }}</h3>
+                            <a class="fw-bold text-primary" href="{{ url_for('public.time_detalhe', slug=pessoa_data.pessoa.slug) }}">
+                                <h3 class="me-2">{{ pessoa_data.pessoa.nome }}</h3>
                             </a>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex align-items-center flex-wrap">
                                 <div class="d-flex me-4 mb-2">
-                                    <h6 class="d-inline-block mb-0"> <span class="fw-semibold">{{ pessoa.cargo }}</span></h6>
+                                    <h6 class="d-inline-block mb-0">
+                                        {% for cargo in pessoa_data.cargos %}
+                                            <span class="d-block">{{ cargo }}</span>
+                                        {% endfor %}
+                                    </h6>
                                 </div>
                             </div>
                         </div>
                         <p class="fw-semibold mb-0">Sobre</p>
-                        <p class="text-body-tertiary mb-0">{{ pessoa.frase | truncate(150, True) }}</p>
+                        <p class="text-body-tertiary mb-0">{{ pessoa_data.pessoa.frase | truncate(150, True) }}</p>
                     </div>
                 </div>
             </div>

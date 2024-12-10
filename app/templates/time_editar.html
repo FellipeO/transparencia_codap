@@ -17,6 +17,7 @@
         {% endif %}
     {% endwith %}
 
+    <!-- Campos de nome, email, etc. -->
     <div class="row mb-3">
         <label for="email" class="col-sm-2 col-form-label">Email</label>
         <div class="col-sm-10">
@@ -31,37 +32,84 @@
         </div>
     </div>
 
+    <!-- Dropdown dinâmico para cargos -->
     <div class="row mb-3">
-        <label for="cargo" class="col-sm-2 col-form-label">Cargo</label>
+        <label class="col-sm-2 col-form-label">Cargos</label>
         <div class="col-sm-10">
-            <select class="form-select" id="cargo" name="cargo" required>
-                <option value="" {% if not pessoa.cargo %}selected{% endif %}>Escolha...</option>
-                <option value="Presidente do CONSAD" {% if pessoa.cargo == 'Presidente do CONSAD' %}selected{% endif %}>Presidente do CONSAD</option>
-                <option value="Presidente" {% if pessoa.cargo == 'Presidente' %}selected{% endif %}>Presidente</option>
-                <option value="Vice-Presidente" {% if pessoa.cargo == 'Vice-Presidente' %}selected{% endif %}>Vice-Presidente</option>
-                <option value="Diretor" {% if pessoa.cargo == 'Diretor' %}selected{% endif %}>Diretor</option>
-                <option value="Assessor" {% if pessoa.cargo == 'Assessor' %}selected{% endif %}>Assessor</option>
-                <option value="Conselheiro" {% if pessoa.cargo == 'Conselheiro' %}selected{% endif %}>Conselheiro</option>
-            </select>
+            <div id="cargos-container">
+                {% for cargo in pessoa.cargos %}
+                    <div class="d-flex mb-2">
+                        <select class="form-select" name="cargos[]" required>
+                            {% for opcao in ['Presidente do CONSAD', 'Presidente', 'Vice-Presidente', 'Diretor', 'Assessor', 'Conselheiro'] %}
+                                <option value="{{ opcao }}" {% if cargo.cargo == opcao %}selected{% endif %}>{{ opcao }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if loop.first %}
+                            <!-- Botão de adicionar no primeiro cargo -->
+                            <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
+                        {% else %}
+                            <!-- Botão de remover para cargos subsequentes -->
+                            <button type="button" class="btn btn-danger ms-2 remove">-</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if pessoa.cargos|length == 0 %}
+                    <div class="d-flex mb-2">
+                        <select class="form-select" name="cargos[]" required>
+                            <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                            <option value="Presidente">Presidente</option>
+                            <option value="Vice-Presidente">Vice-Presidente</option>
+                            <option value="Diretor">Diretor</option>
+                            <option value="Assessor">Assessor</option>
+                            <option value="Conselheiro">Conselheiro</option>
+                        </select>
+                        <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
+    <!-- Dropdown dinâmico para lotações -->
     <div class="row mb-3">
-        <label for="lotacao" class="col-sm-2 col-form-label">Lotação</label>
+        <label class="col-sm-2 col-form-label">Lotações</label>
         <div class="col-sm-10">
-            <select class="form-select" id="lotacao" name="lotacao" required>
-                <option value="" {% if not pessoa.lotacao %}selected{% endif %}>Escolha...</option>
-                <option value="Conselho Fiscal" {% if pessoa.lotacao == 'Conselho Fiscal' %}selected{% endif %}>Conselho Fiscal</option>
-                <option value="Conselho de Administração" {% if pessoa.lotacao == 'Conselho de Administração' %}selected{% endif %}>Conselho de Administração</option>
-                <option value="Presidente" {% if pessoa.lotacao == 'Presidente' %}selected{% endif %}>Presidente</option>
-                <option value="Vice-Presidente" {% if pessoa.lotacao == 'Vice-Presidente' %}selected{% endif %}>Vice-Presidente</option>
-                <option value="Diretoria Administrativa" {% if pessoa.lotacao == 'Diretoria Administrativa' %}selected{% endif %}>Diretoria Administrativa</option>
-                <option value="Diretoria Técnica" {% if pessoa.lotacao == 'Diretoria Técnica' %}selected{% endif %}>Diretoria Técnica</option>
-                <option value="Diretoria Financeira" {% if pessoa.lotacao == 'Diretoria Financeira' %}selected{% endif %}>Diretoria Financeira</option>
-            </select>
+            <div id="lotacoes-container">
+                {% for lotacao in pessoa.lotacoes %}
+                    <div class="d-flex mb-2">
+                        <select class="form-select" name="lotacoes[]" required>
+                            {% for opcao in ['Conselho Fiscal', 'Conselho de Administração', 'Presidência', 'Vice-Presidência', 'Diretoria Administrativa', 'Diretoria Técnica', 'Diretoria Financeira'] %}
+                                <option value="{{ opcao }}" {% if lotacao.lotacao == opcao %}selected{% endif %}>{{ opcao }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if loop.first %}
+                            <!-- Botão de adicionar no primeiro -->
+                            <button type="button" class="btn btn-success ms-2 add-lotacao">+</button>
+                        {% else %}
+                            <!-- Botão de remover para lotações subsequentes -->
+                            <button type="button" class="btn btn-danger ms-2 remove">-</button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if pessoa.lotacoes|length == 0 %}
+                    <div class="d-flex mb-2">
+                        <select class="form-select" name="lotacoes[]" required>
+                            <option value="Conselho Fiscal">Conselho Fiscal</option>
+                            <option value="Conselho de Administração">Conselho de Administração</option>
+                            <option value="Presidência">Presidência</option>
+                            <option value="Vice-Presidência">Vice-Presidência</option>
+                            <option value="Diretoria Administrativa">Diretoria Administrativa</option>
+                            <option value="Diretoria Técnica">Diretoria Técnica</option>
+                            <option value="Diretoria Financeira">Diretoria Financeira</option>
+                        </select>
+                        <button type="button" class="btn btn-success ms-2 add-lotacao">+</button>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 
+    <!-- Demais campos (cidade, estado, etc.) -->
     <div class="row mb-3">
         <label for="cidade" class="col-sm-2 col-form-label">Cidade</label>
         <div class="col-sm-4">
@@ -76,11 +124,11 @@
     <div class="row mb-3">
         <label for="data_admissao" class="col-sm-2 col-form-label">Data de Admissão</label>
         <div class="col-sm-4">
-            <input type="date" class="form-control" id="data_admissao" name="data_admissao" value="{{pessoa.data_admissao}}" required>
+            <input type="date" class="form-control" id="data_admissao" name="data_admissao" value="{{ pessoa.data_admissao }}" required>
         </div>
         <label for="aniversario" class="col-sm-2 col-form-label">Aniversário</label>
         <div class="col-sm-4">
-            <input type="date" class="form-control" id="aniversario" name="aniversario" value="{{pessoa.aniversario}}" required>
+            <input type="date" class="form-control" id="aniversario" name="aniversario" value="{{ pessoa.aniversario }}" required>
         </div>
     </div>
 
@@ -88,56 +136,93 @@
         <label for="genero" class="col-sm-2 col-form-label">Gênero</label>
         <div class="col-sm-4">
             <select class="form-select" id="genero" name="genero" required>
-                <option value="" {% if not pessoa.genero %}selected{% endif %}>Escolha...</option>
-                <option value="Masculino" {% if pessoa.genero == "Masculino" %}selected{% endif %}>Masculino</option>
-                <option value="Feminino" {% if pessoa.genero == "Feminino" %}selected{% endif %}>Feminino</option>
-                <option value="Outro" {% if pessoa.genero == "Outro" %}selected{% endif %}>Outro</option>
+                <option value="" {% if pessoa.genero == '' %}selected{% endif %}>Escolha...</option>
+                <option value="Masculino" {% if pessoa.genero == 'Masculino' %}selected{% endif %}>Masculino</option>
+                <option value="Feminino" {% if pessoa.genero == 'Feminino' %}selected{% endif %}>Feminino</option>
+                <option value="Outro" {% if pessoa.genero == 'Outro' %}selected{% endif %}>Outro</option>
             </select>
         </div>
         <label for="etnia" class="col-sm-2 col-form-label">Etnia</label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="etnia" name="etnia" value="{{pessoa.etnia}}" required>
+            <input type="text" class="form-control" id="etnia" name="etnia" value="{{ pessoa.etnia }}" required>
         </div>
     </div>
 
     <div class="row mb-3">
         <label for="linkedin" class="col-sm-2 col-form-label">LinkedIn</label>
-        <div class="col-sm-10">
-            <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{pessoa.linkedin}}">
+        <div class="col-sm-4">
+            <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{ pessoa.linkedin }}"/>
         </div>
-    </div>
-
-    <div class="row mb-3">
         <label for="instagram" class="col-sm-2 col-form-label">Instagram</label>
-        <div class="col-sm-10">
-            <input type="url" class="form-control" id="instagram" name="instagram" value="{{pessoa.instagram}}">
+        <div class="col-sm-4">
+            <input type="url" class="form-control" id="instagram" name="instagram" value="{{ pessoa.instagram }}"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <label for="twitter" class="col-sm-2 col-form-label">Twitter</label>
-        <div class="col-sm-10">
-            <input type="url" class="form-control" id="twitter" name="twitter" value="{{pessoa.twitter}}">
+        <div class="col-sm-4">
+            <input type="url" class="form-control" id="twitter" name="twitter" value="{{ pessoa.twitter }}"/>
+        </div>
+        <label for="frase" class="col-sm-2 col-form-label">Frase</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="frase" name="frase" value="{{ pessoa.frase }}"/>
         </div>
     </div>
 
-    <div class="row mb-3">
-        <label for="frase" class="col-sm-2 col-form-label">Sobre</label>
-        <div class="col-sm-10">
-            <textarea class="form-control" id="frase" name="frase" rows="3">{{ pessoa.frase }}</textarea>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <label for="foto" class="col-sm-2 col-form-label">Foto</label>
-        <div class="col-sm-10">
-            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
-        </div>
-    </div>
-
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-        <a href="{{ url_for('time.time') }}" class="btn btn-secondary">Cancelar</a>
+    <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-primary">Salvar</button>
     </div>
 </form>
+
+<script>
+    document.querySelector('.add-cargo').addEventListener('click', function() {
+        let newCargo = document.createElement('div');
+        newCargo.classList.add('d-flex', 'mb-2');
+        newCargo.innerHTML = `
+            <select class="form-select" name="cargos[]" required>
+                <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                <option value="Presidente">Presidente</option>
+                <option value="Vice-Presidente">Vice-Presidente</option>
+                <option value="Diretor">Diretor</option>
+                <option value="Assessor">Assessor</option>
+                <option value="Conselheiro">Conselheiro</option>
+            </select>
+            <button type="button" class="btn btn-danger ms-2 remove">-</button>
+        `;
+        document.getElementById('cargos-container').appendChild(newCargo);
+    });
+
+    document.querySelector('.add-lotacao').addEventListener('click', function() {
+        let newLotacao = document.createElement('div');
+        newLotacao.classList.add('d-flex', 'mb-2');
+        newLotacao.innerHTML = `
+            <select class="form-select" name="lotacoes[]" required>
+                <option value="Conselho Fiscal">Conselho Fiscal</option>
+                <option value="Conselho de Administração">Conselho de Administração</option>
+                <option value="Presidência">Presidência</option>
+                <option value="Vice-Presidência">Vice-Presidência</option>
+                <option value="Diretoria Administrativa">Diretoria Administrativa</option>
+                <option value="Diretoria Técnica">Diretoria Técnica</option>
+                <option value="Diretoria Financeira">Diretoria Financeira</option>
+            </select>
+            <button type="button" class="btn btn-danger ms-2 remove">-</button>
+        `;
+        document.getElementById('lotacoes-container').appendChild(newLotacao);
+    });
+
+    // Remover campo de cargo ou lotação
+    document.querySelector('#cargos-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove')) {
+            event.target.closest('.d-flex').remove();
+        }
+    });
+
+    document.querySelector('#lotacoes-container').addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove')) {
+            event.target.closest('.d-flex').remove();
+        }
+    });
+</script>
+
 {% endblock %}

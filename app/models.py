@@ -1,6 +1,9 @@
 from . import db
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
+
+Base = declarative_base()
 
 class Lancamento(db.Model):
     __tablename__ = 'lancamentos'
@@ -56,8 +59,6 @@ class Pessoas(db.Model):
     email = db.Column(db.String(255), primary_key=True, nullable=False)
     nome = db.Column(db.String(255), nullable=False)
     slug = db.Column(db.String, unique=True, nullable=False)
-    cargo = db.Column(db.String(100), nullable=False)
-    lotacao = db.Column(db.String(100), nullable=False)
     cidade = db.Column(db.String(100), nullable=False)
     estado = db.Column(db.String(50), nullable=False)
     data_admissao = db.Column(db.Date, nullable=False)
@@ -69,6 +70,23 @@ class Pessoas(db.Model):
     twitter = db.Column(db.String(255))
     frase = db.Column(db.String(255))
     hash_foto = db.Column(db.String(255), nullable=True)
+
+    cargos = db.relationship('PessoaCargo', backref='pessoa', cascade="all, delete-orphan")
+    lotacoes = db.relationship('PessoaLotacao', backref='pessoa', cascade="all, delete-orphan")
+
+class PessoaCargo(db.Model):
+    __tablename__ = 'pessoa_cargos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pessoa_email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
+    cargo = db.Column(db.String(100), nullable=False)
+
+class PessoaLotacao(db.Model):
+    __tablename__ = 'pessoa_lotacoes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    pessoa_email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
+    lotacao = db.Column(db.String(100), nullable=False)
 
 class Clientes(db.Model):
     __tablename__='clientes'

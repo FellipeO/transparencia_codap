@@ -30,7 +30,9 @@
                     <div class="d-md-flex align-items-center">
                         <div class="d-flex align-items-center">
                             <span class="fa-solid fa-address-card fs-9 text-body-tertiary me-2 me-lg-1 me-xl-2"></span>
-                            <span class="fs-7 text-body-tertiary text-opacity-85 fw-semibold ms-1 me-4">{{ pessoa.cargo }}</span>
+                            <span class="fs-7 text-body-tertiary text-opacity-85 fw-semibold ms-1 me-4">
+                                {{ cargos|join(', ') }}
+                            </span>
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="fa-solid fa-calendar-alt fs-9 text-body-tertiary me-2 me-lg-1 me-xl-2"></span>
@@ -80,6 +82,16 @@
         <div class="card-body">
             <div class="d-flex align-items-center mb-5">
                 <h3>Sobre</h3>
+            </div>
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-user"></span>
+                    <h5 class="text-body-highlight mb-0">Lotação</h5>
+                </div>
+                <div class="mb-0 text-body-secondary">
+                    {% for lotacao in lotacoes %}
+                        {{ lotacao }}<br>
+                    {% endfor %}
+                </div>
             </div>
             <div class="mb-4">
                 <div class="d-flex align-items-center mb-1"><span class="me-2 uil uil-calendar-alt"></span>
