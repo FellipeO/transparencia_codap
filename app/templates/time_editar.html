@@ -18,17 +18,18 @@
     {% endwith %}
 
     <!-- Campos de nome, email, etc. -->
-    <div class="row mb-3">
-        <label for="email" class="col-sm-2 col-form-label">Email</label>
-        <div class="col-sm-10">
-            <input type="email" class="form-control" id="email" name="email" value="{{ pessoa.email }}" required readonly>
-        </div>
-    </div>
 
     <div class="row mb-3">
         <label for="nome" class="col-sm-2 col-form-label">Nome</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="nome" name="nome" value="{{ pessoa.nome }}" required>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="email" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" id="email" name="email" value="{{ pessoa.email }}" required readonly>
         </div>
     </div>
 
@@ -150,23 +151,36 @@
 
     <div class="row mb-3">
         <label for="linkedin" class="col-sm-2 col-form-label">LinkedIn</label>
-        <div class="col-sm-4">
+        <div class="col-sm-10">
             <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{ pessoa.linkedin }}"/>
         </div>
+    </div>
+
+    <div class="row mb-3">
         <label for="instagram" class="col-sm-2 col-form-label">Instagram</label>
-        <div class="col-sm-4">
+        <div class="col-sm-10">
             <input type="url" class="form-control" id="instagram" name="instagram" value="{{ pessoa.instagram }}"/>
         </div>
     </div>
 
     <div class="row mb-3">
         <label for="twitter" class="col-sm-2 col-form-label">Twitter</label>
-        <div class="col-sm-4">
+        <div class="col-sm-10">
             <input type="url" class="form-control" id="twitter" name="twitter" value="{{ pessoa.twitter }}"/>
         </div>
-        <label for="frase" class="col-sm-2 col-form-label">Frase</label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="frase" name="frase" value="{{ pessoa.frase }}"/>
+    </div>
+
+    <div class="row mb-3">
+        <label for="frase" class="col-sm-2 col-form-label">Sobre</label>
+        <div class="col-sm-10">
+            <textarea type="text" class="form-control" id="frase" name="frase" rows="3" value="{{ pessoa.frase }}"></textarea>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="foto" class="col-sm-2 col-form-label">Foto</label>
+        <div class="col-sm-10">
+            <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
         </div>
     </div>
 
