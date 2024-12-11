@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from app.models import db, Evento, EventoArquivo
+from app.models import db, Evento, EventoArquivo, Pessoas
 from app.decorators import login_required
 from app.admin_routes.routes import verificar_diretor
 from datetime import datetime
@@ -23,6 +23,9 @@ def evento():
 def evento_adicionar():
     if not verificar_diretor():  # Verifica se o usuário tem permissão
         return redirect(url_for('auth.error'))
+    
+    # Buscar emails de todos os organizadores possíveis
+    organizadores = Pessoas.query.all()
 
     if request.method == 'POST':
         nome = request.form.get('nome')
@@ -68,7 +71,7 @@ def evento_adicionar():
             flash(f'Erro ao adicionar evento: {str(e)}', 'danger')
             return redirect(url_for('evento.evento_adicionar'))
     
-    return render_template('evento_adicionar.html')
+    return render_template('evento_adicionar.html', organizadores=organizadores)
 
 # Rota para editar eventos
 @evento_bp.route('/evento/editar/<int:id>', methods=['GET', 'POST'])
@@ -81,6 +84,9 @@ def evento_editar(id):
     if not evento:
         flash('Evento não encontrado.', 'danger')
         return redirect(url_for('evento.evento'))
+    
+    # Buscar emails de todos os organizadores possíveis
+    organizadores = Pessoas.query.all()
     
     if request.method == 'POST':
         evento.nome = request.form.get('nome')
@@ -113,7 +119,7 @@ def evento_editar(id):
             flash(f'Erro ao atualizar evento: {str(e)}', 'danger')
             return redirect(url_for('evento.evento_editar', id=id))
     
-    return render_template('evento_editar.html', evento=evento)
+    return render_template('evento_editar.html', evento=evento, organizadores=organizadores)
 
 # Rota para adicionar arquivos ao evento
 @evento_bp.route('/evento/arquivos/<int:id>', methods=['GET', 'POST'])
