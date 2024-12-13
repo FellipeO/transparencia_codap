@@ -44,6 +44,7 @@ def create_app():
     from app.admin_routes.oportunidades_investimento import oportunidades_bp
     from app.admin_routes.time import time_bp
     from app.admin_routes.evento import evento_bp
+    from app.admin_routes.time_crontracheque import time_contracheque_bp
     from app.public import public_bp
 
     # Registra os blueprints com os caminhos específicos
@@ -54,6 +55,7 @@ def create_app():
     app.register_blueprint(oportunidades_bp, url_prefix='/admin')
     app.register_blueprint(time_bp, url_prefix='/admin')
     app.register_blueprint(evento_bp, url_prefix='/admin')
+    app.register_blueprint(time_contracheque_bp, url_prefix='/admin/time')
     app.register_blueprint(public_bp)  # Rotas públicas para a homepage
 
     return app

@@ -74,6 +74,17 @@ class Pessoas(db.Model):
     cargos = db.relationship('PessoaCargo', backref='pessoa', cascade="all, delete-orphan")
     lotacoes = db.relationship('PessoaLotacao', backref='pessoa', cascade="all, delete-orphan")
 
+class Contracheque(db.Model):
+    __tablename__ = 'contracheques'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mes_ano = db.Column(db.String(7), nullable=False)  # Formato MM/AAAA
+    email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
+    descricao = db.Column(db.String(255), nullable=False)
+    valor = db.Column(db.Float, nullable=False)
+
+    pessoa = db.relationship('Pessoas', backref='contracheques')
+    
 class PessoaCargo(db.Model):
     __tablename__ = 'pessoa_cargos'
 

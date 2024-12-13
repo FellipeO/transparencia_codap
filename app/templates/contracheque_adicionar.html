@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Adicionar Contracheque{% endblock %}
+{% block page_title %}Adicionar Contracheque para {{ pessoa.nome }}{% endblock %}
+{% block breadcrumb %}Time / {{ pessoa.nome }} / Adicionar Contracheque{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('time_contracheque.adicionar_contracheque', email=pessoa.email) }}" method="post">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row mb-3">
+        <label for="mes_ano" class="col-sm-2 col-form-label">Mês/Ano</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="mes_ano" name="mes_ano" placeholder="mm/aa">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="salario_liquido" class="col-sm-2 col-form-label">Salário Líquido</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="salario_liquido" name="salario_liquido" placeholder="Digite o valor">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="inss" class="col-sm-2 col-form-label">INSS</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="inss" name="inss" placeholder="Digite o valor">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="gratificacao" class="col-sm-2 col-form-label">Gratificação</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="gratificacao" name="gratificacao" placeholder="Digite o valor">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="imposto_renda" class="col-sm-2 col-form-label">Imposto de Renda</label>
+        <div class="col-sm-10">
+            <input type="number" class="form-control" id="imposto_renda" name="imposto_renda" placeholder="Digite o valor">
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Adicionar Contracheque</button>
+        <a href="{{ url_for('time.time') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+{% endblock %}

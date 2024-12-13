@@ -37,6 +37,7 @@
           {% if session.get('grupo') in ['super_admin', 'diretor'] or session.get('email') == pessoa.email%}
           <a href="{{ url_for('time.time_editar', email=pessoa.email) }}" class="btn btn-warning btn-sm">Editar</a>
           {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+          <a href="{{ url_for('time_contracheque.listar_contracheques', email=pessoa.email) }}" class="btn btn-primary btn-sm">Contracheque</a>
             <form action="{{ url_for('time.time_deletar', email=pessoa.email) }}" method="post" style="display: inline;">
               <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar?')">Deletar</button>
             </form>
