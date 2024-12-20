@@ -58,20 +58,20 @@
                 <tbody class="list">
                   {% for pessoa in pessoas %}
                   <tr>
-                    <td class="white-space-nowrap ps-0 nome" style="width:32%">
+                    <td class="white-space-nowrap ps-0 nome" style="width:40%">
                       <div class="d-flex align-items-center">
                         <a class="fw-bold text-primary fs-9" target="_blank" href="{{ url_for('public.time_detalhe', slug=pessoa.slug) }}">
                           {{ pessoa.nome }}
                         </a>
                       </div>
                     </td>
-                    <td class="align-middle cargo" style="width:17%">
-                      {{ pessoa.cargo }}
+                    <td class="align-middle cargo" style="width:24%">
+                      {{ pessoa.cargos|map(attribute='cargo')|join(', ') }}
                     </td>
-                    <td class="align-middle lotacao" style="width:17%">
-                      {{ pessoa.lotacao }}
+                    <td class="align-middle lotacao" style="width:24%">
+                      {{ pessoa.lotacoes|map(attribute='lotacao')|join(', ') }}
                     </td>
-                    <td class="align-middle text-end tempo" style="width:16%">
+                    <td class="align-middle text-end tempo" style="width:5%">
                       {{ pessoa.longevidade }}
                     </td>
                   </tr>

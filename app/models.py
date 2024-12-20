@@ -74,16 +74,34 @@ class Pessoas(db.Model):
     cargos = db.relationship('PessoaCargo', backref='pessoa', cascade="all, delete-orphan")
     lotacoes = db.relationship('PessoaLotacao', backref='pessoa', cascade="all, delete-orphan")
 
+class Timeline(db.Model):
+    __tablename__ = 'timeline'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
+    data_hora = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    tipo = db.Column(db.String(50), nullable=False)  # Ex: 'contracheque', 'reuniao'
+    referencia_id = db.Column(db.Integer, db.ForeignKey('contracheques.id'), nullable=False)
+
+    pessoa = db.relationship('Pessoas', backref='timeline')
+
 class Contracheque(db.Model):
     __tablename__ = 'contracheques'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     mes_ano = db.Column(db.String(7), nullable=False)  # Formato MM/AAAA
     email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
-    descricao = db.Column(db.String(255), nullable=False)
-    valor = db.Column(db.Float, nullable=False)
+    salario_bruto = db.Column(db.Float, nullable=False)
+    inss = db.Column(db.Float, nullable=False)
+    imposto_renda = db.Column(db.Float, nullable=False)
+    gratificacao = db.Column(db.Float, nullable=False)
 
     pessoa = db.relationship('Pessoas', backref='contracheques')
+    timeline_entries = db.relationship(
+        'Timeline', 
+        cascade="all, delete-orphan", 
+        backref='contracheque'
+    )
     
 class PessoaCargo(db.Model):
     __tablename__ = 'pessoa_cargos'

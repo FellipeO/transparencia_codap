@@ -4,7 +4,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo, PessoaLotacao
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo, PessoaLotacao, Timeline, Contracheque
 import os
 
 public_bp = Blueprint('public', __name__)
@@ -226,7 +226,6 @@ def regimento():
 
 @public_bp.route('/time/<string:slug>')
 def time_detalhe(slug):
-    # Tenta buscar a pessoa pelo slug
     try:
         pessoa = db.session.query(Pessoas).filter_by(slug=slug).one()
     except NoResultFound:
@@ -234,11 +233,33 @@ def time_detalhe(slug):
 
     current_date = datetime.utcnow().date()
 
-    # Coletar cargos e lotações associados
-    cargos = [cargo.cargo for cargo in pessoa.cargos]
-    lotacoes = [lotacao.lotacao for lotacao in pessoa.lotacoes]
-    
-    return render_template('time_detalhe_frontend.html', pessoa=pessoa, cargos=cargos, lotacoes=lotacoes, current_date=current_date)
+    # Buscar os eventos na timeline
+    timeline_items = Timeline.query.filter_by(email=pessoa.email).order_by(Timeline.data_hora.desc()).all()
+    eventos = []
+
+    for item in timeline_items:
+        if item.tipo == 'contracheque':
+            contracheque = Contracheque.query.get(item.referencia_id)
+            if contracheque:
+                eventos.append({
+                    'tipo': 'contracheque',
+                    'data_hora': item.data_hora,
+                    'detalhes': {
+                        'salario_bruto': contracheque.salario_bruto,
+                        'inss': contracheque.inss,
+                        'imposto_renda': contracheque.imposto_renda,
+                        'gratificacao': contracheque.gratificacao,
+                        'valor_liquido': (contracheque.salario_bruto + contracheque.gratificacao) - contracheque.inss - contracheque.imposto_renda,
+                        'mes_ano': contracheque.mes_ano
+                    }
+                })
+
+    return render_template(
+        'time_detalhe_frontend.html',
+        pessoa=pessoa,
+        eventos=eventos,
+        current_date=current_date
+    )
 
 @public_bp.route('/uploads/<path:filename>')
 def uploads(filename):

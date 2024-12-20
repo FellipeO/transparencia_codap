@@ -125,6 +125,7 @@
     <!-- Timeline -->
     <div class="col-12 col-md-9">
         <div class="mb-5">
+            {% for evento in eventos %}
             <div class="card mb-4">
                 <div class="card-body p-3 p-sm-4">
                     <div class="d-flex align-items-center mb-3">
@@ -132,39 +133,52 @@
                             <img class="rounded-circle" src="{{ url_for('public.uploads', filename=pessoa.hash_foto + '.jpg') if pessoa.hash_foto else url_for('static', filename='assets/img/SIMBOLO_1.png') }}" alt="" />
                         </div>
                         <div class="flex-1">
-                            <a class="fw-bold mb-0 text-body-emphasis"> {{pessoa.nome}}</a>
+                            <a class="fw-bold mb-0 text-body-emphasis">{{ pessoa.nome }}</a>
                             <p class="fs-10 mb-0 text-body-tertiary text-opacity-85 fw-semibold">
-                                Data<span class="fa-solid fa-circle text-body-quaternary text-opacity-50" data-fa-transform="shrink-10 down-2"></span>Hora<span class="fa-solid fa-circle text-body-quaternary text-opacity-50" data-fa-transform="shrink-10 down-2"></span>
+                                {{ evento.data_hora.strftime('%d/%m/%Y %H:%M') }}
                             </p>
                         </div>
                     </div>
+                    {% if evento.tipo == 'contracheque' %}
                     <div class="col-12">
                         <div class="card mb-3 h-100">
                             <div class="card-body">
-                            <h3 class="card-title mb-4">Contracheque</h3>
-                            <div>
-                                <div class="d-flex justify-content-between">
-                                <p class="text-body fw-semibold">Salário Empregado :</p>
-                                <p class="text-body-emphasis fw-semibold">R$3.500,00</p>
+                                <h3 class="card-title mb-4">Contracheque - {{ evento.detalhes.mes_ano }}</h3>
+                                <div>
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-body fw-semibold">Salário Bruto :</p>
+                                        <p class="text-body-emphasis fw-semibold">R${{ '{:0,.2f}'.format(evento.detalhes.salario_bruto) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.') }}</p>
+                                    </div>
+                                    {% if evento.detalhes.inss != 0 %}
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-body fw-semibold">INSS :</p>
+                                        <p class="text-danger fw-semibold">R${{ '{:0,.2f}'.format(evento.detalhes.inss) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.') }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if evento.detalhes.imposto_renda != 0 %}
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-body fw-semibold">Imposto de Renda :</p>
+                                        <p class="text-danger fw-semibold">R${{ '{:0,.2f}'.format(evento.detalhes.imposto_renda) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.')  }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% if evento.detalhes.gratificacao != 0 %}
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-body fw-semibold">Gratificação :</p>
+                                        <p class="text-body-emphasis fw-semibold">R${{ '{:0,.2f}'.format(evento.detalhes.gratificacao) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.')  }}</p>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                <p class="text-body fw-semibold">I.N.S.S :</p>
-                                <p class="text-danger fw-semibold">R$318,81</p>
+                                <div class="d-flex justify-content-between border-top border-translucent border-dashed pt-4">
+                                    <h4 class="mb-1">Valor Líquido :</h4>
+                                    <h4 class="mb-1">R${{ '{:0,.2f}'.format(evento.detalhes.valor_liquido) | replace(',', 'TEMP') | replace('.', ',') | replace('TEMP', '.') }}</h4>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                <p class="text-body fw-semibold">Imposto de Renda :</p>
-                                <p class="text-danger fw-semibold">R$58,84</p>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-between border-top border-translucent border-dashed pt-4">
-                                <h4 class="mb-1">Valor Líquido :</h4>
-                                <h4 class="mb-1">R$3.122,35</h4>
-                            </div>
                             </div>
                         </div>
-                    </div>  
+                    </div>
+                    {% endif %}
                 </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </div>

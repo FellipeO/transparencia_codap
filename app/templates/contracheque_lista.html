@@ -17,36 +17,40 @@
     <thead class="thead-light">
       <tr>
         <th scope="col">Mês/Ano</th>
-        <th scope="col">Salário Líquido</th>
+        <th scope="col">Salário Bruto</th>
         <th scope="col">INSS</th>
         <th scope="col">Imposto de Renda</th>
         <th scope="col">Gratificação</th>
+        <th scope="col">Ações</th>
       </tr>
     </thead>
     <tbody>
       {% for mes_ano, valores in tabela_contracheques.items() %}
       <tr>
         <td>{{ mes_ano }}</td>
-        <td>{{ valores['Salário Líquido'] | default(0) }}</td>
+        <td>{{ valores['Salário Bruto'] | default(0) }}</td>
         <td>{{ valores['INSS'] | default(0) }}</td>
         <td>{{ valores['Imposto de Renda'] | default(0) }}</td>
         <td>{{ valores['Gratificação'] | default(0) }}</td>
         <td>
-            {% if session.get('grupo') in ['super_admin', 'diretor'] %}
-            <form action="{{ url_for('time_contracheque.deletar_contracheque', email=pessoa.email, mes_ano=mes_ano | urlencode) }}" method="post" style="display: inline;">
-                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar o contracheque de {{ mes_ano }}?')">
-                  Deletar
-                </button>
-            </form>
-            {% endif %}
+          {% if session.get('grupo') in ['super_admin', 'diretor'] %}
+          <form action="{{ url_for('time_contracheque.deletar_contracheque', email=pessoa.email, mes_ano=mes_ano | urlencode) }}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja deletar o contracheque de {{ mes_ano }}?')">
+              Deletar
+            </button>
+          </form>
+          {% endif %}
         </td>
       </tr>
       {% else %}
       <tr>
-        <td colspan="5" class="text-center">Nenhum contracheque encontrado.</td>
+        <td colspan="6" class="text-center">Nenhum contracheque encontrado.</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  <div class="text-center">
+    <a href="{{ url_for('time.time') }}" class="btn btn-secondary">Cancelar</a>
+  </div>
 </div>
 {% endblock %}
