@@ -89,7 +89,7 @@ class Contracheque(db.Model):
     __tablename__ = 'contracheques'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    mes_ano = db.Column(db.String(7), nullable=False)  # Formato MM/AAAA
+    mes_ano = db.Column(db.String(5), nullable=False)  # Formato MM/AA
     email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
     salario_bruto = db.Column(db.Float, nullable=False)
     inss = db.Column(db.Float, nullable=False)

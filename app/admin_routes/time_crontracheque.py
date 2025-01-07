@@ -51,11 +51,22 @@ def adicionar_contracheque(email):
 
     if request.method == 'POST':
         mes_ano = request.form.get('mes_ano')
-        salario_bruto = request.form.get('salario_bruto') or 0
-        inss = request.form.get('inss') or 0
-        gratificacao = request.form.get('gratificacao') or 0
-        imposto_renda = request.form.get('imposto_renda') or 0
 
+        if not mes_ano:
+            flash('O campo Mês/Ano é obrigatório.', 'danger')
+            return redirect(url_for('time_contracheque.adicionar_contracheque', email=email))
+        
+        # Função para converter valores com vírgula para ponto
+        def converter_valor(valor):
+            if valor:
+                return float(valor.replace(',', '.'))
+            return 0.0
+
+        salario_bruto = converter_valor(request.form.get('salario_bruto'))
+        inss = converter_valor(request.form.get('inss'))
+        gratificacao = converter_valor(request.form.get('gratificacao'))
+        imposto_renda = converter_valor(request.form.get('imposto_renda'))
+        
         # Verifica se já existe um contracheque para o mesmo mes_ano e email
         contracheque_existente = Contracheque.query.filter_by(
             email=email, mes_ano=mes_ano
@@ -89,7 +100,6 @@ def adicionar_contracheque(email):
 
         db.session.commit()
 
-        flash('Contracheque adicionado com sucesso.', 'success')
         return redirect(url_for('time_contracheque.listar_contracheques', email=email))
 
     return render_template('contracheque_adicionar.html', pessoa=pessoa)
