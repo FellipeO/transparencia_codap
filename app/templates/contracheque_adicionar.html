@@ -68,7 +68,7 @@
 
     <div class="text-center">
         <button type="submit" class="btn btn-primary">Adicionar Contracheque</button>
-        <a href="{{ url_for('time.time') }}" class="btn btn-secondary">Cancelar</a>
+        <a href="{{ url_for('time_contracheque.listar_contracheques', email=pessoa.email) }}" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>
 {% endblock %}
