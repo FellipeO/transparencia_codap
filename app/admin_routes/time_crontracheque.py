@@ -51,6 +51,7 @@ def adicionar_contracheque(email):
 
     if request.method == 'POST':
         mes_ano = request.form.get('mes_ano')
+        data_hora = request.form.get('data_hora')
 
         if not mes_ano:
             flash('O campo Mês/Ano é obrigatório.', 'danger')
@@ -89,10 +90,13 @@ def adicionar_contracheque(email):
         db.session.add(contracheque)
         db.session.flush()  # Garante que o ID seja gerado antes do commit
 
+        # Converter a string de data e hora para um objeto datetime
+        data_hora_obj = datetime.strptime(data_hora, '%Y-%m-%dT%H:%M')
+
         # Adiciona o contracheque na timeline
         timeline_entry = Timeline(
             email=email,
-            data_hora=datetime.now(),
+            data_hora=data_hora_obj,
             tipo='contracheque',
             referencia_id=contracheque.id
         )

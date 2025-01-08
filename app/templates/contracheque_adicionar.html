@@ -47,7 +47,7 @@
         <div class="col-sm-10">
             <input type="text" class="form-control" id="imposto_renda" name="imposto_renda" 
                 placeholder="Digite o valor (ex.: 1000,50)" pattern="^\d+(,\d{1,2})?$" 
-                title="Use vírgula como separador decimal. Exemplo: 1000,50">
+            title="Use vírgula como separador decimal. Exemplo: 1000,50">
         </div>
     </div>
     
@@ -55,8 +55,14 @@
         <label for="gratificacao" class="col-sm-2 col-form-label">Gratificação</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="gratificacao" name="gratificacao" 
-                placeholder="Digite o valor (ex.: 1000,50)" pattern="^\d+(,\d{1,2})?$" 
-                title="Use vírgula como separador decimal. Exemplo: 1000,50">
+                placeholder="Digite o valor" pattern="^\d+(\.\d{1,2})?$" title="Use ponto como separador decimal. Ex: 1000.50">
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <label for="data_hora" class="col-sm-2 col-form-label">Data e Hora</label>
+        <div class="col-sm-10">
+            <input type="datetime-local" class="form-control" id="data_hora" name="data_hora" required>
         </div>
     </div>
 
