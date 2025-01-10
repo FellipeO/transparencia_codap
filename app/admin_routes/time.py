@@ -48,6 +48,8 @@ def time_adicionar():
         nome = request.form.get('nome')
         email = request.form.get('email')
         cargos = request.form.getlist('cargos[]')
+        admissoes = request.form.getlist('admissoes[]')
+        desligamentos = request.form.getlist('desligamentos[]')
         lotacoes = request.form.getlist('lotacoes[]')
         cidade = request.form.get('cidade')
         estado = request.form.get('estado')
@@ -94,8 +96,25 @@ def time_adicionar():
             db.session.add(nova_pessoa)
             db.session.flush()  # Garante que a pessoa foi inserida antes de adicionar os cargos e lotações
 
-            # Criar os objetos de cargo e lotação após a pessoa estar na sessão
-            pessoa_cargos = [PessoaCargo(cargo=c, pessoa_email=email) for c in cargos]
+            # Criar os objetos de cargo com datas de admissão e desligamento
+            pessoa_cargos = []
+            for i, cargo in enumerate(cargos):
+                data_admissao_cargo = admissoes[i] if i < len(admissoes) else None
+                data_desligamento_cargo = desligamentos[i] if i < len(desligamentos) else None
+
+                # Substituir strings vazias por None
+                data_desligamento_cargo = data_desligamento_cargo or None
+
+                pessoa_cargos.append(
+                    PessoaCargo(
+                        cargo=cargo,
+                        pessoa_email=email,
+                        admissao=data_admissao_cargo,
+                        desligamento=data_desligamento_cargo
+                    )
+                )
+
+            # Criar os objetos de lotação
             pessoa_lotacoes = [PessoaLotacao(lotacao=l, pessoa_email=email) for l in lotacoes]
 
             db.session.add_all(pessoa_cargos)
@@ -127,6 +146,8 @@ def time_editar(email):
         nome = request.form.get('nome')
         email = request.form.get('email')
         cargos = request.form.getlist('cargos[]')
+        admissoes = request.form.getlist('admissoes[]')
+        desligamentos = request.form.getlist('desligamentos[]')
         lotacoes = request.form.getlist('lotacoes[]')
         cidade = request.form.get('cidade')
         estado = request.form.get('estado')
@@ -168,7 +189,26 @@ def time_editar(email):
         db.session.query(PessoaCargo).filter(PessoaCargo.pessoa_email == email).delete()
         db.session.query(PessoaLotacao).filter(PessoaLotacao.pessoa_email == email).delete()
 
-        pessoa_cargos = [PessoaCargo(cargo=c, pessoa_email=email) for c in cargos]
+        # Criar os objetos de cargo com datas de admissão e desligamento
+        pessoa_cargos = []
+        for i, cargo in enumerate(cargos):
+            data_admissao_cargo = admissoes[i] if i < len(admissoes) else None
+            data_desligamento_cargo = desligamentos[i] if i < len(desligamentos) else None
+
+            # Substituir strings vazias por None
+            data_admissao_cargo = data_admissao_cargo or None
+            data_desligamento_cargo = data_desligamento_cargo or None
+
+            pessoa_cargos.append(
+                PessoaCargo(
+                    cargo=cargo,
+                    pessoa_email=email,
+                    admissao=data_admissao_cargo,
+                    desligamento=data_desligamento_cargo
+                )
+            )
+
+        # Criar os objetos de lotação
         pessoa_lotacoes = [PessoaLotacao(lotacao=l, pessoa_email=email) for l in lotacoes]
 
         db.session.add_all(pessoa_cargos)

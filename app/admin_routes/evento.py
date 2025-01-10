@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from app.models import db, Evento, EventoArquivo, Pessoas
+from app.models import db, Evento, EventoArquivo, Pessoas, PessoaCargo
 from app.decorators import login_required
 from app.admin_routes.routes import verificar_diretor
 from datetime import datetime
@@ -24,8 +24,10 @@ def evento_adicionar():
     if not verificar_diretor():  # Verifica se o usuário tem permissão
         return redirect(url_for('auth.error'))
     
-    # Buscar emails de todos os organizadores possíveis
-    organizadores = Pessoas.query.all()
+    # Buscar apenas organizadores que estão ativos usando a propriedade "ativo"
+    organizadores = [
+        pessoa for pessoa in Pessoas.query.all() if pessoa.ativo
+    ]
 
     if request.method == 'POST':
         nome = request.form.get('nome')
@@ -85,8 +87,10 @@ def evento_editar(id):
         flash('Evento não encontrado.', 'danger')
         return redirect(url_for('evento.evento'))
     
-    # Buscar emails de todos os organizadores possíveis
-    organizadores = Pessoas.query.all()
+    # Buscar apenas organizadores que estão ativos usando a propriedade "ativo"
+    organizadores = [
+        pessoa for pessoa in Pessoas.query.all() if pessoa.ativo
+    ]
     
     if request.method == 'POST':
         evento.nome = request.form.get('nome')

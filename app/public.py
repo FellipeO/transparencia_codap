@@ -4,7 +4,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
 from sqlalchemy.exc import NoResultFound
-from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo, PessoaLotacao, Timeline, Contracheque
+from app.models import EstatutoSocial, AquisicoesAlienacoes, OportunidadesInvestimento, RegimentoInterno, Lancamento, Clientes, Pessoas, Evento, EventoArquivo, PessoaCargo, PessoaLotacao, Timeline, Contracheque
 import os
 
 public_bp = Blueprint('public', __name__)
@@ -59,15 +59,36 @@ def homepage():
         elif natureza == 'R':
             contas_a_receber = total
 
-    # Consulta para contar o total de funcionários e a porcentagem de mulheres
-    total_funcionarios = db.session.query(func.count(Pessoas.email)).scalar()
-    total_mulheres = db.session.query(func.count(Pessoas.email)).filter(Pessoas.genero == 'Feminino').scalar()
+   # Consulta para contar o total de funcionários ativos e a porcentagem de mulheres ativas
+    total_funcionarios = (
+        db.session.query(func.count(Pessoas.email.distinct()))  # Distinto de email, para contar uma única vez por funcionário
+        .join(PessoaCargo, PessoaCargo.pessoa_email == Pessoas.email)
+        .filter(PessoaCargo.desligamento.is_(None))  # Apenas funcionários ativos
+        .scalar()
+    )
+
+    total_mulheres = (
+        db.session.query(func.count(Pessoas.email.distinct()))  # Distinto de email, para contar uma única vez por funcionária
+        .join(PessoaCargo, PessoaCargo.pessoa_email == Pessoas.email)
+        .filter(
+            PessoaCargo.desligamento.is_(None),  # Apenas funcionários ativos
+            Pessoas.genero == 'Feminino'         # Apenas mulheres
+        )
+        .scalar()
+    )
 
     # Calcula a porcentagem de mulheres
     porcentagem_mulheres = (total_mulheres / total_funcionarios * 100) if total_funcionarios > 0 else 0
 
-    # Pesquisa todas as pessoas presentes no time
-    pessoas = Pessoas.query.all()
+    # Pesquisa todas as pessoas que possuem pelo menos um cargo ativo
+    pessoas = (
+        db.session.query(Pessoas)
+        .join(PessoaCargo, PessoaCargo.pessoa_email == Pessoas.email)
+        .filter(PessoaCargo.desligamento.is_(None))  # Apenas cargos ativos
+        .distinct()  # Remove duplicatas caso a pessoa tenha múltiplos cargos ativos
+        .all()
+    )
+
     hoje = date.today()
     for pessoa in pessoas:
         pessoa.longevidade = (hoje - pessoa.data_admissao).days
@@ -233,6 +254,14 @@ def time_detalhe(slug):
 
     current_date = datetime.utcnow().date()
 
+    # Buscar apenas os cargos ativos (desligamento é None)
+    cargos_ativos = db.session.query(PessoaCargo).filter_by(pessoa_email=pessoa.email).filter(PessoaCargo.desligamento.is_(None)).all()
+    cargos = [cargo.cargo for cargo in cargos_ativos]
+
+    # Buscar as lotações
+    lotacoes = db.session.query(PessoaLotacao).filter_by(pessoa_email=pessoa.email).all()
+    lotacoes_list = [lotacao.lotacao for lotacao in lotacoes]
+
     # Buscar os eventos na timeline
     timeline_items = Timeline.query.filter_by(email=pessoa.email).order_by(Timeline.data_hora.desc()).all()
     eventos = []
@@ -257,6 +286,8 @@ def time_detalhe(slug):
     return render_template(
         'time_detalhe_frontend.html',
         pessoa=pessoa,
+        cargos=cargos,
+        lotacoes=lotacoes_list,
         eventos=eventos,
         current_date=current_date
     )
@@ -312,19 +343,24 @@ def download_arquivo(id, arquivo):
 
 @public_bp.route('/composicao')
 def composicao():
-    # Consulta todas as pessoas que possuem a lotação "Conselho de Administração"
+    # Consulta todas as pessoas que possuem a lotação "Conselho de Administração" e cargos ativos
     pessoas = (
         db.session.query(Pessoas)
         .join(PessoaLotacao, Pessoas.email == PessoaLotacao.pessoa_email)
-        .filter(PessoaLotacao.lotacao == 'Conselho de Administração')
+        .join(PessoaCargo, PessoaCargo.pessoa_email == Pessoas.email)  # Junta a tabela PessoaCargo
+        .filter(
+            PessoaLotacao.lotacao == 'Conselho de Administração',
+            PessoaCargo.desligamento.is_(None)  # Apenas cargos ativos
+        )
+        .distinct()  # Garante que cada pessoa aparece apenas uma vez
         .all()
     )
 
-    # Preparar uma lista de pessoas com seus cargos associados
+    # Preparar uma lista de pessoas com seus cargos ativos associados
     pessoas_com_cargos = [
         {
             "pessoa": pessoa,
-            "cargos": [cargo.cargo for cargo in pessoa.cargos]
+            "cargos": [cargo.cargo for cargo in pessoa.cargos if cargo.desligamento is None]  # Filtra cargos ativos
         }
         for pessoa in pessoas
     ]

@@ -31,21 +31,34 @@
         </div>
     </div>
 
-    <!-- Dropdown dinâmico para cargos -->
+    <!-- Dropdown dinâmico para cargos com datas -->
     <div class="row mb-3">
         <label class="col-sm-2 col-form-label">Cargos</label>
         <div class="col-sm-10">
             <div id="cargos-container">
-                <div class="d-flex mb-2">
-                    <select class="form-select" name="cargos[]" required>
-                        <option value="Presidente do CONSAD">Presidente do CONSAD</option>
-                        <option value="Presidente">Presidente</option>
-                        <option value="Vice-Presidente">Vice-Presidente</option>
-                        <option value="Diretor">Diretor</option>
-                        <option value="Assessor">Assessor</option>
-                        <option value="Conselheiro">Conselheiro</option>
-                    </select>
-                    <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
+                <div class="cargo-entry mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <select class="form-select" name="cargos[]" required>
+                            <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                            <option value="Presidente">Presidente</option>
+                            <option value="Vice-Presidente">Vice-Presidente</option>
+                            <option value="Diretor">Diretor</option>
+                            <option value="Assessor">Assessor</option>
+                            <option value="Conselheiro">Conselheiro</option>
+                        </select>
+                        <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="data_admissao" class="form-label">Data de Admissão</label>
+                            <input type="date" class="form-control" name="admissoes[]" required>
+                        </div>
+                        <div class="col">
+                            <label for="data_desligamento" class="form-label">Data de Desligamento</label>
+                            <input type="date" class="form-control" name="desligamentos[]">
+                        </div>
+                    </div>
+                    <hr>
                 </div>
             </div>
         </div>
@@ -157,23 +170,44 @@
         const cargosContainer = document.getElementById('cargos-container');
         const lotacoesContainer = document.getElementById('lotacoes-container');
 
-        // Função para adicionar um novo dropdown de cargos
+        // Adicionar novo cargo
         document.querySelector('.add-cargo').addEventListener('click', function () {
             const newCargo = `
-                <div class="d-flex mb-2">
-                    <select class="form-select" name="cargos[]" required>
-                        <option value="Presidente do CONSAD">Presidente do CONSAD</option>
-                        <option value="Presidente">Presidente</option>
-                        <option value="Vice-Presidente">Vice-Presidente</option>
-                        <option value="Diretor">Diretor</option>
-                        <option value="Assessor">Assessor</option>
-                        <option value="Conselheiro">Conselheiro</option>
-                    </select>
-                    <button type="button" class="btn btn-danger ms-2 remove">-</button>
+                <div class="cargo-entry mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <select class="form-select" name="cargos[]" required>
+                            <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                            <option value="Presidente">Presidente</option>
+                            <option value="Vice-Presidente">Vice-Presidente</option>
+                            <option value="Diretor">Diretor</option>
+                            <option value="Assessor">Assessor</option>
+                            <option value="Conselheiro">Conselheiro</option>
+                        </select>
+                        <button type="button" class="btn btn-danger ms-2 remove-cargo">-</button>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="data_admissao" class="form-label">Data de Admissão</label>
+                            <input type="date" class="form-control" name="admissoes[]" required>
+                        </div>
+                        <div class="col">
+                            <label for="data_desligamento" class="form-label">Data de Desligamento</label>
+                            <input type="date" class="form-control" name="desligamentos[]">
+                        </div>
+                    </div>
+                    <hr>
                 </div>`;
             cargosContainer.insertAdjacentHTML('beforeend', newCargo);
         });
-        // Função para adicionar um novo dropdown de lotações
+
+        // Remover cargo
+        cargosContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-cargo')) {
+                e.target.closest('.cargo-entry').remove();
+            }
+        });
+
+        // Adicionar nova lotação
         document.querySelector('.add-lotacao').addEventListener('click', function () {
             const newLotacao = `
                 <div class="d-flex mb-2">
@@ -186,15 +220,15 @@
                         <option value="Diretoria Técnica">Diretoria Técnica</option>
                         <option value="Diretoria Financeira">Diretoria Financeira</option>
                     </select>
-                    <button type="button" class="btn btn-danger ms-2 remove">-</button>
+                    <button type="button" class="btn btn-danger ms-2 remove-lotacao">-</button>
                 </div>`;
             lotacoesContainer.insertAdjacentHTML('beforeend', newLotacao);
         });
 
-        // Remover dropdowns adicionados
-        document.addEventListener('click', function (event) {
-            if (event.target.classList.contains('remove')) {
-                event.target.parentElement.remove();
+        // Remover lotação
+        lotacoesContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-lotacao')) {
+                e.target.parentElement.remove();
             }
         });
     });

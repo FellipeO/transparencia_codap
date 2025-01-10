@@ -74,6 +74,10 @@ class Pessoas(db.Model):
     cargos = db.relationship('PessoaCargo', backref='pessoa', cascade="all, delete-orphan")
     lotacoes = db.relationship('PessoaLotacao', backref='pessoa', cascade="all, delete-orphan")
 
+    @property
+    def ativo(self):
+        return any(cargo.desligamento is None for cargo in self.cargos)
+
 class Timeline(db.Model):
     __tablename__ = 'timeline'
 
@@ -109,7 +113,12 @@ class PessoaCargo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pessoa_email = db.Column(db.String(255), db.ForeignKey('pessoas.email'), nullable=False)
     cargo = db.Column(db.String(100), nullable=False)
+    admissao = db.Column(db.Date, nullable=False)  # Campo obrigatório para a data de admissão
+    desligamento = db.Column(db.Date, nullable=True)  # Campo opcional para a data de desligamento
 
+    def __repr__(self):
+        return f"<PessoaCargo(cargo='{self.cargo}', admissao='{self.admissao}', desligamento='{self.desligamento}')>"
+    
 class PessoaLotacao(db.Model):
     __tablename__ = 'pessoa_lotacoes'
 

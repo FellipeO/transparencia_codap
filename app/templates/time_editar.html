@@ -39,23 +39,35 @@
         <div class="col-sm-10">
             <div id="cargos-container">
                 {% for cargo in pessoa.cargos %}
-                    <div class="d-flex mb-2">
+                <div class="cargo-entry mb-3">
+                    <div class="d-flex align-items-center mb-2">
                         <select class="form-select" name="cargos[]" required>
                             {% for opcao in ['Presidente do CONSAD', 'Presidente', 'Vice-Presidente', 'Diretor', 'Assessor', 'Conselheiro'] %}
-                                <option value="{{ opcao }}" {% if cargo.cargo == opcao %}selected{% endif %}>{{ opcao }}</option>
+                            <option value="{{ opcao }}" {% if cargo.cargo == opcao %}selected{% endif %}>{{ opcao }}</option>
                             {% endfor %}
                         </select>
                         {% if loop.first %}
-                            <!-- Botão de adicionar no primeiro cargo -->
-                            <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
+                        <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
                         {% else %}
-                            <!-- Botão de remover para cargos subsequentes -->
-                            <button type="button" class="btn btn-danger ms-2 remove">-</button>
+                        <button type="button" class="btn btn-danger ms-2 remove-cargo">-</button>
                         {% endif %}
                     </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="data_admissao" class="form-label">Data de Admissão</label>
+                            <input type="date" class="form-control" name="admissoes[]" value="{{ cargo.admissao }}" required>
+                        </div>
+                        <div class="col">
+                            <label for="data_desligamento" class="form-label">Data de Desligamento</label>
+                            <input type="date" class="form-control" name="desligamentos[]" value="{{ cargo.desligamento }}">
+                        </div>
+                    </div>
+                    <hr>
+                </div>
                 {% endfor %}
                 {% if pessoa.cargos|length == 0 %}
-                    <div class="d-flex mb-2">
+                <div class="cargo-entry mb-3">
+                    <div class="d-flex align-items-center mb-2">
                         <select class="form-select" name="cargos[]" required>
                             <option value="Presidente do CONSAD">Presidente do CONSAD</option>
                             <option value="Presidente">Presidente</option>
@@ -66,6 +78,18 @@
                         </select>
                         <button type="button" class="btn btn-success ms-2 add-cargo">+</button>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="data_admissao" class="form-label">Data de Admissão</label>
+                            <input type="date" class="form-control" name="admissoes[]" required>
+                        </div>
+                        <div class="col">
+                            <label for="data_desligamento" class="form-label">Data de Desligamento</label>
+                            <input type="date" class="form-control" name="desligamentos[]">
+                        </div>
+                    </div>
+                    <hr>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -190,53 +214,47 @@
     </div>
 </form>
 
+<!-- Script para manipulação dinâmica -->
 <script>
-    document.querySelector('.add-cargo').addEventListener('click', function() {
-        let newCargo = document.createElement('div');
-        newCargo.classList.add('d-flex', 'mb-2');
-        newCargo.innerHTML = `
-            <select class="form-select" name="cargos[]" required>
-                <option value="Presidente do CONSAD">Presidente do CONSAD</option>
-                <option value="Presidente">Presidente</option>
-                <option value="Vice-Presidente">Vice-Presidente</option>
-                <option value="Diretor">Diretor</option>
-                <option value="Assessor">Assessor</option>
-                <option value="Conselheiro">Conselheiro</option>
-            </select>
-            <button type="button" class="btn btn-danger ms-2 remove">-</button>
-        `;
-        document.getElementById('cargos-container').appendChild(newCargo);
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const cargosContainer = document.getElementById('cargos-container');
 
-    document.querySelector('.add-lotacao').addEventListener('click', function() {
-        let newLotacao = document.createElement('div');
-        newLotacao.classList.add('d-flex', 'mb-2');
-        newLotacao.innerHTML = `
-            <select class="form-select" name="lotacoes[]" required>
-                <option value="Conselho Fiscal">Conselho Fiscal</option>
-                <option value="Conselho de Administração">Conselho de Administração</option>
-                <option value="Presidência">Presidência</option>
-                <option value="Vice-Presidência">Vice-Presidência</option>
-                <option value="Diretoria Administrativa">Diretoria Administrativa</option>
-                <option value="Diretoria Técnica">Diretoria Técnica</option>
-                <option value="Diretoria Financeira">Diretoria Financeira</option>
-            </select>
-            <button type="button" class="btn btn-danger ms-2 remove">-</button>
-        `;
-        document.getElementById('lotacoes-container').appendChild(newLotacao);
-    });
+        // Adicionar novo cargo
+        document.querySelector('.add-cargo').addEventListener('click', function () {
+            const newCargo = `
+                <div class="cargo-entry mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <select class="form-select" name="cargos[]" required>
+                            <option value="Presidente do CONSAD">Presidente do CONSAD</option>
+                            <option value="Presidente">Presidente</option>
+                            <option value="Vice-Presidente">Vice-Presidente</option>
+                            <option value="Diretor">Diretor</option>
+                            <option value="Assessor">Assessor</option>
+                            <option value="Conselheiro">Conselheiro</option>
+                        </select>
+                        <button type="button" class="btn btn-danger ms-2 remove-cargo">-</button>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="data_admissao" class="form-label">Data de Admissão</label>
+                            <input type="date" class="form-control" name="admissoes[]" required>
+                        </div>
+                        <div class="col">
+                            <label for="data_desligamento" class="form-label">Data de Desligamento</label>
+                            <input type="date" class="form-control" name="desligamentos[]">
+                        </div>
+                    </div>
+                    <hr>
+                </div>`;
+            cargosContainer.insertAdjacentHTML('beforeend', newCargo);
+        });
 
-    // Remover campo de cargo ou lotação
-    document.querySelector('#cargos-container').addEventListener('click', function(event) {
-        if (event.target.classList.contains('remove')) {
-            event.target.closest('.d-flex').remove();
-        }
-    });
-
-    document.querySelector('#lotacoes-container').addEventListener('click', function(event) {
-        if (event.target.classList.contains('remove')) {
-            event.target.closest('.d-flex').remove();
-        }
+        // Remover cargo
+        cargosContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-cargo')) {
+                e.target.closest('.cargo-entry').remove();
+            }
+        });
     });
 </script>
 
